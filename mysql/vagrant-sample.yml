@@ -1,0 +1,7 @@
+api:
+  token: put_it_here
+  web:
+    name: hg-web-01
+  local:
+    host: /Users/local-user
+    guest: /home/vagrant/hg-web-01
