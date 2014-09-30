@@ -56,27 +56,17 @@ def config_templates():
     #     "remote_directory": "/etc/apache2/sites-available/",
     #     "remote_path": "/etc/apache2/sites-available/%s.conf" % env.project_name,
     # },
-    # "php": {
-    #     "local_path": "conf/php.ini",
-    #     "remote_directory": "/etc/php5/apache2/",
-    #     "remote_path": "/etc/php5/apache2/php.ini",
-    # },
+    "php": {
+        "local_path": "conf/php.ini",
+        "remote_directory": "/etc/php5/apache2/",
+        "remote_path": "/etc/php5/apache2/php.ini",
+    },
     # "cron": {
     #     "local_path": "conf/crontab",
     #     "remote_directory": "/etc/cron.d/",
     #     "remote_path": "/etc/cron.d/%s" % env.project_name,
     #     "owner": "root",
     #     "mode": "600",
-    # },
-    # "non-CI": {
-    #     "local_path": "conf/connection.inc.php",
-    #     "remote_directory": "%s/public_html/includes/" % env.project_directory,
-    #     "remote_path": "%s/public_html/includes/config.inc.php" % env.project_directory,
-    # },
-    # "CI": {
-    #     "local_path": "conf/database.php",
-    #     "remote_directory": "%s/application/config/" % env.project_directory,
-    #     "remote_path": "%s/application/config/database.php" % env.project_directory,
     # },
     # "sslcert": {
     #     "local_path": "conf/www.mailcheckup.com/ssl.crt",
@@ -87,11 +77,6 @@ def config_templates():
     #     "local_path": "conf/www.mailcheckup.com/ssl.key",
     #     "remote_directory": "/etc/apache2/ssl.key/",
     #     "remote_path": "/etc/apache2/ssl.key/www.mailcheckup.com.crt",
-    # },
-    # "samba": {
-    #     "local_path": "conf/smb.conf",
-    #     "remote_directory": "/etc/samba/",
-    #     "remote_path": "/etc/samba/smb.conf",
     # },
 }
 
@@ -171,12 +156,6 @@ def bootstrap():
 
     #install python 2.6 (needed for google sitemaps, remove for now)
     #apt("python2.6")
-
-    #only install samba if we are bootstrapping locally
-    # if env.name == "development":
-    #     apt("samba")
-    #     #we only need to run this once, so it goes in bootstrap not deploy
-    #     sudo("smbpasswd -a %s" % env.user) # You can't set a SAMBA user if they don't exist on the system /etc/passwd. Also, this does not work without a password given at command line.
 
     #install_dependencies and lamp
     apt("tasksel rsync")
