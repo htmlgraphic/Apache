@@ -14,7 +14,7 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-	config.vm.define :web do |web_config|
+	config.vm.define :hgSQL do |web_config|
 
 		web_config.vm.box = "digital_ocean"
 		web_config.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"

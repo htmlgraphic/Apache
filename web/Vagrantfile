@@ -14,15 +14,15 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-	config.vm.define :web do |web_config|
+	config.vm.define :hgWeb do |web_config|
 
 		web_config.vm.box = "digital_ocean"
 		web_config.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
 		web_config.vm.synced_folder ".", "/vagrant", disabled: true
-	  	web_config.ssh.private_key_path = '~/.ssh/id_rsa' # Easy to use your existing key, will be added to DO
-	  	web_config.ssh.username = 'mailcheckup'
+	  	web_config.ssh.private_key_path = '.ssh/id_rsa' # Easy to use your existing key, will be added to DO
+	  	web_config.ssh.username = 'htmlgraphic'
 
-		web_config.vm.provider 'digital_ocean' do |do_config|
+		web_config.vm.provider :digital_ocean do |do_config|
 			do_config.token = token
 			do_config.ssh_key_name = box_name 
 			do_config.image = 'Ubuntu 14.04 x64'
