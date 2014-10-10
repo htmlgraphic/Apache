@@ -4,8 +4,9 @@
 require 'yaml'
 
 settings = YAML.load_file 'vagrant.yml'
-token 	= settings['api']['token'] # It's called "personal access token" on the site
-box_name = settings['api']['web']['name'] # If the key is already on your account, this name must match or it will error when trying to re-add
+token 	= settings['api']['token']
+key_name = settings['api']['web']['key_name']
+key_file = settings['api']['web']['key_file']
 host 	= settings['api']['local']['host']
 guest 	= settings['api']['local']['guest']
 
@@ -19,12 +20,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 		web_config.vm.box = "digital_ocean"
 		web_config.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
 		web_config.vm.synced_folder ".", "/vagrant", disabled: true
-	  	web_config.ssh.private_key_path = '.ssh/id_rsa' # Easy to use your existing key, will be added to DO
-	  	web_config.ssh.username = 'htmlgraphic'
+	  	web_config.ssh.private_key_path = key_file # Easy to use your existing key, will be added to DO
+	  	web_config.ssh.username = 'root'
 
 		web_config.vm.provider :digital_ocean do |do_config|
 			do_config.token = token
-			do_config.ssh_key_name = box_name 
+			do_config.ssh_key_name = key_name
 			do_config.image = 'Ubuntu 14.04 x64'
 			do_config.size = '512mb'
 			do_config.region = 'nyc2'

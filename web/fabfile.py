@@ -96,7 +96,7 @@ def dev():
 
 
 def production():
-    vagrant_config = get_vagrant_parameters('web')
+    vagrant_config = get_vagrant_parameters('hgWeb')
     env.name = 'production'
     env.user = vagrant_config['User']
     env.domain = 'mailcheckup.com'

@@ -1,7 +1,8 @@
 api:
-  token: put_it_here
+  token: put_it_here # It's called "personal access token" on the site
   web:
-    name: hgWeb01
+    key_name: hgWeb01 # If the key is already on your account, this name must match or it will error when trying to re-add
+    key_file: .ssh/id_rsa # Default to the provided key in this repo
   local:
     host: /Users/local-user
     guest: /home/vagrant/hg-web-01
