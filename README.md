@@ -7,10 +7,11 @@ Before starting a system, this is how your system should be set up:
 
 
 
-## Web or MySQL Deployment
+## Web or MySQL  Deployment
 
 * Copy the vagrant-sample.yml files to vagrant.yml and fill in the Digital Ocean personal token
-* Use `vagrant up hgWeb --provider digital_ocean` to deploy and `fab production bootstrap` to provision the nodes.
+* Use `vagrant up <name> --provider digital_ocean` to deploy and `fab production bootstrap` to provision the nodes.
+* For local deploys and testing use `vagrant up dev`
 
 
 
