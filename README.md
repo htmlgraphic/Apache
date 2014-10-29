@@ -4,7 +4,7 @@ Before starting a system, this is how your system should be set up:
 
 * Install [VirtualBox 4.3.10](https://www.virtualbox.org/wiki/Downloads)
 * Install [Vagrant](http://www.vagrantup.com/downloads.html)
-
+* Install [Digital Ocean Vagrant Plugin](https://github.com/smdahlen/vagrant-digitalocean)
 
 
 ## Web or MySQL  Deployment
