@@ -7,17 +7,23 @@ Before starting a system, this is how your system should be set up:
 * Install [Digital Ocean Vagrant Plugin](https://github.com/smdahlen/vagrant-digitalocean)
 
 
-## Web or MySQL  Deployment
+## Web OR MySQL Deployment
 
-* Copy the vagrant-sample.yml files to vagrant.yml and fill in the Digital Ocean personal token
-* Use `vagrant up <name> --provider digital_ocean` to deploy and `fab production bootstrap` to provision the nodes.
+* Clone the repo `git clone git@bitbucket.org:htmlgraphic/ops.git`
+
+* `cd <node folder>` if you would like to make additional nodes you can do so by duplicating the parent folder.
+
+* Copy the `vagrant-sample.yml` files to `vagrant.yml` and add a personal token from your Digital Ocean account. 
+
+* Use `vagrant up <key_name> --provider digital_ocean` to deploy and `fab production bootstrap` to provision the nodes. Use the `key_name` found in the the `.yml` file.
+
 * For local deploys and testing use `vagrant up dev`
 
 
 
 ## Configuration
 
-* Configure your Digital Ocean token, ssh key name, and key file in the vagrant.yml file (sample in vagrant-sample.yml)
+* Configure your Digital Ocean token, ssh key name, and key file in the `vagrant.yml` file (sample in `vagrant-sample.yml`)
 
 * `vagrant-sample.yaml`
 
@@ -51,5 +57,3 @@ vagrant halt <system name>
 # Destroying the VM (if your VM is completely broken)
 vagrant destroy <system name>
 ```
-
-

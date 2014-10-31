@@ -1,8 +1,32 @@
-api:
-  token: put_it_here # It's called "personal access token" on the site
-  web:
-    key_name: hgWeb01 # If the key is already on your account, this name must match or it will error when trying to re-add
-    key_file: .ssh/id_rsa # Default to the provided key in this repo
-  local:
-    host: /Users/local-user
-    guest: /home/vagrant/hg-web-01
+---
+vagrantfile-digital_ocean:
+    vm:
+        box: digital_ocean
+        hostname: hgWeb01
+        network:
+            private_network: 192.168.56.101
+            forwarded_port: {  }
+        provider:
+            digital_ocean:
+                image: 'Ubuntu 14.04 x64'
+                region: nyc2
+                size: 512mb
+                token: put_it_here # It's called "personal access token" on the site
+                ssh_key_name: Vagrant # If the key is already on your account, this name must match or it will error when trying to re-add
+        ssh:
+            host: null
+            port: null
+            private_key_path: ~/.ssh/id_rsa # Default to the provided key in this repo
+            username: PRIVATE_KEY_USER
+            guest_port: null
+            keep_alive: true
+            forward_agent: false
+            forward_x11: false
+            shell: 'bash -l'
+        api:
+            web:
+            key_name: hgWeb01 # If the key is already on your account, this name must match or it will error when trying to re-add
+            key_file: .ssh/id_rsa # Default to the provided key in this repo
+        local:
+            host: /Users/local-user
+            guest: /home/vagrant/hg-web-01
