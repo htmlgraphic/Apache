@@ -27,6 +27,8 @@ Vagrant.configure('2') do |config|
 			do_config.image        = data['vm']['provider']['digital_ocean']['image']
     		do_config.region       = data['vm']['provider']['digital_ocean']['region']
     		do_config.size         = data['vm']['provider']['digital_ocean']['size']
+    		do_config.name 		   = data['vm']['network']['public_hostname']
+    		do_config.private_networking = data['vm']['network']['private_networking']
 		end
 	end
 
