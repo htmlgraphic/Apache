@@ -15,4 +15,5 @@ coreos:
     - name: etcd.service
       command: start
     - name: fleet.service
-      command: start
+      command: start,
+      "ssh_keys":[98825]
