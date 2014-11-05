@@ -1,0 +1,18 @@
+[Unit]
+Description=Apache web server service
+After=etcd.service
+After=docker.service
+Requires=apache-discovery@%i.service
+
+[Service]
+TimeoutStartSec=0
+KillMode=none
+EnvironmentFile=/etc/environment
+ExecStartPre=-/usr/bin/docker kill apache%i
+ExecStartPre=-/usr/bin/docker rm apache%i
+ExecStartPre=/usr/bin/docker pull htmlgraphic/apache
+ExecStart=/usr/bin/docker run -d -p ${COREOS_PUBLIC_IPV4}:%i:80 --link mysql:mysql --volumes-from www-data -v /var/public_html:/var/www/html --name apache%i htmlgraphic/apache
+ExecStop=/usr/bin/docker stop apache%i
+
+[X-Fleet]
+X-Conflicts=apache@*.service
