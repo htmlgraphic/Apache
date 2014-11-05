@@ -2,18 +2,16 @@
 
 coreos:
   etcd:
-    name: coreos-18
+    name: coreos19
     # generate a new token for each unique cluster from https://discovery.etcd.io/new
     discovery: https://discovery.etcd.io/cf8fe83fc0e222250b2f40021ec72b5a
     # multi-region deployments, multi-cloud deployments, and droplets without
     # private networking need to use $public_ipv4
-    addr: $public_ipv4:4001
-    peer-addr: $public_ipv4:7001
-    election_timeout: 7500
-    heartbeat_interval: 1500
+    addr: $private_ipv4:4001
+    peer-addr: $private_ipv4:7001
   fleet:
-    public-ip: $public_ipv4   # used for fleetctl ssh command
-    metadata: region=sfo,location=sfo1,public_ip=$public_ipv4
+    public-ip: $private_ipv4   # used for fleetctl ssh command
+    metadata: region=nyc,location=nyc3,public_ip=$public_ipv4,host=coreos19
   units:
     - name: etcd.service
       command: start
