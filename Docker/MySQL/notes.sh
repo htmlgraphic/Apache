@@ -15,10 +15,3 @@ docker run -pd 3306:3306 --volumes-from dbdata -v /Users/gegere/Dropbox/SITES:/v
 
 
 
-
-#DATA CONTAINER
-docker run -div /var/www/public_html --name www-data htmlgraphic/www-data
-
-
-
-docker run -d --volumes-from dbdata --name db2 IMAGE_ID
