@@ -17,3 +17,7 @@ coreos:
       command: start
     - name: fleet.service
       command: start
+
+# NEEDED
+# - Add private key to use for Core user to work with other services online
+# - Expand the metadata information to add additional informaiton per the CoreOS.com doc
