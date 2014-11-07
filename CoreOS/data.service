@@ -15,3 +15,4 @@ ExecStop=/usr/bin/docker stop www-data
 
 [X-Fleet]
 X-Conflicts=data.service
+MachineMetadata=host=coreos19
