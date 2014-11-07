@@ -16,7 +16,7 @@ RUN \
   sed -i 's/^\(log_error\s.*\)/# \1/' /etc/mysql/my.cnf && \
   echo "mysqld_safe &" > /tmp/config && \
   echo "mysqladmin --silent --wait=30 ping || exit 1" >> /tmp/config && \
-  echo "mysql -e 'GRANT ALL PRIVILEGES ON *.* TO \"root\"@\"%\" WITH GRANT OPTION;'" >> /tmp/config && \
+  echo "mysql -e 'GRANT ALL PRIVILEGES ON *.* TO \"root\"@\"%\" IDENTIFIED BY \"U7eWsrqETxy2V\" WITH GRANT OPTION;'" >> /tmp/config && \
   bash /tmp/config && \
   rm -f /tmp/config
 
