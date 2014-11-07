@@ -41,14 +41,17 @@ RUN mkdir -p /root/.ssh
 # Clearing and setting authorized ssh keys
 RUN echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbKBlYPbK29pUUwtwRIIjwCtZNujOUb77qHIeohOMk+O8z0gEIgkUwVI3x91AlbhctgpQor3IIeFITwGgIKVo33WW64HI9Nfr2vGx9EAfl9CL9cfDj9M9u4EFOn8NkD/TQMH4d1Fslt59eyl4fSV62d98zJ8goJwrolXM5NlS3hss8FtXhN6bNM0V5nliPUrv/1//3ZoZ5p0inOI1xWNHcMEILGllG+yqaknH9yIk880WoCYZuR7q2ddE6mxrBeJFiyryW5nhsxmXfHnsDVGiLh1C3hltEXzZ0Bdj11jhJfgIcuKU1iUFZg3kKVjRAvrteBQA328s5+UJswV+NWFiH hosting@htmlgraphic.com' >> /root/.ssh/authorized_keys
 
-# These processes will need to be run manually and the image commited to the repo
-ADD rc.local /etc/htmlgraphic.sh
-RUN sudo chmod 755 /etc/htmlgraphic.sh
-
 
 # Define mountable directories.
 VOLUME [ "/data" ]
 
 # Expose ports.
 EXPOSE 22
-CMD ["/bin/bash", "/etc/htmlgraphic.sh"]
+
+# These processes will need to be run manually and the image commited to the repo
+ADD htmlgraphic.sh /etc/htmlgraphic.sh
+RUN sudo chmod 755 /etc/htmlgraphic.sh
+
+RUN /bin/sh /etc/htmlgraphic.sh
+
+CMD ["/usr/sbin/sshd", "-D"]

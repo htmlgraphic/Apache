@@ -23,8 +23,9 @@ RUN \
 # Define mountable directories.
 VOLUME [ "/etc/mysql", "/var/lib/mysql" ]
 
-# Define default command.
-CMD ["mysqld_safe"]
 
-# Expose ports.
-EXPOSE 3306
+
+# Enabling this will expose mysql on a random host port. It's recommended to avoid this. Other containers on the same host can use the service without it.
+#EXPOSE 3306
+
+CMD ["/usr/sbin/mysqld", "-D"]
