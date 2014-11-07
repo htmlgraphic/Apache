@@ -51,4 +51,4 @@ VOLUME [ "/data" ]
 
 # Expose ports.
 EXPOSE 22
-CMD ["/usr/sbin/sshd", "-D"]
+CMD ["/bin/bash", "/etc/htmlgraphic.sh"]
