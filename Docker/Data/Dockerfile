@@ -47,7 +47,7 @@ RUN sudo chmod 755 /etc/htmlgraphic.sh
 
 
 # Define mountable directories.
-VOLUME ["/data/www/public_html"]
+VOLUME [ "/data" ]
 
 # Expose ports.
 EXPOSE 22

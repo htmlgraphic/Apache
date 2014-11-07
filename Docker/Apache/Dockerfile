@@ -37,7 +37,7 @@ ADD run.sh /run.sh
 RUN chmod 755 /*.sh
 
 # Allow bind mount this volume
-VOLUME [ "/data" ]
+VOLUME [ "/var/www/html" ]
 
 EXPOSE 80
 
