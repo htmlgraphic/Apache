@@ -3,15 +3,14 @@
 coreos:
   etcd:
     # generate a new token for each unique cluster from https://discovery.etcd.io/new
-    # Create a envoironment var, $export abc=123
-    discovery: https://discovery.etcd.io/$ETCD_KEY
+    discovery: https://discovery.etcd.io/TOKEN_HERE
     # multi-region deployments, multi-cloud deployments, and droplets without
     # private networking need to use $public_ipv4
     addr: $private_ipv4:4001
     peer-addr: $private_ipv4:7001
   fleet:
     public-ip: $private_ipv4   # used for fleetctl ssh command
-    metadata: region=nyc,location=nyc3,public_ip=$public_ipv4,host=coreos24,size=512
+    metadata: region=nyc,location=nyc3,public_ip=$public_ipv4,host=coreos33,size=512mb
   units:
     - name: etcd.service
       command: start
