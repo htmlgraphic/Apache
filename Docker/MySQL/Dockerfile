@@ -31,5 +31,4 @@ VOLUME [ "/etc/mysql", "/var/lib/mysql" ]
 # Enabling this will expose mysql on a random host port. It's recommended to avoid this. Other containers on the same host can use the service without it.
 #EXPOSE 3306
 
-# Execute the apache daemon in the foreground so we can treat the container as an executeable and it wont immediately return.
-CMD ["/run.sh"]
+CMD ["mysqld_safe"]
