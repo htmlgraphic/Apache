@@ -1,0 +1,17 @@
+[Unit]
+Description=MySQL instance
+After=etcd.service
+After=docker.service
+
+[Service]
+TimeoutStartSec=0
+KillMode=none
+EnvironmentFile=/etc/environment
+ExecStartPre=-/usr/bin/docker kill mysql
+ExecStartPre=-/usr/bin/docker rm mysql
+ExecStartPre=/usr/bin/docker pull htmlgraphic/mysql
+ExecStart=/usr/bin/docker run --name mysql -p 3306:3306 --volumes-from www-data -v /var/lib/mysql:/data/mysql htmlgraphic/mysql
+ExecStop=/usr/bin/docker stop mysql
+
+[X-Fleet]
+X-Conflicts=mysql.service
