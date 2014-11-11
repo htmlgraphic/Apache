@@ -20,12 +20,16 @@ RUN \
   bash /tmp/config && \
   rm -f /tmp/config
 
+# Add image configuration and scripts
+ADD run.sh /run.sh
+RUN chmod 755 /*.sh
+
 # Define mountable directories.
 VOLUME [ "/etc/mysql", "/var/lib/mysql" ]
-
 
 
 # Enabling this will expose mysql on a random host port. It's recommended to avoid this. Other containers on the same host can use the service without it.
 #EXPOSE 3306
 
-CMD ["/usr/bin/mysqld_safe", "-D"]
+# Execute the apache daemon in the foreground so we can treat the container as an executeable and it wont immediately return.
+CMD ["/run.sh"]
