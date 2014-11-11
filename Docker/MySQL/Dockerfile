@@ -20,10 +20,6 @@ RUN \
   bash /tmp/config && \
   rm -f /tmp/config
 
-# Add image configuration and scripts
-ADD run.sh /run.sh
-RUN chmod 755 /*.sh
-
 # Define mountable directories.
 VOLUME [ "/etc/mysql", "/var/lib/mysql" ]
 
