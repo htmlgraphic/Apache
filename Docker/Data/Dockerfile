@@ -43,7 +43,7 @@ RUN echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbKBlYPbK29pUUwtwRIIjwCtZNujOUb7
 
 
 # Define mountable directories.
-VOLUME [ "/data" ]
+VOLUME /data
 
 # Expose ports.
 EXPOSE 22
