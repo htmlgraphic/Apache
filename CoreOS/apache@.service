@@ -1,10 +1,13 @@
 [Unit]
 Description=Apache web server service
+Requires=etcd.service
+Requires=docker.service
+BindsTo=data.service
+
 After=etcd.service
 After=docker.service
 After=data.service
-Requires=apache-discovery@%i.service
-Requires=data.service
+Before=apache-discovery@%i.service
 
 [Service]
 TimeoutStartSec=0
