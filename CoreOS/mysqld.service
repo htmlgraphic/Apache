@@ -21,3 +21,4 @@ ExecStop=/usr/bin/docker stop mysqld
 [X-Fleet]
 X-Conflicts=mysqld.service
 MachineMetadata=image=stable
+MachineOf=data.service

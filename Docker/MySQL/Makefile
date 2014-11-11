@@ -1,7 +1,7 @@
 run:
-    docker run -d --name mysql -p 3306:3306 --volumes-from www-data -v /var/lib/mysql:/data/mysql htmlgraphic/mysql
+    docker run -d -p 3306:3306 --volumes-from www-data -v /var/lib/mysql:/data/mysql --name mysqld htmlgraphic/mysqld
 build:
-    docker build --rm -t htmlgraphic/mysql .
+    docker build --rm -t htmlgraphic/mysqld .
 
 
 #CONNECT TO MYSQL VIA BASH
