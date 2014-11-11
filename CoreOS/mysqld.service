@@ -16,4 +16,4 @@ ExecStart=/usr/bin/docker run --name mysql -p 3306:3306 --volumes-from www-data 
 ExecStop=/usr/bin/docker stop mysql
 
 [X-Fleet]
-X-Conflicts=mysql.service
+X-Conflicts=mysqld.service
