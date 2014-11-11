@@ -1,9 +1,9 @@
 [Unit]
 Description=MySQL Instance
+Requires=data.service
 After=etcd.service
 After=docker.service
 After=data.service
-Requires=data.service
 
 [Service]
 TimeoutStartSec=0
