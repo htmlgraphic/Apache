@@ -1,5 +1,5 @@
 run:
-    docker run --privileged -p 192.168.59.103:5422:22 --name www-data htmlgraphic/www-data
+    docker run --privileged -p ${COREOS_PUBLIC_IPV4}:5422:22 --name www-data htmlgraphic/www-data
 build:
     docker build --rm -t htmlgraphic/www-data .
 
