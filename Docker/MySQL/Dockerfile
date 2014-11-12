@@ -20,9 +20,6 @@ RUN \
   bash /tmp/config && \
   rm -f /tmp/config
 
-# Define mountable directories.
-VOLUME [ "/etc/mysql", "/var/lib/mysql" ]
-
 
 # Enabling this will expose mysql on a random host port. It's recommended to avoid this. Other containers on the same host can use the service without it.
 #EXPOSE 3306
