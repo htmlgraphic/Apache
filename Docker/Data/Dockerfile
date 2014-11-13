@@ -3,14 +3,13 @@ MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
 # Install base packages
 ENV DEBIAN_FRONTEND noninteractive
-RUN sudo apt-get update && \
+RUN apt-get update && \
     sudo apt-get -yq install \
         openssh-server \
         git \
         fail2ban \
         iptables-persistent \
         vim
-
 
 # Prepping fail2ban
 RUN sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
