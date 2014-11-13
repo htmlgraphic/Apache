@@ -32,6 +32,8 @@ ENV APACHE_LOG_DIR /var/log/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
 ENV APACHE_PID_FILE /var/run/apache2.pid
 
+RUN echo 10.132.191.193 mysql >> /etc/hosts
+
 # Add image configuration and scripts
 ADD run.sh /run.sh
 RUN chmod 755 /*.sh
