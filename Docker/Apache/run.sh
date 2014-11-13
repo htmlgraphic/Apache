@@ -10,7 +10,7 @@ if [ ! -d /data/apache2 ]; then
 	cp -R /etc/apache2/* /data/apache2
 
 	# Set the 'ServerName' directive globally
-	echo ServerName localhost >> /data/apache2/conf-available/servername.conf
+	echo ServerName localhost >> /data/apache2/conf-enabled/servername.conf
 
 	# Move default htmlgraphic conf from /opt
 	#mv /opt/apache-config.conf /data/apache2/sites-enabled/htmlgraphic.conf
