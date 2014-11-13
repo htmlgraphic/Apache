@@ -36,14 +36,8 @@ ENV APACHE_PID_FILE /var/run/apache2.pid
 ADD run.sh /run.sh
 RUN chmod 755 /*.sh
 
-# Allow bind mount this volume
-VOLUME [ "/var/www/html" ]
-
 
 EXPOSE 80
-
-# Update our apache sites available with the config we created
-ADD apache-config.conf /etc/apache2/sites-enabled/000-default.conf
 
 
 # Execute the apache daemon in the foreground so we can treat the container as an executeable and it wont immediately return.
