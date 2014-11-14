@@ -23,14 +23,5 @@ if [ ! -d /data/apache2 ]; then
 
 fi
 
-/bin/bash -c "source /data/apache2/envvars"
-/bin/bash -c "etc/init.d/apache2 start"
-
-#exec /usr/sbin/apache2ctl -D FOREGROUND
-
-while ( true )
-    do
-    echo "Detach with Ctrl-p Ctrl-q. Dropping to shell"
-    sleep 1
-    /bin/bash
-done
+source /data/apache2/envvars
+exec /usr/sbin/apache2ctl -D FOREGROUND

@@ -6,7 +6,6 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
     sudo apt-get -yq install \
         vim \
-        openssh-server \
         curl \
         apache2 \
         libapache2-mod-php5 \
@@ -16,19 +15,6 @@ RUN apt-get update && \
         php-pear \
         php-apc && \
     rm -rf /var/lib/apt/lists/*
-
-
-# Prepping openssh
-RUN mkdir /var/run/sshd
-RUN sed -i "s/#PasswordAuthentication yes/PasswordAuthentication no/" /etc/ssh/sshd_config
-RUN sed -i "s/LogLevel INFO/LogLevel VERBOSE/" /etc/ssh/sshd_config
-
-# Updatng root user
-RUN chmod 755 /root
-RUN mkdir -p /root/.ssh
-
-# Clearing and setting authorized ssh keys
-RUN echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbKBlYPbK29pUUwtwRIIjwCtZNujOUb77qHIeohOMk+O8z0gEIgkUwVI3x91AlbhctgpQor3IIeFITwGgIKVo33WW64HI9Nfr2vGx9EAfl9CL9cfDj9M9u4EFOn8NkD/TQMH4d1Fslt59eyl4fSV62d98zJ8goJwrolXM5NlS3hss8FtXhN6bNM0V5nliPUrv/1//3ZoZ5p0inOI1xWNHcMEILGllG+yqaknH9yIk880WoCYZuR7q2ddE6mxrBeJFiyryW5nhsxmXfHnsDVGiLh1C3hltEXzZ0Bdj11jhJfgIcuKU1iUFZg3kKVjRAvrteBQA328s5+UJswV+NWFiH hosting@htmlgraphic.com' >> /root/.ssh/authorized_keys
 
 
 # APACHE
