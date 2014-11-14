@@ -1,0 +1,76 @@
+FROM ubuntu:latest
+MAINTAINER Jason Gegere <jason@htmlgraphic.com>
+
+# Install base packages
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update && \
+    sudo apt-get -yq install \
+        vim \
+        openssh-server \
+        curl \
+        apache2 \
+        libapache2-mod-php5 \
+        php5-mysql \
+        php5-gd \
+        php5-curl \
+        php-pear \
+        php-apc && \
+    rm -rf /var/lib/apt/lists/*
+
+
+# Prepping openssh
+RUN mkdir /var/run/sshd
+RUN sed -i "s/#PasswordAuthentication yes/PasswordAuthentication no/" /etc/ssh/sshd_config
+RUN sed -i "s/LogLevel INFO/LogLevel VERBOSE/" /etc/ssh/sshd_config
+
+# Updatng root user
+RUN chmod 755 /root
+RUN mkdir -p /root/.ssh
+
+# Clearing and setting authorized ssh keys
+RUN echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbKBlYPbK29pUUwtwRIIjwCtZNujOUb77qHIeohOMk+O8z0gEIgkUwVI3x91AlbhctgpQor3IIeFITwGgIKVo33WW64HI9Nfr2vGx9EAfl9CL9cfDj9M9u4EFOn8NkD/TQMH4d1Fslt59eyl4fSV62d98zJ8goJwrolXM5NlS3hss8FtXhN6bNM0V5nliPUrv/1//3ZoZ5p0inOI1xWNHcMEILGllG+yqaknH9yIk880WoCYZuR7q2ddE6mxrBeJFiyryW5nhsxmXfHnsDVGiLh1C3hltEXzZ0Bdj11jhJfgIcuKU1iUFZg3kKVjRAvrteBQA328s5+UJswV+NWFiH hosting@htmlgraphic.com' >> /root/.ssh/authorized_keys
+
+
+# APACHE
+RUN sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php5/apache2/php.ini
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Enable apache mods.
+RUN a2enmod php5
+RUN a2enmod rewrite
+ 
+# Update the PHP.ini file, enable <? ?> tags and quieten logging.
+RUN sed -i "s/short_open_tag = Off/short_open_tag = On/" /etc/php5/apache2/php.ini
+RUN sed -i "s/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/" /etc/php5/apache2/php.ini
+
+RUN sed -i 's|"\/var\/log\/apache2\/error.log"|"\/data\/apache2\/error.log"|g' /etc/php5/apache2/php.ini
+
+RUN sed -i 's|#ServerRoot "\/etc\/apache2"|ServerRoot "\/data\/apache2"|g' /etc/apache2/apache2.conf
+
+# Manually set the apache environment variables in order to get apache to work immediately.
+ENV APACHE_RUN_USER www-data
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_LOG_DIR /var/log/apache2
+ENV APACHE_LOCK_DIR /var/lock/apache2
+ENV APACHE_PID_FILE /var/run/apache2.pid
+
+ADD apache-config.conf /opt/apache-config.conf
+
+# Add coming page to root apache dir
+ADD ./apache-config.conf /opt/apache-config.conf
+
+# Add coming page to root apache dir
+ADD ./index.php /opt/temp.php
+RUN chmod 755 /opt/temp.php
+
+# On server process
+ADD ./run.sh /opt/run.sh
+RUN chmod 755 /opt/run.sh
+
+
+
+EXPOSE 80
+
+
+# Execute the apache daemon in the foreground so we can treat the container as an executeable and it wont immediately return.
+CMD ["/opt/run.sh"]
