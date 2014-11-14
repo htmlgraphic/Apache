@@ -24,6 +24,7 @@ RUN sed -i "s/#PasswordAuthentication yes/PasswordAuthentication no/" /etc/ssh/s
 RUN sed -i "s/LogLevel INFO/LogLevel VERBOSE/" /etc/ssh/sshd_config
 
 # Updatng root user
+RUN chmod 755 /root
 RUN mkdir -p /root/.ssh
 
 # Clearing and setting authorized ssh keys
@@ -55,9 +56,17 @@ ENV APACHE_PID_FILE /var/run/apache2.pid
 
 ADD apache-config.conf /opt/apache-config.conf
 
-# Add image configuration and scripts
+# Add coming page to root apache dir
+ADD ./apache-config.conf /opt/apache-config.conf
+
+# Add coming page to root apache dir
+ADD ./index.php /opt/temp.php
+RUN chmod 755 /opt/temp.php
+
+# On server process
 ADD ./run.sh /opt/run.sh
 RUN chmod 755 /opt/run.sh
+
 
 
 EXPOSE 80
