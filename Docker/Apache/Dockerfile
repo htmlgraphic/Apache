@@ -5,6 +5,7 @@ MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
     sudo apt-get -yq install \
+        vim \
         openssh-server \
         curl \
         apache2 \
