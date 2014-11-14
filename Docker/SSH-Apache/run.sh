@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo 10.132.191.193 mysql >> /etc/hosts
-
 if [ ! -d /data/apache2 ]; then
 	
 	mkdir -p /data/apache2
