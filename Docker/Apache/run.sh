@@ -1,5 +1,14 @@
 #!/bin/bash
 
+if [ ! -d /data/www/public_html ]; then
+	
+	# Move default coming soon page...
+	mkdir -p /data/www/public_html
+	mv /opt/temp.php /data/www/public_html/index.php
+
+fi
+
+
 if [ ! -d /data/apache2 ]; then
 	
 	mkdir -p /data/apache2
@@ -9,9 +18,6 @@ if [ ! -d /data/apache2 ]; then
 
 	# Set the 'ServerName' directive globally
 	echo ServerName localhost >> /data/apache2/conf-enabled/servername.conf
-
-	# Move default coming soon page...
-	mv /opt/temp.php /data/www/public_html/index.php
 
 	# Customizable Apache conf file
 	sudo mv /opt/apache-config.conf /data/apache2/sites-enabled/apache-config.conf
