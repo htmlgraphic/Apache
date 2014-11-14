@@ -29,6 +29,6 @@ fi
 while ( true )
     do
     echo "Detach with Ctrl-p Ctrl-q. Dropping to shell"
-    sleep 1
+    sleep 60
     /bin/bash
 done
