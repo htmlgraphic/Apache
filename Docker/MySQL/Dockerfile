@@ -23,7 +23,7 @@ RUN \
 
 ADD ./startup.sh /opt/startup.sh
 
-# Enabling this will expose mysql on a random host port. It's recommended to avoid this. Other containers on the same host can use the service without it.
-#EXPOSE 3306
+# Note that EXPOSE only works for inter-container links. It doesn't make ports accessible from the host. To expose ports to the host, at runtime, use the -p flag.
+EXPOSE 3306
 
 CMD ["/bin/bash", "/opt/startup.sh"]
