@@ -1,5 +1,5 @@
 run:
-    docker run -d -p 3306:3306 --volumes-from www-data --name mysqld htmlgraphic/mysqld
+    docker run -d --volumes-from www-data --name mysqld htmlgraphic/mysqld
 build:
     docker build --rm -t htmlgraphic/mysqld .
 
