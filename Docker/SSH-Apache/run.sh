@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ ! -d /data/www/public_html ]; then
-	
+
 	# Move default coming soon page...
 	mkdir -p /data/www/public_html
 	mv /opt/temp.php /data/www/public_html/index.php
@@ -29,12 +29,14 @@ fi
 
 /bin/bash -c "source /data/apache2/envvars"
 /bin/bash -c "etc/init.d/apache2 start"
-
 #exec /usr/sbin/apache2ctl -D FOREGROUND
+
+/bin/bash -c "etc/init.d/ssh start"
+
 
 while ( true )
     do
-    echo "Detach with Ctrl-p Ctrl-q. Dropping to shell"
+    echo "Detach with ctrl-q. Dropping to shell"
     sleep 60
     /bin/bash
 done
