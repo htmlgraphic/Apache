@@ -10,7 +10,7 @@
 # bits.
 #
 # By default this script does nothing.
-
+echo 10.132.191.193 mysql >> /etc/hosts
 
 # Start rsyslogd for proper logging
 sudo service rsyslog start
