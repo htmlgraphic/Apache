@@ -11,7 +11,7 @@ fi
 
 if [ ! -d /data/apache2 ]; then
 	
-	mkdir -p /data/apache2
+    mkdir -p /data/apache2/logs
 
 	# Move initial apache conf script into directory
 	cp -R /etc/apache2/* /data/apache2
