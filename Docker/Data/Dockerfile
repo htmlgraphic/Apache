@@ -11,6 +11,9 @@ RUN apt-get update && \
         iptables-persistent \
         vim
 
+
+RUN echo 10.132.191.193 mysql >> /etc/hosts
+
 # Prepping fail2ban
 RUN sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
 RUN sed -i "s/destemail = root@localhost/destemail = hosting@htmlgraphic.com/" /etc/fail2ban/jail.local
