@@ -33,6 +33,8 @@ RUN echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbKBlYPbK29pUUwtwRIIjwCtZNujOUb7
 # Updating shell to bash
 RUN sed -i s#/home/htmlgraphic:/bin/false#/home/htmlgraphic:/bin/bash# /etc/passwd
 
+# System wide version of .bashrc
+RUN chmod 755 /etc/bash.bashrc
 
 # Updatng root user
 RUN mkdir -p /root/.ssh

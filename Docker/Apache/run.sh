@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Apache should be able to write to the /tmp directory
+chown nobody:www-data tmp
+
 if [ ! -d /data/www/public_html ]; then
 	
 	# Move default coming soon page...
