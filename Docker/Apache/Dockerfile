@@ -7,6 +7,8 @@ RUN apt-get update && \
     sudo apt-get -yq install \
         vim \
         curl \
+        postfix \
+        mailutils\
         apache2 \
         libapache2-mod-php5 \
         php5-mysql \

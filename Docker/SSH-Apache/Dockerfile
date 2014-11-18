@@ -8,6 +8,8 @@ RUN apt-get update && \
         vim \
         openssh-server \
         curl \
+        postfix \
+        mailutils\
         apache2 \
         libapache2-mod-php5 \
         php5-mysql \
