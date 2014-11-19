@@ -17,8 +17,8 @@ EnvironmentFile=/etc/environment
 ExecStartPre=-/usr/bin/docker kill ssh-apache%i
 ExecStartPre=-/usr/bin/docker rm ssh-apache%i
 ExecStartPre=/usr/bin/docker pull htmlgraphic/ssh-apache
-ExecStart=/usr/bin/docker run -p ${COREOS_PUBLIC_IPV4}:%i:80 --link mysqld:mysql --volumes-from www-data --name ssh-apache%i htmlgraphic/ssh-apache
+ExecStart=/usr/bin/docker run -p ${COREOS_PUBLIC_IPV4}:80:80 --link mysqld:mysql --volumes-from www-data --name ssh-apache%i htmlgraphic/ssh-apache
 ExecStop=/usr/bin/docker stop ssh-apache%i
 
 [X-Fleet]
-MachineMetadata=host=coreos60
+#MachineMetadata=host=coreos60
