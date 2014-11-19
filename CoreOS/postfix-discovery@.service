@@ -1,13 +1,5 @@
 [Unit]
 Description=Announce Postfix@%i service
-
-# Requirements
-Requires=etcd.service
-Requires=postfix@%i.service
-
-# Dependency ordering and binding
-After=etcd.service
-After=postfix@%i.service
 BindsTo=postfix@%i.service
 
 
@@ -28,5 +20,4 @@ ExecStop=/usr/bin/etcdctl rm /services/postfix/${COREOS_PRIVATE_IPV4}
 
 
 [X-Fleet]
-Conflicts=postfix-discovery@%i.service
 MachineOf=postfix@%i.service
