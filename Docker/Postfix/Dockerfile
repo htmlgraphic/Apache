@@ -23,6 +23,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
 ADD supervisord.conf /etc/supervisor/conf.d/
 
 
+ADD virtual /etc/postfix/virtual
+RUN sudo postmap /etc/postfix/virtual
+
 EXPOSE 25
 
 
