@@ -21,3 +21,4 @@ ExecStop=/usr/bin/docker stop apache%i
 
 [X-Fleet]
 Conflicts=apache@*.service
+Conflicts=ssh-apache@*.service
