@@ -1,0 +1,24 @@
+# This service file is built for a system that uses Apache, but SSH is the monitored process.
+
+[Unit]
+Description=Apache web server service
+Requires=etcd.service
+Requires=docker.service
+Requires=mysqld.service
+
+After=etcd.service
+After=docker.service
+After=mysqld.service
+
+[Service]
+TimeoutStartSec=0
+KillMode=none
+EnvironmentFile=/etc/environment
+ExecStartPre=-/usr/bin/docker kill postfix%i
+ExecStartPre=-/usr/bin/docker rm postfix%i
+ExecStartPre=/usr/bin/docker pull htmlgraphic/postfix
+ExecStart=/usr/bin/docker run -p 25:25 --name postfix -e USER=x -e PASS=x HOSTNAME=post-office.htmlgraphic.com htmlgraphic/postfix
+ExecStop=/usr/bin/docker stop postfix%i
+
+[X-Fleet]
+MachineMetadata=host=512mb
