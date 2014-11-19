@@ -20,14 +20,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
     supervisor rsyslog postfix
 ADD supervisord.conf /etc/supervisor/conf.d/
 
-RUN postconf -e \
-   myhostname=post-office.htmlgraphic.com \
-   myorigin=\$mydomain \
-   mydestination="localhost.localdomain localhost" \
-   mynetworks="10.132.0.0/16 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128" \
-   mail_spool_directory="/var/spool/mail/"
-
-   
 EXPOSE 25
 
 
