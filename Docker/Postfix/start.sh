@@ -3,7 +3,6 @@
 postconf -e \
    myhostname=post-office.htmlgraphic.com \
    mydomain=htmlgraphic.com \
-   myorigin=\$mydomain \
    mydestination="localhost.localdomain localhost" \
    mynetworks="10.132.0.0/16 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128" \
    mail_spool_directory="/var/spool/mail/" \
