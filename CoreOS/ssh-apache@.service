@@ -21,4 +21,5 @@ ExecStart=/usr/bin/docker run -p ${COREOS_PUBLIC_IPV4}:80:80 --link mysqld:mysql
 ExecStop=/usr/bin/docker stop ssh-apache%i
 
 [X-Fleet]
+Conflicts=ssh-apache@*.service
 #MachineMetadata=host=coreos60

@@ -16,7 +16,7 @@ EnvironmentFile=/etc/environment
 ExecStartPre=-/usr/bin/docker kill apache%i
 ExecStartPre=-/usr/bin/docker rm apache%i
 ExecStartPre=/usr/bin/docker pull htmlgraphic/apache
-ExecStart=/usr/bin/docker run -p ${COREOS_PUBLIC_IPV4}:%i:80 --link mysqld:mysql --name apache%i htmlgraphic/apache
+ExecStart=/usr/bin/docker run -p ${COREOS_PUBLIC_IPV4}:80:80 --link mysqld:mysql --name apache%i htmlgraphic/apache
 ExecStop=/usr/bin/docker stop apache%i
 
 [X-Fleet]
