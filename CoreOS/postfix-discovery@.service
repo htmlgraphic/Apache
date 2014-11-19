@@ -28,4 +28,5 @@ ExecStop=/usr/bin/etcdctl rm /services/postfix/${COREOS_PRIVATE_IPV4}
 
 
 [X-Fleet]
-X-ConditionMachineOf=postfix@%i.service
+Conflicts=postfix-discovery@%i.service
+MachineOf=postfix@%i.service

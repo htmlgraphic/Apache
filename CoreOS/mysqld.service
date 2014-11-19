@@ -18,5 +18,5 @@ ExecStart=/usr/bin/docker run -p 3306:3306 --volumes-from www-data --name mysqld
 ExecStop=/usr/bin/docker stop mysqld
 
 [X-Fleet]
-X-Conflicts=mysqld.service
+Conflicts=mysqld.service
 MachineMetadata=host=coreos60

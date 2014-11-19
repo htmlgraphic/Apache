@@ -8,4 +8,4 @@ ExecStart=/bin/sh -c "while true; do etcdctl set /announce/services/apache%i ${C
 ExecStop=/usr/bin/etcdctl rm /announce/services/apache%i
 
 [X-Fleet]
-X-ConditionMachineOf=apache@%i.service
+MachineOf=apache@%i.service

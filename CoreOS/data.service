@@ -17,5 +17,5 @@ ExecStart=/usr/bin/docker run --privileged -p ${COREOS_PUBLIC_IPV4}:5422:22 --na
 ExecStop=/usr/bin/docker stop www-data
 
 [X-Fleet]
-X-Conflicts=data.service
+Conflicts=data.service
 MachineMetadata=host=coreos50

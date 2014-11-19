@@ -20,4 +20,4 @@ ExecStart=/usr/bin/docker run -p ${COREOS_PUBLIC_IPV4}:%i:80 --link mysqld:mysql
 ExecStop=/usr/bin/docker stop apache%i
 
 [X-Fleet]
-X-Conflicts=apache@*.service
+Conflicts=apache@*.service
