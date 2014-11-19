@@ -17,8 +17,9 @@ EnvironmentFile=/etc/environment
 ExecStartPre=-/usr/bin/docker kill postfix%i
 ExecStartPre=-/usr/bin/docker rm postfix%i
 ExecStartPre=/usr/bin/docker pull htmlgraphic/postfix
-ExecStart=/usr/bin/docker run -p 25:25 --name postfix -e USER=x -e PASS=x HOSTNAME=post-office.htmlgraphic.com htmlgraphic/postfix
+ExecStart=/usr/bin/docker run -p ${COREOS_PUBLIC_IPV4}:25:25 --name postfix -e USER=x -e PASS=x HOSTNAME=post-office.htmlgraphic.com htmlgraphic/postfix
 ExecStop=/usr/bin/docker stop postfix%i
 
 [X-Fleet]
+Conflicts=postfix@*.service
 MachineMetadata=host=512mb

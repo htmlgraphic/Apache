@@ -1,11 +1,31 @@
 [Unit]
 Description=Announce Postfix@%i service
+
+# Requirements
+Requires=etcd.service
+Requires=postfix@%i.service
+
+# Dependency ordering and binding
+After=etcd.service
+After=postfix@%i.service
 BindsTo=postfix@%i.service
+
 
 [Service]
 EnvironmentFile=/etc/environment
-ExecStart=/bin/sh -c "while true; do etcdctl set /announce/services/postfix%i ${COREOS_PUBLIC_IPV4}:%i --ttl 60; sleep 45; done"
-ExecStop=/usr/bin/etcdctl rm /announce/services/postfix%i
+ExecStart=/bin/bash -c '\
+  while true; do \
+    curl -f ${COREOS_PRIVATE_IPV4}:%i; \
+    if [ $? -eq 0 ]; then \
+      etcdctl set /services/postfix/${COREOS_PRIVATE_IPV4} \'${COREOS_PRIVATE_IPV4}:25\' --ttl 60; \
+    else \
+      etcdctl rm /services/postfix/${COREOS_PRIVATE_IPV4}; \
+    fi; \
+    sleep 45; \
+  done'
+
+ExecStop=/usr/bin/etcdctl rm /services/postfix/${COREOS_PRIVATE_IPV4}
+
 
 [X-Fleet]
 X-ConditionMachineOf=postfix@%i.service
