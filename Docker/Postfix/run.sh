@@ -33,4 +33,4 @@ postconf -e \
 
 # Spin everything up
 #
-/usr/bin/supervisord
+/usr/bin/supervisord -n -c /etc/supervisor/conf.d/supervisord.conf

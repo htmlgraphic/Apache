@@ -36,4 +36,4 @@ postconf -e \
 	inet_protocols=ipv4
 
 
-/usr/bin/supervisord
+/usr/bin/supervisord -n -c /etc/supervisor/conf.d/supervisord.conf
