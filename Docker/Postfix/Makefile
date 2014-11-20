@@ -1,4 +1,4 @@
 run:
-    docker run -d -p 25:25 --name postfix -e USER=x -e PASS=x HOSTNAME=post-office.htmlgraphic.com htmlgraphic/postfix
+    docker run -d -p 25:25 --name postfix -e USER=XXXX -e PASS=XXXX HOSTNAME=post-office.htmlgraphic.com htmlgraphic/postfix
 build:
     docker build --rm -t htmlgraphic/postfix .
