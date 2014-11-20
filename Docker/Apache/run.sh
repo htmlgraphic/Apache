@@ -30,5 +30,5 @@ if [ ! -d /data/apache2 ]; then
 
 fi
 
-source /data/apache2/envvars
-exec /usr/sbin/apache2ctl -D FOREGROUND
+
+/usr/bin/supervisord

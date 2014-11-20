@@ -17,10 +17,11 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y install \
     supervisor \
     rsyslog \
     postfix
+RUN mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/supervisor
 ADD supervisord.conf /etc/supervisor/conf.d/
 
 
