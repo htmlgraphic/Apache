@@ -2,12 +2,10 @@ FROM ubuntu:latest
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
 # Install base packages
-ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
     sudo apt-get -yq install \
         vim \
         curl \
-        postfix \
         mailutils
 
 RUN apt-get install -q -y language-pack-en
@@ -18,8 +16,10 @@ RUN echo post-office > /etc/mailname
 ADD preseed.txt .
 RUN debconf-set-selections preseed.txt && rm preseed.txt
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    supervisor rsyslog postfix
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
+    supervisor \
+    rsyslog \
+    postfix
 ADD supervisord.conf /etc/supervisor/conf.d/
 
 

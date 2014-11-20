@@ -30,16 +30,5 @@ if [ ! -d /data/apache2 ]; then
 
 fi
 
-/bin/bash -c "source /data/apache2/envvars"
-/bin/bash -c "etc/init.d/apache2 start"
-#exec /usr/sbin/apache2ctl -D FOREGROUND
 
-/bin/bash -c "etc/init.d/ssh start"
-
-
-while ( true )
-    do
-    echo "Detach with ctrl-q. Dropping to shell"
-    sleep 60
-    /bin/bash
-done
+/usr/bin/supervisord

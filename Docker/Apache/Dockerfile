@@ -2,12 +2,10 @@ FROM ubuntu:latest
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
 # Install base packages
-ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
     sudo apt-get -yq install \
         vim \
         curl \
-        postfix \
         mailutils\
         apache2 \
         libapache2-mod-php5 \
@@ -19,9 +17,15 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
+    supervisor \
+    rsyslog \
+    postfix
+ADD supervisord.conf /etc/supervisor/conf.d/
+
+
 # APACHE
-# This needs to be tested
-RUN sed -i "s|[PHP]|[PHP] \n IS_LIVE=1 \n IS_DEV=1; \n The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php5/apache2/php.ini
+RUN sed -i 's|[PHP]|[PHP] \n IS_LIVE=1 \n IS_DEV=1; \n ;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php5/apache2/php.ini
 
 RUN sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php5/apache2/php.ini
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
