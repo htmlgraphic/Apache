@@ -20,11 +20,13 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
     supervisor \
     rsyslog \
     postfix
+RUN mkdir -p /var/log/supervisor
 ADD supervisord.conf /etc/supervisor/conf.d/
 
 
 ADD virtual /etc/postfix/virtual
 RUN sudo postmap /etc/postfix/virtual
+
 
 EXPOSE 25
 
