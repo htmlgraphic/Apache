@@ -24,6 +24,10 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y install \
 RUN mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/supervisor
 ADD supervisord.conf /etc/supervisor/conf.d/
 
+# POSTFIX
+# Copy hostname of container
+RUN cp /etc/hostname /etc/mailname
+
 
 # APACHE
 RUN sed -i 's|[PHP]|[PHP] \n IS_LIVE=1 \n IS_DEV=1; \n ;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php5/apache2/php.ini
