@@ -16,6 +16,7 @@ postconf -e \
    header_size_limit=4096000 \
    relayhost=[smtp.sendgrid.net]:587
 
+cp /etc/resolv.conf /var/spool/postfix/etc/resolv.conf
 
 # These are required when postfix runs chrooted
 #

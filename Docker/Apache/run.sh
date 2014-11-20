@@ -30,6 +30,9 @@ if [ ! -d /data/apache2 ]; then
 
 fi
 
+# Postfix is not using /etc/resolv.conf is because it is running inside a chroot jail, needs its own copy.
+cp /etc/resolv.conf /var/spool/postfix/etc/resolv.conf
+
 # Postfix use smart host to relay email
 postconf -e \
 	relayhost=[post-office.htmlgraphic.com]:25 \
