@@ -16,6 +16,7 @@ postconf -e \
    header_size_limit=4096000 \
    relayhost=[smtp.sendgrid.net]:587
 
+# Postfix is not using /etc/resolv.conf is because it is running inside a chroot jail, needs its own copy.
 cp /etc/resolv.conf /var/spool/postfix/etc/resolv.conf
 
 # These are required when postfix runs chrooted
