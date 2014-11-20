@@ -29,6 +29,6 @@ RUN sudo postmap /etc/postfix/virtual
 EXPOSE 25
 
 
-ADD start.sh .
-RUN chmod 755 /start.sh
-CMD /start.sh
+ADD run.sh .
+RUN chmod 755 /run.sh
+CMD /run.sh
