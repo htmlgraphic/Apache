@@ -23,4 +23,4 @@ ExecStop=/usr/bin/docker stop ssh-apache%i
 [X-Fleet]
 Conflicts=apache@*.service
 Conflicts=ssh-apache@*.service
-#MachineMetadata=host=coreos60
+MachineMetadata=host=coreos60
