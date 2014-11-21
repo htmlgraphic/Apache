@@ -13,7 +13,7 @@ EnvironmentFile=/etc/environment
 ExecStartPre=-/usr/bin/docker kill www-data
 ExecStartPre=-/usr/bin/docker rm www-data
 ExecStartPre=/usr/bin/docker pull htmlgraphic/www-data
-ExecStart=/usr/bin/docker run --privileged -p ${COREOS_PUBLIC_IPV4}:5422:22 --name www-data htmlgraphic/www-data
+ExecStart=/usr/bin/docker run --privileged -p ${COREOS_PUBLIC_IPV4}:5422:22 -e HOSTNAME=data.htmlgraphic.com --name www-data htmlgraphic/www-data
 ExecStop=/usr/bin/docker stop www-data
 
 [X-Fleet]
