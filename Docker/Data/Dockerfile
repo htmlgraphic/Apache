@@ -2,19 +2,22 @@ FROM ubuntu:latest
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
 # Install base packages
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -yq install \
+RUN apt-get update && apt-get -yq install \
+        vim \
+        curl \
+        mailutils \
         openssh-server \
         git \
-        fail2ban \
-        iptables-persistent \
-        vim \ 
         xinetd \
         telnetd
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y install \
+    fail2ban \
+    iptables-persistent \
     supervisor \
     rsyslog \
     postfix
+    
 RUN mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/supervisor
 ADD supervisord.conf /etc/supervisor/conf.d/
 
