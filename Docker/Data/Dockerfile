@@ -47,7 +47,7 @@ RUN echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbKBlYPbK29pUUwtwRIIjwCtZNujOUb7
 
 
 # Define mountable directories.
-VOLUME [ "/data", "/var/lib/mysql" ]
+VOLUME [ "/data", "/var/lib/mysql", "/var/spool/cron/crontabs" ]
 
 # Expose ports.
 EXPOSE 22
