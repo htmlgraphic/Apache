@@ -2,7 +2,7 @@ FROM ubuntu:latest
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
 # Install base packages
-RUN DEBIAN_FRONTEND noninteractive apt-get update && apt-get -yq install \
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -yq install \
         openssh-server \
         git \
         fail2ban \
