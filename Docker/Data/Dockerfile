@@ -20,7 +20,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y install \
     postfix
 
 #Remove cache package list information
-rm -rf /var/lib/apt/lists/*
+RUN rm -rf /var/lib/apt/lists/*
 
 
 # SUPERVISOR
