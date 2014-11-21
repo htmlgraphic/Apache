@@ -2,14 +2,21 @@ FROM ubuntu:latest
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
 # Install base packages
-ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update && \
-    sudo apt-get -yq install \
+RUN DEBIAN_FRONTEND noninteractive apt-get update && apt-get -yq install \
         openssh-server \
         git \
         fail2ban \
         iptables-persistent \
-        vim
+        vim \ 
+        xinetd \
+        telnetd
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y install \
+    supervisor \
+    rsyslog \
+    postfix
+RUN mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/supervisor
+ADD supervisord.conf /etc/supervisor/conf.d/
 
 
 RUN echo 10.132.191.193 mysql >> /etc/hosts
@@ -49,13 +56,15 @@ RUN echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbKBlYPbK29pUUwtwRIIjwCtZNujOUb7
 # Define mountable directories.
 VOLUME [ "/data", "/var/lib/mysql", "/var/spool/cron/crontabs" ]
 
-# Expose ports.
+
+
+# These processes will need to be run manually and the image commited to the repo.
+ADD run.sh /opt/run.sh
+RUN sudo chmod 755 /opt/run.sh
+
+
+# Note that EXPOSE only works for inter-container links. It doesn't make ports accessible from the host. To expose port(s) to the host, at runtime, use the -p flag.
 EXPOSE 22
 
-# These processes will need to be run manually and the image commited to the repo
-ADD htmlgraphic.sh /etc/htmlgraphic.sh
-RUN sudo chmod 755 /etc/htmlgraphic.sh
 
-RUN /bin/sh /etc/htmlgraphic.sh
-
-CMD ["/usr/sbin/sshd", "-D"]
+CMD ["/opt/run.sh"]

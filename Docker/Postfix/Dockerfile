@@ -28,6 +28,7 @@ ADD virtual /etc/postfix/virtual
 RUN sudo postmap /etc/postfix/virtual
 
 
+# Note that EXPOSE only works for inter-container links. It doesn't make ports accessible from the host. To expose port(s) to the host, at runtime, use the -p flag.
 EXPOSE 25
 
 

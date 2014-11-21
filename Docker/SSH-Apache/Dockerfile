@@ -79,9 +79,8 @@ ADD ./run.sh /opt/run.sh
 RUN chmod 755 /opt/run.sh
 
 
-
+# Note that EXPOSE only works for inter-container links. It doesn't make ports accessible from the host. To expose port(s) to the host, at runtime, use the -p flag.
 EXPOSE 80
 
 
-# Execute the apache daemon in the foreground so we can treat the container as an executeable and it wont immediately return.
 CMD ["/opt/run.sh"]
