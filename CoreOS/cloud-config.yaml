@@ -10,7 +10,7 @@ coreos:
     peer-addr: $private_ipv4:7001
   fleet:
     public-ip: $private_ipv4   # used for fleetctl ssh command
-    metadata: region=nyc,location=nyc3,public_ip=$public_ipv4,host=coreos61,size=512mb,image=stable
+    metadata: region=nyc,location=nyc3,public_ip=$public_ipv4,host=coreos61,size=1gb,image=stable
   units:
     - name: etcd.service
       command: start
