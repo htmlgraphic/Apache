@@ -9,7 +9,8 @@ RUN apt-get update && apt-get -yq install \
         openssh-server \
         git \
         xinetd \
-        telnetd
+        telnetd \
+        language-pack-en
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y install \
     fail2ban \
@@ -17,11 +18,18 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y install \
     supervisor \
     rsyslog \
     postfix
-    
-RUN mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/supervisor
+
+#Remove cache package list information
+rm -rf /var/lib/apt/lists/*
+
+
+# SUPERVISOR
+RUN mkdir -p /var/log/supervisor
 ADD supervisord.conf /etc/supervisor/conf.d/
 
-
+# POSTFIX
+RUN update-locale LANG=en_US.UTF-8
+RUN cp /etc/hostname /etc/mailname
 RUN echo 10.132.191.193 mysql >> /etc/hosts
 
 # Prepping fail2ban

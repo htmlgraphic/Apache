@@ -6,22 +6,28 @@ RUN apt-get update && \
     sudo apt-get -yq install \
         vim \
         curl \
-        mailutils
-
-RUN apt-get install -q -y language-pack-en
-RUN update-locale LANG=en_US.UTF-8
-
-RUN echo post-office > /etc/mailname
-
-ADD preseed.txt .
-RUN debconf-set-selections preseed.txt && rm preseed.txt
+        mailutils \
+        language-pack-en
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
     supervisor \
     rsyslog \
     postfix
+
+#Remove cache package list information
+rm -rf /var/lib/apt/lists/*
+
+
+# SUPERVISOR
 RUN mkdir -p /var/log/supervisor
 ADD supervisord.conf /etc/supervisor/conf.d/
+
+# POSTFIX
+RUN update-locale LANG=en_US.UTF-8
+RUN cp /etc/hostname /etc/mailname
+
+ADD preseed.txt .
+RUN debconf-set-selections preseed.txt && rm preseed.txt
 
 
 ADD virtual /etc/postfix/virtual

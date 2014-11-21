@@ -14,16 +14,24 @@ RUN apt-get update && \
         php5-gd \
         php5-curl \
         php-pear \
-        php-apc && \
-    rm -rf /var/lib/apt/lists/*
+        php-apc
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y install \
     supervisor \
     rsyslog \
     postfix
 
+#Remove cache package list information
+rm -rf /var/lib/apt/lists/*
+
+
+# SUPERVISOR
 RUN mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/supervisor
 ADD supervisord.conf /etc/supervisor/conf.d/
+
+# POSTFIX
+RUN update-locale LANG=en_US.UTF-8
+RUN cp /etc/hostname /etc/mailname
 
 
 # Prepping openssh

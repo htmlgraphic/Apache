@@ -14,6 +14,9 @@ RUN apt-get update && \
         git \
         vim
 
+#Remove cache package list information
+rm -rf /var/lib/apt/lists/*
+
 # Install MySQL.
 RUN \
   rm -rf /var/lib/apt/lists/* && \
