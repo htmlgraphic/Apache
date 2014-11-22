@@ -30,7 +30,6 @@ ADD supervisord.conf /etc/supervisor/conf.d/
 # POSTFIX
 RUN update-locale LANG=en_US.UTF-8
 RUN cp /etc/hostname /etc/mailname
-RUN echo 10.132.191.193 mysql >> /etc/hosts
 
 # Prepping fail2ban
 RUN sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
