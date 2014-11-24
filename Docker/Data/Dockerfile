@@ -7,6 +7,7 @@ RUN apt-get update && apt-get -yq install \
         curl \
         mailutils \
         php5-cli \
+        php5-curl \
         openssh-server \
         git \
         xinetd \
