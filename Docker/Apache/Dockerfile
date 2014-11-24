@@ -36,7 +36,8 @@ RUN cp /etc/hostname /etc/mailname
 RUN sed -i 's|[PHP]|[PHP] \n IS_LIVE=1 \n IS_DEV=1; \n ;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php5/apache2/php.ini
 
 RUN sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php5/apache2/php.ini
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN curl -sS https://getcomposer.org/installer | php 
+RUN mv composer.phar /usr/local/bin/composer
 
 # Enable apache mods.
 RUN a2enmod php5

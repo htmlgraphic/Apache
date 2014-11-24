@@ -36,6 +36,8 @@ RUN sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
 RUN sed -i "s/destemail = root@localhost/destemail = hosting@htmlgraphic.com/" /etc/fail2ban/jail.local
 RUN sed -i "s/maxretry = 6/maxretry = 3/" /etc/fail2ban/jail.local
 
+RUN curl -sS https://getcomposer.org/installer | php 
+RUN mv composer.phar /usr/local/bin/composer
 
 # Prepping openssh
 RUN mkdir /var/run/sshd
