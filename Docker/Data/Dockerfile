@@ -6,6 +6,7 @@ RUN apt-get update && apt-get -yq install \
         vim \
         curl \
         mailutils \
+        php5-cli \
         openssh-server \
         git \
         xinetd \
