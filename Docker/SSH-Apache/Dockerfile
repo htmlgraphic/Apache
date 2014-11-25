@@ -2,8 +2,7 @@ FROM ubuntu:latest
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
 # Install base packages
-RUN apt-get update && \
-    sudo apt-get -yq install \
+RUN apt-get update && apt-get -yq install \
         vim \
         openssh-server \
         curl \
@@ -14,12 +13,13 @@ RUN apt-get update && \
         php5-gd \
         php5-curl \
         php-pear \
-        php-apc
+        php-apc \
+        language-pack-en
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y install \
-    supervisor \
-    rsyslog \
-    postfix
+        supervisor \
+        rsyslog \
+        postfix
 
 #Remove cache package list information
 RUN rm -rf /var/lib/apt/lists/*
@@ -49,23 +49,16 @@ RUN echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbKBlYPbK29pUUwtwRIIjwCtZNujOUb7
 
 
 # APACHE
-RUN sed -i 's|[PHP]|[PHP] \n IS_LIVE=1 \n IS_DEV=1; \n ;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php5/apache2/php.ini
-
-RUN sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php5/apache2/php.ini
 RUN curl -sS https://getcomposer.org/installer | php 
 RUN mv composer.phar /usr/local/bin/composer
+
+RUN pear install HTML_QuickForm
+
 
 # Enable apache mods.
 RUN a2enmod php5
 RUN a2enmod rewrite
  
-# Update the PHP.ini file, enable <? ?> tags and quieten logging.
-RUN sed -i "s/short_open_tag = Off/short_open_tag = On/" /etc/php5/apache2/php.ini
-RUN sed -i "s/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/" /etc/php5/apache2/php.ini
-RUN sed -i 's|;session.save_path = "/var/lib/php5"|session.save_path = "/tmp"|g' /etc/php5/apache2/php.ini
-RUN sed -i 's|"\/var\/log\/apache2\/error.log"|"\/data\/apache2\/error.log"|g' /etc/php5/apache2/php.ini
-
-RUN sed -i 's|#ServerRoot "\/etc\/apache2"|ServerRoot "\/data\/apache2"|g' /etc/apache2/apache2.conf
 
 # Manually set the apache environment variables in order to get apache to work immediately.
 ENV APACHE_RUN_USER www-data

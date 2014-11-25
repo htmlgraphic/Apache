@@ -30,6 +30,22 @@ if [ ! -d /data/apache2 ]; then
 
 fi
 
+
+# Tweak Apache build
+sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=1 \nIS_DEV=1 \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php5/apache2/php.ini
+sed -i 's|;include_path = ".:/usr/share/php"|include_path = ".:/usr/share/php:/home/htmlgrap/pear"|g' /etc/php5/apache2/php.ini
+sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php5/apache2/php.ini
+
+# Update the PHP.ini file, enable <? ?> tags and quieten logging.
+sed -i "s/short_open_tag = Off/short_open_tag = On/" /etc/php5/apache2/php.ini
+sed -i "s/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/" /etc/php5/apache2/php.ini
+sed -i 's|;session.save_path = "/var/lib/php5"|session.save_path = "/tmp"|g' /etc/php5/apache2/php.ini
+sed -i 's|"\/var\/log\/apache2\/error.log"|"\/data\/apache2\/error.log"|g' /etc/php5/apache2/php.ini
+
+sed -i 's|#ServerRoot "\/etc\/apache2"|ServerRoot "\/data\/apache2"|g' /etc/apache2/apache2.conf
+
+
+
 # Postfix is not using /etc/resolv.conf is because it is running inside a chroot jail, needs its own copy.
 cp /etc/resolv.conf /var/spool/postfix/etc/resolv.conf
 

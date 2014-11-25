@@ -15,11 +15,11 @@ RUN apt-get update && apt-get -yq install \
         language-pack-en
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y install \
-    fail2ban \
-    iptables-persistent \
-    supervisor \
-    rsyslog \
-    postfix
+        fail2ban \
+        iptables-persistent \
+        supervisor \
+        rsyslog \
+        postfix
 
 #Remove cache package list information
 RUN rm -rf /var/lib/apt/lists/*
