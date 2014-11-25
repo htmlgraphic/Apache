@@ -33,7 +33,7 @@ fi
 
 # Tweak Apache build
 sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=1 \nIS_DEV=1 \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php5/apache2/php.ini
-sed -i 's|;include_path = ".:/usr/share/php"|include_path = ".:/usr/share/php:/home/htmlgrap/pear"|g' /etc/php5/apache2/php.ini
+sed -i 's|;include_path = ".:/usr/share/php"|include_path = ".:/usr/share/php:/data/pear"|g' /etc/php5/apache2/php.ini
 sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php5/apache2/php.ini
 
 # Update the PHP.ini file, enable <? ?> tags and quieten logging.
