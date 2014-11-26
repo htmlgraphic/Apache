@@ -12,7 +12,8 @@ RUN apt-get update && apt-get -yq install \
         php5-gd \
         php5-curl \
         php-pear \
-        php-apc
+        php-apc \
+        language-pack-en
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y install \
         supervisor \
