@@ -4,6 +4,7 @@ MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 # Install base packages
 RUN apt-get update && apt-get -yq install \
         vim \
+        openssh-server \
         curl \
         mailutils \
         apache2 \
@@ -36,9 +37,10 @@ RUN cp /etc/hostname /etc/mailname
 RUN curl -sS https://getcomposer.org/installer | php 
 RUN mv composer.phar /usr/local/bin/composer
 
-# Enable apache mods.
+# Enable Apache mods.
 RUN a2enmod php5
 RUN a2enmod rewrite
+RUN a2enmod ssl
  
 
 # Manually set the apache environment variables in order to get apache to work immediately.

@@ -20,6 +20,10 @@ if [ ! -d /data/apache2 ]; then
 	# Move initial apache conf script into directory
 	cp -R /etc/apache2/* /data/apache2
 
+	# Symlink modules for Apache so 'a2enmod' can be setup correctly
+	cd /data/apache2 && ln -s /etc/apache2/mods-available mods-available
+	cd /data/apache2 && ln -s /etc/apache2/mods-enabled mods-enabled
+
 	# Set the 'ServerName' directive globally
 	echo ServerName localhost >> /data/apache2/conf-enabled/servername.conf
 

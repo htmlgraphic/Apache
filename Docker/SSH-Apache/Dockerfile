@@ -6,7 +6,7 @@ RUN apt-get update && apt-get -yq install \
         vim \
         openssh-server \
         curl \
-        mailutils\
+        mailutils \
         apache2 \
         libapache2-mod-php5 \
         php5-mysql \
@@ -14,7 +14,8 @@ RUN apt-get update && apt-get -yq install \
         php5-curl \
         php-pear \
         php-apc \
-        language-pack-en
+        language-pack-en \
+        git
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y install \
         supervisor \
