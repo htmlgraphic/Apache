@@ -1,3 +1,0 @@
-# Initial Tasks
-
-#20 * * * * /usr/bin/php %(project_directory)s/cron/Process.php >> %(project_directory)s/log/status.log 2>&1

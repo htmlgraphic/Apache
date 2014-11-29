@@ -1,7 +1,0 @@
-api:
-  token: put_it_here
-  web:
-    name: hg-mysql-01
-  local:
-    host: /Users/local-user
-    guest: /home/vagrant/hg-mysql-01
