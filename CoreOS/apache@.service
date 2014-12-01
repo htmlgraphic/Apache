@@ -1,10 +1,12 @@
 [Unit]
-Description=Apache web server service
+Description=Apache Web Server
 Requires=etcd.service
 Requires=docker.service
+Requires=mysqld.service
 
 After=etcd.service
 After=docker.service
+After=mysqld.service
 Before=apache-discovery@%i.service
 
 [Service]
@@ -14,9 +16,10 @@ EnvironmentFile=/etc/environment
 ExecStartPre=-/usr/bin/docker kill apache%i
 ExecStartPre=-/usr/bin/docker rm apache%i
 ExecStartPre=/usr/bin/docker pull htmlgraphic/apache
-ExecStart=/usr/bin/docker run -p ${COREOS_PUBLIC_IPV4}:80:80 --name apache%i htmlgraphic/apache
+ExecStart=/usr/bin/docker run -p ${COREOS_PUBLIC_IPV4}:80:80 -p ${COREOS_PUBLIC_IPV4}:443:443 --name apache%i htmlgraphic/apache
 ExecStop=/usr/bin/docker stop apache%i
 
 [X-Fleet]
 Conflicts=apache@*.service
 Conflicts=ssh-apache@*.service
+MachineMetadata=host=coreos63
