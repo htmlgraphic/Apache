@@ -14,7 +14,8 @@ RUN apt-get update && apt-get -yq install \
         php5-curl \
         php-pear \
         php-apc \
-        language-pack-en
+        language-pack-en \
+        git
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y install \
         supervisor \
@@ -36,6 +37,23 @@ RUN cp /etc/hostname /etc/mailname
 # APACHE
 RUN curl -sS https://getcomposer.org/installer | php 
 RUN mv composer.phar /usr/local/bin/composer
+
+# Prepping OpenSSH
+RUN mkdir /var/run/sshd
+RUN sed -i "s/Port 22/Port 5423/" /etc/ssh/sshd_config
+RUN sed -i "s/#PasswordAuthentication yes/PasswordAuthentication no/" /etc/ssh/sshd_config
+RUN sed -i "s/LogLevel INFO/LogLevel VERBOSE/" /etc/ssh/sshd_config
+
+# Updating root user
+RUN chmod 755 /root
+RUN mkdir -p /root/.ssh
+
+# Clearing and setting authorized ssh keys
+RUN echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbKBlYPbK29pUUwtwRIIjwCtZNujOUb77qHIeohOMk+O8z0gEIgkUwVI3x91AlbhctgpQor3IIeFITwGgIKVo33WW64HI9Nfr2vGx9EAfl9CL9cfDj9M9u4EFOn8NkD/TQMH4d1Fslt59eyl4fSV62d98zJ8goJwrolXM5NlS3hss8FtXhN6bNM0V5nliPUrv/1//3ZoZ5p0inOI1xWNHcMEILGllG+yqaknH9yIk880WoCYZuR7q2ddE6mxrBeJFiyryW5nhsxmXfHnsDVGiLh1C3hltEXzZ0Bdj11jhJfgIcuKU1iUFZg3kKVjRAvrteBQA328s5+UJswV+NWFiH hosting@htmlgraphic.com' >> /root/.ssh/authorized_keys
+
+
+# PEAR Package needed for a web app
+RUN pear install HTML_QuickForm
 
 # Enable Apache mods.
 RUN a2enmod php5
