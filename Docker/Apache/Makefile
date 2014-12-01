@@ -7,3 +7,5 @@ run:
 	docker run -d -p 80:80 -p 443:443 --name apache htmlgraphic/apache
 build:
 	docker build --rm -t htmlgraphic/apache .
+run-with-mysql-link:
+	docker run -d -p 80:80 -p 443:443 --link mysqld:mysql --volumes-from www-data --name apache htmlgraphic/apache
