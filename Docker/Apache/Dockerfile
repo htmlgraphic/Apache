@@ -40,7 +40,8 @@ RUN mv composer.phar /usr/local/bin/composer
 
 # Prepping OpenSSH
 RUN mkdir /var/run/sshd
-RUN sed -i "s/Port 22/Port 5423/" /etc/ssh/sshd_config
+#RUN sed -i "s/Port 22/Port 5423/" /etc/ssh/sshd_config # Apache instances connected to data container should use this.
+RUN sed -i "s/Port 22/Port 5422/" /etc/ssh/sshd_config
 RUN sed -i "s/#PasswordAuthentication yes/PasswordAuthentication no/" /etc/ssh/sshd_config
 RUN sed -i "s/LogLevel INFO/LogLevel VERBOSE/" /etc/ssh/sshd_config
 
