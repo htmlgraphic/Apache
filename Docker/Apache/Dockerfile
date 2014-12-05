@@ -9,6 +9,7 @@ RUN apt-get update && apt-get -yq install \
         mailutils \
         apache2 \
         libapache2-mod-php5 \
+        php5-mcrypt \
         php5-mysql \
         php5-gd \
         php5-curl \
@@ -59,6 +60,7 @@ RUN pear install HTML_QuickForm
 RUN a2enmod php5
 RUN a2enmod rewrite
 RUN a2enmod ssl
+RUN php5enmod mcrypt
  
 
 # Manually set the apache environment variables in order to get apache to work immediately.
