@@ -53,7 +53,7 @@ sed -i 's|#ServerRoot "\/etc\/apache2"|ServerRoot "\/data\/apache2"|g' /etc/apac
 # Postfix is not using /etc/resolv.conf is because it is running inside a chroot jail, needs its own copy.
 cp /etc/resolv.conf /var/spool/postfix/etc/resolv.conf
 
-# Postfix use smart host to relay email
+# Postfix uses smart hosts in cluster to relay email
 postconf -e \
 	relayhost=[post-office.htmlgraphic.com]:25 \
 	inet_protocols=ipv4
