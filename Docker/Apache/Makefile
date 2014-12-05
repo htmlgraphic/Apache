@@ -4,7 +4,7 @@
 all:: build
 
 run:
-	docker run -d -p 80:80 -p 443:443 -p ${COREOS_PUBLIC_IPV4}:5422:22 --name apache htmlgraphic/apache
+	docker run -d -p 80:80 -p 443:443 -p 5422:22 --name apache htmlgraphic/apache
 build:
 	docker build --rm -t htmlgraphic/apache .
 run-with-mysql-link:
