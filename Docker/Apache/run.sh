@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-echo 10.132.191.193 mysql >> /etc/hosts
+echo 10.132.188.119 mysql >> /etc/hosts
 
 # Apache should be able to write to the /tmp directory
 chown nobody:www-data /tmp

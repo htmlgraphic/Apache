@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-echo 10.132.191.193 mysql >> /etc/hosts
+echo 10.132.188.119 mysql >> /etc/hosts
 
 # Postfix use smart host to relay email
 postconf -e \
