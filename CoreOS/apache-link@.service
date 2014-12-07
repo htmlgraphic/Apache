@@ -7,18 +7,19 @@ Requires=mysqld.service
 After=etcd.service
 After=docker.service
 After=mysqld.service
-Before=apache-discovery@%i.service
+Before=apache-link-discovery@%i.service
 
 [Service]
 TimeoutStartSec=0
 KillMode=none
 EnvironmentFile=/etc/environment
-ExecStartPre=-/usr/bin/docker kill apache%i
-ExecStartPre=-/usr/bin/docker rm apache%i
+ExecStartPre=-/usr/bin/docker kill apache-link%i
+ExecStartPre=-/usr/bin/docker rm apache-link%i
 ExecStartPre=/usr/bin/docker pull htmlgraphic/apache
-ExecStart=/usr/bin/docker run -p ${COREOS_PUBLIC_IPV4}:80:80 -p ${COREOS_PUBLIC_IPV4}:443:443 --link mysqld:mysql --volumes-from www-data1 --name apache%i htmlgraphic/apache
-ExecStop=/usr/bin/docker stop apache%i
+ExecStart=/usr/bin/docker run -p ${COREOS_PUBLIC_IPV4}:80:80 -p ${COREOS_PUBLIC_IPV4}:443:443 --link mysqld:mysql --volumes-from www-data1 --name apache-link%i htmlgraphic/apache
+ExecStop=/usr/bin/docker stop apache-link%i
 
 [X-Fleet]
 Conflicts=apache@*.service
+Conflicts=apache-link@*.service
 MachineMetadata=host=coreos63
