@@ -1,0 +1,11 @@
+[Unit]
+Description=Announce MySQL Discovery Service
+BindsTo=mysql.service
+
+[Service]
+EnvironmentFile=/etc/environment
+ExecStart=/bin/sh -c "while true; do etcdctl set /services/mysql '{ \"host\": \"%H\", \"port\": 3306 }' --ttl 60;sleep 45;done"
+ExecStop=/usr/bin/etcdctl rm /announce/services/mysql
+
+[X-Fleet]
+MachineOf=mysql.service
