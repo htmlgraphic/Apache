@@ -1,0 +1,11 @@
+[Unit]
+Description=Announce Apache@%i Discovery Service
+BindsTo=ApacheLink@%i.service
+
+[Service]
+EnvironmentFile=/etc/environment
+ExecStart=/bin/sh -c "while true; do etcdctl set /announce/services/ApacheLink%i ${COREOS_PUBLIC_IPV4}:80 --ttl 60; sleep 45; done"
+ExecStop=/usr/bin/etcdctl rm /announce/services/ApacheLink%i
+
+[X-Fleet]
+MachineOf=ApacheLink@%i.service
