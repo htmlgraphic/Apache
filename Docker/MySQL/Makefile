@@ -8,5 +8,7 @@ run:
 build:
 	docker build --rm -t htmlgraphic/mysql 5.6/
 local:
-	docker rm -f mysql && docker run --privileged -d -p 3306:3306 -v ~/Dropbox/SITES/Docker:/var/lib --name mysql htmlgraphic/mysql 5.6/
-	# The local share folder needs permissions updated 'chmod 777' so mysql files can be written
+	docker run -d -p 3306:3306 -v /Users/gegere/Dropbox/SITES/Docker/db:/var/lib/mysql --name mysql htmlgraphic/mysql
+	# The local share folder needs permissions updated 'chmod 777' so mysql dirs/files can be written, update permissions and rerun build
+rm:
+	docker rm -f mysql
