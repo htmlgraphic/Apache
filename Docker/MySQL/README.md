@@ -1,4 +1,4 @@
-tutum-docker-mysql
+tutum-docker-mysql - custom
 ==================
 
 Base docker image to run a MySQL database server
@@ -13,19 +13,19 @@ Different versions are built from different folders. If you want to use MariaDB,
 Usage
 -----
 
-To create the image `tutum/mysql`, execute the following command on the tutum-mysql folder:
+To create the image `htmlgraphic/mysqld`, execute the following command within the MySQL folder:
 
-        docker build -t tutum/mysql 5.5/
+        make
 
 To run the image and bind to port 3306:
 
-        docker run -d -p 3306:3306 tutum/mysql
+        make local
 
 The first time that you run your container, a new user `admin` with all privileges 
 will be created in MySQL with a random password. To get the password, check the logs
 of the container by running:
 
-        docker logs <CONTAINER_ID>
+        docker logs mysqld
 
 You will see an output like the following:
 
@@ -53,9 +53,9 @@ Setting a specific password for the admin account
 -------------------------------------------------
 
 If you want to use a preset password instead of a random generated one, you can
-set the environment variable `MYSQL_PASS` to your specific password when running the container:
+set the environment variable `MYSQL_PASS` to your specific password when running the container inside the make file:
 
-        docker run -d -p 3306:3306 -e MYSQL_PASS="mypass" tutum/mysql
+        docker run -d -p 3306:3306 -e MYSQL_PASS="mypass" htmlgraphic/mysqld
 
 You can now test your deployment:
 
@@ -70,7 +70,7 @@ Mounting the database file volume
 In order to persist the database data, you can mount a local folder from the host 
 on the container to store the database files. To do so:
 
-        docker run -d -v /path/in/host:/var/lib/mysql tutum/mysql /bin/bash -c "/usr/bin/mysql_install_db"
+        docker run -d -v /path/in/host:/var/lib/mysql htmlgraphic/mysqld /bin/bash -c "/usr/bin/mysql_install_db"
 
 This will mount the local folder `/path/in/host` inside the docker in `/var/lib/mysql` (where MySQL will store the database files by default). `mysql_install_db` creates the initial database structure.
 
@@ -78,7 +78,7 @@ Remember that this will mean that your host must have `/path/in/host` available 
 
 After this you can start your mysql image but this time using `/path/in/host` as the database folder:
 
-        docker run -d -p 3306:3306 -v /path/in/host:/var/lib/mysql tutum/mysql
+        docker run -d -p 3306:3306 -v /path/in/host:/var/lib/mysql htmlgraphic/mysqld
 
 
 Mounting the database file volume from other containers
@@ -128,11 +128,11 @@ To use MySQL replication, please set environment variable `REPLICATION_MASTER`/`
 Examples:
 - Master MySQL
 - 
-        docker run -d -e REPLICATION_MASTER=true -e REPLICATION_PASS=mypass -p 3306:3306 --name mysql tutum/mysql
+        docker run -d -e REPLICATION_MASTER=true -e REPLICATION_PASS=mypass -p 3306:3306 --name mysqld htmlgraphic/mysqld
 
 - Example on Slave MySQL:
 - 
-        docker run -d -e REPLICATION_SLAVE=true -p 3307:3306 --link mysql:mysql tutum/mysql
+        docker run -d -e REPLICATION_SLAVE=true -p 3307:3306 --link mysql:mysql htmlgraphic/mysqld
 
 Now, you can access port `3306` and `3307` for the master/slave mysql
 Environment variables
