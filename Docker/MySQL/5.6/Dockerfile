@@ -4,7 +4,7 @@ MAINTAINER Fernando Mayo <fernando@tutum.co>, Feng Honglin <hfeng@tutum.co>
 # Install packages
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
-  apt-get -yq install mysql-server-5.6 pwgen && \
+  apt-get -yq install mysql-server-5.6 pwgen \
         git \
         vim
         
