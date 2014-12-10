@@ -8,4 +8,5 @@ run:
 build:
 	docker build --rm -t htmlgraphic/mysqld .
 local:
-	docker run -d --volumes-from www-data --name mysqld htmlgraphic/mysqld
+	docker rm -f mysqld && docker run --privileged -d -v ~/Dropbox/SITES/Docker:/var/lib --name mysqld htmlgraphic/mysqld
+	# The local folder needs 'chmod 777' so mysql files can be written
