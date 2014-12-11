@@ -75,7 +75,7 @@ if [ ${REPLICATION_SLAVE} == "**False**" ]; then
     unset REPLICATION_SLAVE
 fi
 
-if [[ ! -d $VOLUME_HOME/mysql ]]; then
+if [[ ! -f $VOLUME_HOME/ibdata1 ]]; then
     echo "=> An empty or uninitialized MySQL volume is detected in $VOLUME_HOME"
     echo "=> Installing MySQL ..."
     if [ ! -f /usr/share/mysql/my-default.cnf ] ; then
@@ -141,4 +141,4 @@ if [ -n "${REPLICATION_SLAVE}" ]; then
     fi
 fi
 
-exec mysqld_safe
+mysqld_safe
