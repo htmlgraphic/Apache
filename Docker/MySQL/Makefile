@@ -12,4 +12,4 @@ local:
 rm:
 	docker rm -f mysql
 data:
-	docker run -i -t -name data -v /var/lib/mysql busybox /bin/sh
+	docker run -i -t --name data -v /var/lib/mysql busybox /bin/sh
