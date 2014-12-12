@@ -1,0 +1,24 @@
+machine:
+  services:
+    - docker
+dependencies:
+  override:
+    - docker build -t mysql-5.5 Docker/MySQL/5.5/
+    - docker build -t postfix Docker/Postfix/
+    - docker build -t apache Docker/Apache/
+test:
+  override:
+    # test mysql 5.5
+    - docker run -d -p 13306:3306 -e MYSQL_USER="user" -e MYSQL_PASS="test" mysql-5.5; sleep 20
+    - mysqladmin -uuser -ptest -h127.0.0.1 -P13306 ping | grep -c "mysqld is alive"
+    # test replication 5.5
+    - docker run -d -e MYSQL_USER=user -e MYSQL_PASS=test -e REPLICATION_MASTER=true -e REPLICATION_USER=repl -e REPLICATION_PASS=repl -p 13308:3306 --name mysql55master mysql-5.5; sleep 20
+    - docker run -d -e MYSQL_USER=user -e MYSQL_PASS=test -e REPLICATION_SLAVE=true -p 13309:3306 --link mysql55master:mysql mysql-5.5; sleep 20
+    - docker logs mysql55master | grep "repl:repl"
+    - mysql -uuser -ptest -h127.0.0.1 -P13308 -e "show master status\G;" | grep "mysql-bin.*"
+    - mysql -uuser -ptest -h127.0.0.1 -P13309 -e "show slave status\G;" | grep "Slave_IO_Running.*Yes"
+    # test apache
+    - docker run -d -p 80:80 -p 443:443 -p 5422:22 apache; sleep 20
+    # test postfix
+    - docker run -d -p 25:25 -e USER=postfix -e PASS=test -e HOSTNAME=post-office.htmlgraphic.com postfix; sleep 20
+    - docker logs postfix | grep "postfix:test"
