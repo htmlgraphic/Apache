@@ -1,12 +1,5 @@
 #!/bin/bash
 
-
-StartMySQL ()
-{
-    echo "=> Adding the following credentials $USER:$PASS"
-}
-
-
 # myhostname should match the name that is given to the container via the 'docker run' command. 
 # This will help any internal email route proper outbound.
 postconf -e \
@@ -41,9 +34,12 @@ cp /etc/resolv.conf /var/spool/postfix/etc/resolv.conf
     chmod g+s /usr/sbin/post{drop,queue}
 
 
-# Display Postfix credentials for build testing
-#
-StartMySQL
+    echo "========================================================================"
+    echo "This Postfix build will send out emails via the following credentials:"
+    echo ""
+    echo "    user: $USER pass: $PASS"
+    echo ""
+    echo "========================================================================"
 
 
 # Spin everything up
