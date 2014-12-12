@@ -1,12 +1,9 @@
-FROM ubuntu:latest
+FROM htmlgraphic/base
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
 # Install base packages
 RUN apt-get update && apt-get -yq install \
-        vim \
         openssh-server \
-        curl \
-        mailutils \
         apache2 \
         libapache2-mod-php5 \
         php5-mcrypt \
@@ -14,9 +11,7 @@ RUN apt-get update && apt-get -yq install \
         php5-gd \
         php5-curl \
         php-pear \
-        php-apc \
-        language-pack-en \
-        git
+        php-apc
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y install \
         supervisor \
@@ -32,7 +27,6 @@ RUN mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/supervisor
 ADD supervisord.conf /etc/supervisor/conf.d/
 
 # POSTFIX
-RUN update-locale LANG=en_US.UTF-8
 RUN cp /etc/hostname /etc/mailname
 
 # APACHE

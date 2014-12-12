@@ -1,15 +1,8 @@
-FROM ubuntu:latest
+FROM htmlgraphic/base
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
 # Install base packages
-RUN apt-get update && \
-    sudo apt-get -yq install \
-        vim \
-        curl \
-        mailutils \
-        language-pack-en
-
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     supervisor \
     rsyslog \
     postfix

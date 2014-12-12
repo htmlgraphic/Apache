@@ -1,12 +1,11 @@
-FROM ubuntu:trusty
+FROM htmlgraphic/base
 MAINTAINER Fernando Mayo <fernando@tutum.co>, Feng Honglin <hfeng@tutum.co>
 
 # Install packages
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
-  apt-get -yq install mysql-server-5.5 pwgen \
-        git \
-        vim
+  apt-get -yq install mysql-server-5.5 pwgen
+  
         
 #Remove cache package list information
 RUN rm -rf /var/lib/apt/lists/*
