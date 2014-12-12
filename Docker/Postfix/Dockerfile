@@ -23,6 +23,7 @@ RUN mkdir -p /var/log/supervisor
 ADD supervisord.conf /etc/supervisor/conf.d/
 
 # POSTFIX
+RUN update-locale LANG=en_US.UTF-8
 RUN cp /etc/hostname /etc/mailname
 
 ADD preseed.txt .
