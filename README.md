@@ -1,10 +1,9 @@
-# OPS: A modular web app deployment helper
 OPS is a collection of CoreOS and Docker files to simplify the deployment of multiple web services on Digital Ocean. The docker build processes can be used on any provider. Each component is divided into the following folders:
 
-* **CoreOS** - Scripts used for the loading of services into Fleet on CoreOS
-* **Docker** - Build scripts the creation of my different types of servers. 
+* [**CoreOS**](https://github.com/htmlgraphic/CoreOS) - Scripts used for the loading of services into Fleet on CoreOS
+* [**Docker**](https://github.com/htmlgraphic/Docker) - Build scripts the creation of my different types of servers. 
     * Apache Web Server
-    * Apache Web Server with SSH ready
+    * Data Container
     * Postfix Mail Server
     * MySQL server
 
@@ -42,7 +41,6 @@ It's important that the unit files (*.service) is accessible to the fleetctl com
 * List unit files with `fleetctl list-unit-files`
 * Finally, start the units with `fleetctl start name.service`
 * List loaded units with `fleetctl list-units`
-
 
 
 
