@@ -14,8 +14,7 @@ help:
 	@echo "-- Help Menu"
 	@echo ""
 	@echo "     make build        - Build the $(NAME) image"
-	@echo "     make local        - Create a data container for $(NAME) and run $(NAME)"
-	@echo "     make run          - Run $(NAME) container"
+	@echo "     make run          - Create a data container for $(NAME) and run $(NAME)"
 	@echo "     make start        - Start $(NAME) container"
 	@echo "     make stop         - Stop $(NAME) container"
 	@echo "     make restart      - Stop and start $(NAME) container"
@@ -28,7 +27,7 @@ build:
 
 run:
 	@echo "Creating data container for $(NAME)..."
-	#docker run -i -t --name data -v /var/lib/mysql busybox /bin/sh
+	docker run -i -t --name data -v /var/lib/mysql busybox /bin/sh
 	@echo "Run $(NAME)..."
 	docker run -d -p 3306:3306 --volumes-from data --name $(NAME) $(IMAGE_NAME)
 
