@@ -1,14 +1,11 @@
 FROM htmlgraphic/base
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
-# Install base packages
+# Install packages then remove cache package list information
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     supervisor \
     rsyslog \
-    postfix
-
-#Remove cache package list information
-RUN rm -rf /var/lib/apt/lists/*
+    postfix && rm -rf /var/lib/apt/lists/*
 
 
 # SUPERVISOR

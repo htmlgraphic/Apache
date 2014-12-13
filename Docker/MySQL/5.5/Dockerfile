@@ -1,15 +1,12 @@
 FROM ubuntu:trusty
 MAINTAINER Fernando Mayo <fernando@tutum.co>, Feng Honglin <hfeng@tutum.co>
 
-# Install packages
+# Install packages then remove cache package list information
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
   apt-get -yq install mysql-server-5.5 pwgen \
         git \
-        vim
-
-#Remove cache package list information
-RUN rm -rf /var/lib/apt/lists/*
+        vim && rm -rf /var/lib/apt/lists/*
 
 # Remove pre-installed database
 RUN rm -rf /var/lib/mysql/*

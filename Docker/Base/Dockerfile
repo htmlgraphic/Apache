@@ -1,17 +1,14 @@
 FROM ubuntu:trusty
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
-# Install packages
+# Install packages then remove cache package list information
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && apt-get -yq install \
         vim \
         curl \
         mailutils \
         language-pack-en \
-        git
-
-#Remove cache package list information
-RUN rm -rf /var/lib/apt/lists/*
+        git && rm -rf /var/lib/apt/lists/*
 
 # POSTFIX
 RUN update-locale LANG=en_US.UTF-8

@@ -1,7 +1,7 @@
 FROM htmlgraphic/base
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
-# Install base packages
+# Install packages then remove cache package list information
 RUN apt-get update && apt-get -yq install \
         php5-cli \
         php5-curl \
@@ -15,10 +15,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y install \
         iptables-persistent \
         supervisor \
         rsyslog \
-        postfix
-
-#Remove cache package list information
-RUN rm -rf /var/lib/apt/lists/*
+        postfix && rm -rf /var/lib/apt/lists/*
 
 
 # SUPERVISOR

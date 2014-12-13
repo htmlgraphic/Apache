@@ -1,7 +1,7 @@
 FROM htmlgraphic/base
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
-# Install base packages
+# Install packages then remove cache package list information
 RUN apt-get update && apt-get -yq install \
         openssh-server \
         apache2 \
@@ -16,10 +16,7 @@ RUN apt-get update && apt-get -yq install \
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y install \
         supervisor \
         rsyslog \
-        postfix
-
-#Remove cache package list information
-RUN rm -rf /var/lib/apt/lists/*
+        postfix && rm -rf /var/lib/apt/lists/*
 
 
 # SUPERVISOR
