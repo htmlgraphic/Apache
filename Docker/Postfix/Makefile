@@ -21,35 +21,35 @@ help:
 	@echo "     make start        - Start $(NAME) container"
 	@echo "     make stop         - Stop $(NAME) container"
 	@echo "     make restart      - Stop and start $(NAME) container"
-	@echo "     make purge        - Stop and remove $(NAME) container"
+	@echo "     make remove       - Stop and remove $(NAME) container"
 	@echo "     make state        - View state $(NAME) container"
 	@echo "     make logs         - View logs in real time"
 
 build:
-	@echo "Build postfix..."
+	@echo "Build $(NAME)..."
 	docker build -t $(IMAGE_NAME) .
 
 run:
-	@echo "Run postfix..."
+	@echo "Run $(NAME)..."
 	docker run -d -p 25:25 --name $(NAME) -e USER=USER -e PASS=PASS -e HOSTNAME=HOSTNAME $(IMAGE_NAME)
 
 start:
-	@echo "Starting postfix..."
+	@echo "Starting $(NAME)..."
 	docker start $(NAME) > /dev/null
 
 stop:
-	@echo "Stopping postfix..."
+	@echo "Stopping $(NAME)..."
 	docker stop $(NAME) > /dev/null
 
 restart: stop start
 
 remove: stop
-	@echo "Removing postfix..."
+	@echo "Removing $(NAME)..."
 	docker rm $(NAME) > /dev/null
 
 state:
 	docker ps -a | grep $(NAME)
 
 logs:
-	@echo "Build postfix..."
-	docker logs -f postfix
+	@echo "Build $(NAME)..."
+	docker logs -f $(NAME)

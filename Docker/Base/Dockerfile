@@ -1,7 +1,8 @@
 FROM ubuntu:trusty
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
-# Install base packages
+# Install packages
+ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && apt-get -yq install \
         vim \
         curl \

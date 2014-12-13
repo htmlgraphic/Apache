@@ -5,6 +5,6 @@ all:: build
 
 
 build:
-	docker build -t htmlgraphic/base .
+	docker build --rm -t htmlgraphic/base .
 push:
 	docker push htmlgraphic/base
