@@ -1,9 +1,12 @@
-build_image: htmlgraphic/base
- 
-script: 
-  - sudo docker run --rm base echo "hello world" 
+language: python
 
+build_image: htmlgraphic/base
+
+
+script:
+ - echo "hello world"
+ 
 notifications:
   email:
     on_success: change
-    on_failure: always 
+    on_failure: always
