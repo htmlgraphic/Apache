@@ -32,4 +32,4 @@ EXPOSE 25
 
 ADD run.sh .
 RUN chmod 755 /run.sh
-CMD /run.sh
+CMD ["/bin/bash", "/run.sh"]
