@@ -4,8 +4,9 @@ machine:
 dependencies:
   override:
     - docker build -t mysql-5.5 Docker/MySQL/5.5/
-    - docker build -t postfix Docker/Postfix/
     - docker build -t apache Docker/Apache/
+    - docker build -t data Docker/Data/
+    - docker build -t postfix Docker/Postfix/
 test:
   override:
     # test mysql 5.5

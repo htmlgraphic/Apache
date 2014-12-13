@@ -1,15 +1,11 @@
-FROM ubuntu:latest
+FROM htmlgraphic/base
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
 # Install base packages
 RUN apt-get update && apt-get -yq install \
-        vim \
-        curl \
-        mailutils \
         php5-cli \
         php5-curl \
         openssh-server \
-        git \
         xinetd \
         telnetd \
         language-pack-en
@@ -30,7 +26,6 @@ RUN mkdir -p /var/log/supervisor
 ADD supervisord.conf /etc/supervisor/conf.d/
 
 # POSTFIX
-RUN update-locale LANG=en_US.UTF-8
 RUN cp /etc/hostname /etc/mailname
 
 # Prepping fail2ban
