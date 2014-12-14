@@ -13,11 +13,12 @@ RUN mkdir -p /var/log/supervisor
 ADD supervisord.conf /etc/supervisor/conf.d/
 
 # POSTFIX
-RUN cp /etc/hostname /etc/mailname
+ADD ./postfix.sh /opt/postfix.sh
+RUN chmod 755 /opt/postfix.sh && cp /etc/hostname /etc/mailname
+
 
 ADD preseed.txt .
 RUN debconf-set-selections preseed.txt && rm preseed.txt
-
 
 ADD virtual /etc/postfix/virtual
 RUN sudo postmap /etc/postfix/virtual

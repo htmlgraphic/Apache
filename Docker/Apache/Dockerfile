@@ -24,7 +24,8 @@ RUN mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/supervisor
 ADD supervisord.conf /etc/supervisor/conf.d/
 
 # POSTFIX
-RUN cp /etc/hostname /etc/mailname
+ADD ./postfix.sh /opt/postfix.sh
+RUN chmod 755 /opt/postfix.sh && cp /etc/hostname /etc/mailname
 
 # APACHE
 RUN curl -sS https://getcomposer.org/installer | php 
