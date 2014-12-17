@@ -1,7 +1,9 @@
 #!/bin/bash
 
-
-echo 10.132.188.119 mysql >> /etc/hosts
+# Group perimission tweak for local development
+groupdel staff
+groupmod -g 50 www-data
+usermod -s /bin/false -u 1000 nobody
 
 # Apache should be able to write to the /tmp directory
 chown nobody:www-data /tmp
@@ -26,6 +28,9 @@ if [ ! -d /data/apache2 ]; then
 	# Symlink modules for Apache so 'a2enmod' can be setup correctly
 	cd /data/apache2 && ln -s /etc/apache2/mods-available mods-available
 	cd /data/apache2 && ln -s /etc/apache2/mods-enabled mods-enabled
+
+	# Strict permissions on Apache conf files
+	cd /etc/apache2/ && chmod 700 *
 
 	# Set the 'ServerName' directive globally
 	echo ServerName localhost >> /data/apache2/conf-enabled/servername.conf
