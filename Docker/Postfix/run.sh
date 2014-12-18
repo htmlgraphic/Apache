@@ -1,14 +1,10 @@
 #!/bin/bash
 
 
-StartMySQL ()
+StartPostfix ()
 {
-    echo "========================================================================"
-    echo "This Postfix build will send out emails via the following credentials:"
-    echo ""
-    echo "    user: $USER pass: $PASS"
-    echo ""
-    echo "========================================================================"
+    echo "=> Adding the following credentials $USER:$PASS"
+    #$allow_networks = "";
 }
 
 
@@ -18,7 +14,7 @@ postconf -e \
    myhostname=post-office.htmlgraphic.com \
    mydomain=htmlgraphic.com \
    mydestination="localhost.localdomain localhost" \
-   mynetworks="104.236.0.0/18, 10.132.0.0/16 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128" \
+   mynetworks="54.225.164.191 104.236.0.0/18 10.132.0.0/16 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128" \
    mail_spool_directory="/var/spool/mail/" \
    virtual_alias_maps=hash:/etc/postfix/virtual \
    smtp_sasl_auth_enable=yes \
@@ -48,7 +44,7 @@ cp /etc/resolv.conf /var/spool/postfix/etc/resolv.conf
 
 # Display Postfix credentials for build testing
 #
-StartMySQL
+StartPostfix
 
 
 # Spin everything up
