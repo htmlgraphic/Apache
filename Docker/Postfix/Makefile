@@ -18,7 +18,7 @@ help:
 	@echo ""
 	@echo "     make build        - Build the $(NAME) image"
 	@echo "     make run          - Run $(NAME) container"
-	@echo "     make start        - Start $(NAME) container"
+	@echo "     make start        - Start the EXISTING $(NAME) container"
 	@echo "     make stop         - Stop $(NAME) container"
 	@echo "     make restart      - Stop and start $(NAME) container"
 	@echo "     make remove       - Stop and remove $(NAME) container"
@@ -31,7 +31,7 @@ build:
 
 run:
 	@echo "Run $(NAME)..."
-	docker run -d -p 25:25 --name $(NAME) -e USER=USER -e PASS=PASS -e HOSTNAME=HOSTNAME $(IMAGE_NAME)
+	docker run -d -p 25:25 --name $(NAME) -e USER=$(USER) -e PASS=$(PASS) -e HOSTNAME=$(HOSTNAME) $(IMAGE_NAME)
 
 start:
 	@echo "Starting $(NAME)..."

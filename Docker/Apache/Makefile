@@ -17,7 +17,7 @@ help:
 	@echo "     make local        - Local development, link to local system and run $(NAME)"
 	@echo "     make link         - Link $(NAME) container to MySQL and Data container"
 	@echo "     make run          - Run $(NAME) container"
-	@echo "     make start        - Start $(NAME) container"
+	@echo "     make start        - Start the EXISTING $(NAME) container"
 	@echo "     make stop         - Stop $(NAME) container"
 	@echo "     make restart      - Stop and start $(NAME) container"
 	@echo "     make remove       - Stop and remove $(NAME) container"

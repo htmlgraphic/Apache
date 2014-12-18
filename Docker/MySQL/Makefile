@@ -15,7 +15,7 @@ help:
 	@echo ""
 	@echo "     make build        - Build the $(NAME) image"
 	@echo "     make run          - Create a data container for $(NAME) and run $(NAME)"
-	@echo "     make start        - Start $(NAME) container"
+	@echo "     make start        - Start the EXISTING $(NAME) container"
 	@echo "     make stop         - Stop $(NAME) container"
 	@echo "     make restart      - Stop and start $(NAME) container"
 	@echo "     make remove       - Stop and remove $(NAME) container"
