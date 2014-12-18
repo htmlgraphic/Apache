@@ -57,14 +57,27 @@ sed -i 's|"\/var\/log\/apache2\/error.log"|"\/data\/apache2\/error.log"|g' /etc/
 sed -i 's|#ServerRoot "\/etc\/apache2"|ServerRoot "\/data\/apache2"|g' /etc/apache2/apache2.conf
 
 
-
-# Postfix is not using /etc/resolv.conf is because it is running inside a chroot jail, needs its own copy.
-cp /etc/resolv.conf /var/spool/postfix/etc/resolv.conf
-
 # Postfix uses smart hosts in cluster to relay email
 postconf -e \
 	relayhost=[post-office.htmlgraphic.com]:25 \
 	inet_protocols=ipv4
+
+# Postfix is not using /etc/resolv.conf is because it is running inside a chroot jail, needs its own copy.
+cp /etc/resolv.conf /var/spool/postfix/etc/resolv.conf
+
+# These are required when postfix runs chrooted
+#
+[[ -z $(ls /var/spool/postfix/etc) ]] && {
+    for n in hosts localtime nsswitch.conf resolv.conf services
+    do 
+        cp /etc/$n /var/spool/postfix/etc
+    done
+}
+
+# These also need setgid to stop 'postfix check' worrying.
+#
+[[ -z $(find /usr/sbin/ -name postqueue -o -name postdrop -perm -2555) ]] && \
+    chmod g+s /usr/sbin/post{drop,queue}
 
 
 /usr/bin/supervisord -n -c /etc/supervisor/conf.d/supervisord.conf

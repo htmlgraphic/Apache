@@ -1,12 +1,25 @@
 language: python
 
-build_image: htmlgraphic/base
+build_image: htmlgraphic/postfix
 
+
+before_script:
+  - curl -L "https://shunit2.googlecode.com/files/shunit2-2.1.6.tgz" | tar zx
+  - git clone https://github.com/htmlgraphic/Docker.git
+  - cd Docker && git checkout develop
+  - chmod +x Docker/Postfix/build_tests.sh
 
 script:
- - echo "hello world"
- 
+  - $PWD/Docker/Postfix/build_tests.sh
+
 notifications:
   email:
+    recipients:
+      - jason@htmlgraphic.com
     on_success: change
     on_failure: always
+
+branches:
+  only:
+  - master
+  - develop
