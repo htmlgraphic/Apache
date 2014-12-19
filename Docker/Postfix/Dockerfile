@@ -13,9 +13,9 @@ RUN mkdir -p /var/log/supervisor
 ADD supervisord.conf /etc/supervisor/conf.d/
 
 # POSTFIX
+ADD ./build_tests.sh /opt/build_tests.sh
 ADD ./postfix.sh /opt/postfix.sh
-RUN chmod 755 /opt/postfix.sh && cp /etc/hostname /etc/mailname
-
+RUN chmod 755 /opt/build_tests.sh && chmod 755 /opt/postfix.sh && cp /etc/hostname /etc/mailname
 
 ADD preseed.txt .
 RUN debconf-set-selections preseed.txt && rm preseed.txt
