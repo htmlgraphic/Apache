@@ -2,15 +2,14 @@ language: python
 
 build_image: htmlgraphic/postfix
 
-
-before_script:
-  - curl -L "https://shunit2.googlecode.com/files/shunit2-2.1.6.tgz" | tar zx
-  - git clone https://github.com/htmlgraphic/Docker.git
-  - cd Docker && git checkout develop
-  - chmod +x Docker/Postfix/build_tests.sh
+env:
+  - USER=p08tf1X PASS=p@ssw0Rd
 
 script:
-  - $PWD/Docker/Postfix/build_tests.sh
+  - bash Docker/Postfix/run.sh &
+  - sleep 20
+  - /usr/sbin/postconf -n
+  - bash Docker/Postfix/build_tests.sh
 
 notifications:
   email:

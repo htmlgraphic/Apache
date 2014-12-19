@@ -25,5 +25,5 @@ test:
     # test data container
     - docker run --privileged -d -p 5422:22 --name data -e HOSTNAME=data.htmlgraphic.com data; sleep 20 
     # test postfix
-    - docker run -d -p 25:25 --name postfix -e USER=p0$tf1x -e PASS=p@ssw0Rd -e HOSTNAME=post-office.htmlgraphic.com postfix; sleep 20
-    - docker logs postfix | grep "p0$tf1x:p@ssw0Rd"
+    - docker run -d -p 25:25 --name postfix -e USER=p08tf1X -e PASS=p@ssw0Rd -e HOSTNAME=post-office.htmlgraphic.com postfix; sleep 20
+    - docker logs postfix | grep "p08tf1X:p@ssw0Rd"
