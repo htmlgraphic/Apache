@@ -15,6 +15,7 @@ postconf -e \
    mydomain=htmlgraphic.com \
    mydestination="localhost.localdomain localhost" \
    mynetworks="54.225.164.191 104.236.0.0/18 10.132.0.0/16 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128" \
+   smtpd_recipient_restrictions=permit_mynetworks \
    mail_spool_directory="/var/spool/mail/" \
    virtual_alias_maps=hash:/etc/postfix/virtual \
    smtp_sasl_auth_enable=yes \
