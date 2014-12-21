@@ -31,7 +31,7 @@ build:
 
 run:
 	@echo "Run $(NAME)..."
-	docker run -d -p 25:25 --name $(NAME) -e USER=$(USER) -e PASS=$(PASS) -e HOSTNAME=$(HOSTNAME) $(IMAGE_NAME)
+	docker run -d --restart=always -p 25:25 --name $(NAME) -e USER=$(USER) -e PASS=$(PASS) -e HOSTNAME=$(HOSTNAME) $(IMAGE_NAME)
 
 start:
 	@echo "Starting $(NAME)..."

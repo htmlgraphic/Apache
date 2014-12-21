@@ -29,7 +29,7 @@ run:
 	@echo "Creating data container for $(NAME)..."
 	docker run -i -t --name db-data -v /var/lib/mysql busybox /bin/sh
 	@echo "Run $(NAME)..."
-	docker run -d -p 3306:3306 --volumes-from db-data --name $(NAME) $(IMAGE_NAME)
+	docker run -d --restart=always -p 3306:3306 --volumes-from db-data --name $(NAME) $(IMAGE_NAME)
 
 start:
 	@echo "Starting $(NAME)..."

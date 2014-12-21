@@ -6,7 +6,7 @@ all:: build
 build:
 	docker build --rm -t htmlgraphic/www-data .
 run:
-	docker run --privileged -d -p ${COREOS_PUBLIC_IPV4}:5422:22 -e HOSTNAME=data.htmlgraphic.com --name www-data1 htmlgraphic/www-data
+	docker run --privileged -d --restart=always -p ${COREOS_PUBLIC_IPV4}:5422:22 -e HOSTNAME=data.htmlgraphic.com --name www-data1 htmlgraphic/www-data
 local:
 	docker run --privileged -d -p 5422:22 -e HOSTNAME=data.htmlgraphic.com --name www-data1 htmlgraphic/www-data
 push:
