@@ -1,6 +1,4 @@
-[![Docker Build Status](https://circleci.com/gh/htmlgraphic/Docker/tree/develop.svg?style=svg&circle-token=b51ac0eded585009395fde219719b0c86f5320d2)](https://circleci.com/gh/htmlgraphic/Docker/tree/master)
-
-[![Build Status](https://api.shippable.com/projects/548b5d23d46935d5fbc01275/badge?branchName=master)](https://app.shippable.com/projects/548b5d23d46935d5fbc01275/builds/latest)
+[![Build Status](https://api.shippable.com/projects/548b5d23d46935d5fbc01275/badge?branchName=master)](https://app.shippable.com/projects/548b5d23d46935d5fbc01275/builds/latest) [![Docker Build Status](https://circleci.com/gh/htmlgraphic/Docker/tree/develop.svg?style=svg&circle-token=b51ac0eded585009395fde219719b0c86f5320d2)](https://circleci.com/gh/htmlgraphic/Docker/tree/master)
 
 OPS is a collection of CoreOS and Docker files to simplify the deployment of multiple web services on Digital Ocean. The docker build processes can be used on any provider. Each component is divided into the following folders:
 
@@ -8,7 +6,7 @@ OPS is a collection of CoreOS and Docker files to simplify the deployment of mul
 * [**Docker**](https://github.com/htmlgraphic/Docker) - Build scripts the creation of my different types of servers. 
     * Apache Web Server
     * Data Container
-    * Postfix Mail Server
+    * [Postfix Mail Server](https://github.com/htmlgraphic/Postfix)
     * MySQL server
 
 ## Creating a cluster

@@ -6,7 +6,6 @@ dependencies:
     - docker build -t mysql-5.5 Docker/MySQL/5.5/
     - docker build -t apache Docker/Apache/
     - docker build -t data Docker/Data/
-    - docker build -t postfix Docker/Postfix/
 test:
   override:
     # test mysql 5.5
@@ -24,6 +23,3 @@ test:
     - wget -q -O- --no-check-certificate https://127.0.0.1 | grep -w "Coming soon\\!" | wc -l
     # test data container
     - docker run --privileged -d -p 5422:22 --name data -e HOSTNAME=data.htmlgraphic.com data; sleep 20 
-    # test postfix
-    - docker run -d -p 25:25 --name postfix -e USER=p08tf1X -e PASS=p@ssw0Rd -e HOSTNAME=post-office.htmlgraphic.com postfix; sleep 20
-    - docker logs postfix | grep "p08tf1X:p@ssw0Rd"
