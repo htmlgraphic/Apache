@@ -1,13 +1,5 @@
 #!/bin/bash
 
-# Group perimission tweak for local development
-groupdel staff
-groupmod -g 50 www-data
-usermod -s /bin/false -u 1000 nobody
-
-# Apache should be able to write to the /tmp directory
-chown nobody:www-data /tmp
-
 if [ ! -d /data/www/public_html ]; then
 	
 	# Move default coming soon page...

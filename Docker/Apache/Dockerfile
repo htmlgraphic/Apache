@@ -66,12 +66,12 @@ ADD ./apache-config.conf /opt/apache-config.conf
 
 # Add coming page to root apache dir
 ADD ./index.php /opt/temp.php
-RUN chmod 755 /opt/temp.php
 
-# On server scripts
+# Copy simple scripts to build
 ADD ./run.sh /opt/run.sh
 ADD ./postfix-local-setup.sh /opt/postfix-local-setup.sh
-RUN chmod 755 /opt/run.sh && chmod 755 /opt/postfix-local-setup.sh
+ADD ./mac-permisions.sh /opt/mac-permisions.sh
+RUN chmod 755 /opt/*
 
 
 # Note that EXPOSE only works for inter-container links. It doesn't make ports accessible from the host. To expose port(s) to the host, at runtime, use the -p flag.
