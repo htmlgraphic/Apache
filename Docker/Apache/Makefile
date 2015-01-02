@@ -13,7 +13,9 @@ help:
 	@echo ""
 	@echo "-- Help Menu"
 	@echo ""
-	@echo "     make build        - Build the $(NAME) image"
+	@echo "     make build        - Build image $(IMAGE_NAME) "
+	@echo "     make dev          - Build image $(IMAGE_NAME):dev"
+	@echo "     make push         - Push $(IMAGE_NAME) to public docker repo"
 	@echo "     make local        - Local development, link to local system and run $(NAME)"
 	@echo "     make link         - Link $(NAME) container to MySQL and Data container"
 	@echo "     make run          - Run $(NAME) container"
@@ -26,6 +28,12 @@ help:
 
 build:
 	docker build --rm -t $(IMAGE_NAME) .
+
+dev:
+	docker build --rm -t $(IMAGE_NAME):dev .
+
+push:
+	docker push $(IMAGE_NAME)
 
 local:
 	docker run -d -p 80:80 -p 443:443 --link mysql:mysql -v ~/Dropbox/SITES/docker:/data --name $(NAME) $(IMAGE_NAME)
