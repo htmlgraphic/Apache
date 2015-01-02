@@ -56,6 +56,9 @@ sed -i 's|"\/var\/log\/apache2\/error.log"|"\/data\/apache2\/error.log"|g' /etc/
 
 sed -i 's|#ServerRoot "\/etc\/apache2"|ServerRoot "\/data\/apache2"|g' /etc/apache2/apache2.conf
 
+# Allow the container to continuously update it's time
+echo "ntpdate ntp.ubuntu.com" > /etc/cron.daily/ntpdate && chmod 755 /etc/cron.daily/ntpdate
+
 
 # Postfix uses smart hosts in cluster to relay email
 postconf -e \
