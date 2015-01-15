@@ -67,7 +67,7 @@ ADD ./index.php /opt/temp.php
 # Copy simple scripts to build
 ADD ./run.sh /opt/run.sh
 ADD ./postfix-local-setup.sh /opt/postfix-local-setup.sh
-ADD ./mac-permisions.sh /opt/mac-permisions.sh
+ADD ./mac-permissions.sh /opt/mac-permissions.sh
 RUN chmod 755 /opt/*
 
 # Add VOLUMEs to allow backup of config and databases
