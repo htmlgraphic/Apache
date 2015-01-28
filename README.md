@@ -1,4 +1,4 @@
-[![Build Status](https://api.shippable.com/projects/548b5d23d46935d5fbc01275/badge?branchName=master)](https://app.shippable.com/projects/548b5d23d46935d5fbc01275/builds/latest) [![Docker Build Status](https://circleci.com/gh/htmlgraphic/Docker/tree/develop.svg?style=svg&circle-token=b51ac0eded585009395fde219719b0c86f5320d2)](https://circleci.com/gh/htmlgraphic/Docker/tree/master)
+[![Docker Build Status](https://circleci.com/gh/htmlgraphic/Docker/tree/develop.svg?style=svg&circle-token=b51ac0eded585009395fde219719b0c86f5320d2)](https://circleci.com/gh/htmlgraphic/Docker/tree/master)
 
 ##Quick Start
 ```bash
@@ -48,4 +48,4 @@ If you found this repo you are probably looking into Docker or already have know
 ##Build Tests
 As you continue to build more containers and extend functions, a very useful tool is using a *test driven development* solution. This repo is setup to use [CircleCI](https://circleci.com/gh/htmlgraphic/Docker) and have numerous tests set within `circle.yml`. It is very good to know that your built containers pass all the tests you define before setup in production.
 
-
+As each Docker container is split into its own repo deeper tests and master builds will be managed via a build a deployment service called [Shippable](http://shippable.com)
