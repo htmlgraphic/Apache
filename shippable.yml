@@ -1,0 +1,27 @@
+language: python
+
+build_image: htmlgraphic/apache
+commit_container: htmlgraphic/apache
+
+env:
+  - USER=p08tf1X PASS=p@ssw0Rd
+
+script:
+  - bash run.sh &
+  - sleep 20
+  - /usr/sbin/postconf -n
+  - bash build_tests.sh
+
+cache: true
+
+notifications:
+  email:
+    recipients:
+      - jason@htmlgraphic.com
+    on_success: change
+    on_failure: always
+
+branches:
+  only:
+  - master
+  - develop
