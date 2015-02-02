@@ -1,13 +1,5 @@
 #!/bin/bash
 
-# Append the location of the internal mysql server to /etc/hosts
-wget http://stedolan.github.io/jq/download/linux64/jq
-chmod +x ./jq
-sudo cp jq /usr/bin
-ipaddr="$(curl $IPADDR:4001/v2/keys/services/mysqld | jq '.node.value')"
-echo -e "$ipaddr    mysql" | sed -e 's/"//g' >> /etc/hosts
-
-
 if [ ! -d /data/www/public_html ]; then
 	
 	# Move default coming soon page...
@@ -42,6 +34,11 @@ if [ ! -d /data/apache2 ]; then
 	rm /data/apache2/sites-enabled/000-default.conf
 
 fi
+
+
+mv /opt/ssl-cert-snakeoil.key /data/apache2/ssl/ssl-cert-snakeoil.key
+mv /opt/ssl-cert-snakeoil.pem /data/apache2/ssl/ssl-cert-snakeoil.pem
+
 
 # Tweak Apache build
 sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=1 \nIS_DEV=1 \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php5/apache2/php.ini

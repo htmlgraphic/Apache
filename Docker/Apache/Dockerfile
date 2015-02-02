@@ -64,6 +64,10 @@ ADD ./apache-config.conf /opt/apache-config.conf
 # Add coming page to root apache dir
 ADD ./index.php /opt/temp.php
 
+# Add self signed SHA256 cert
+ADD ./ssl/ssl-cert-snakeoil.key /opt/ssl-cert-snakeoil.key
+ADD ./ssl/ssl-cert-snakeoil.pem /opt/ssl-cert-snakeoil.pem
+
 # Copy simple scripts to build
 ADD ./run.sh /opt/run.sh
 ADD ./postfix-local-setup.sh /opt/postfix-local-setup.sh
