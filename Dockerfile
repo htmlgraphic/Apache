@@ -58,9 +58,8 @@ ADD ./apache-config.conf /opt/apache-config.conf
 # Add coming page to root apache dir
 ADD ./index.php /opt/temp.php
 
-# Add self signed SHA256 cert
-ADD ./ssl/ssl-cert-snakeoil.key /opt/ssl-cert-snakeoil.key
-ADD ./ssl/ssl-cert-snakeoil.pem /opt/ssl-cert-snakeoil.pem
+# Add self signed SHA256 certs
+ADD ./ssl /opt
 
 # Copy simple scripts to build
 ADD ./run.sh /opt/run.sh
@@ -72,7 +71,6 @@ RUN chmod 755 /opt/*
 VOLUME  ["/data"]
 
 # Note that EXPOSE only works for inter-container links. It doesn't make ports accessible from the host. To expose port(s) to the host, at runtime, use the -p flag.
-EXPOSE 22
 EXPOSE 80
 EXPOSE 443
 
