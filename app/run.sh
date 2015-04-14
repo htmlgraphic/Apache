@@ -6,7 +6,7 @@ if [ ! -d /data/www/public_html ]; then
 	
 	# Move default coming soon page...
 	mkdir -p /data/www/public_html
-	mv /opt/temp.php /data/www/public_html/index.php
+	mv /opt/index.php /data/www/public_html/index.php
 
 fi
 
@@ -37,9 +37,8 @@ if [ ! -d /data/apache2 ]; then
 
 fi
 
-
-mv /opt/ssl-cert-snakeoil.key /data/apache2/ssl/ssl-cert-snakeoil.key
-mv /opt/ssl-cert-snakeoil.pem /data/apache2/ssl/ssl-cert-snakeoil.pem
+# Move needed certificates into place
+mv -f /opt/ssl /data/apache2
 
 
 if [ ! -f /etc/php5/apache2/build ]; then
@@ -52,9 +51,7 @@ if [ ! -f /etc/php5/apache2/build ]; then
     # Update the PHP.ini file, enable <? ?> tags and quiet logging.
     sed -i "s/short_open_tag = Off/short_open_tag = On/" /etc/php5/apache2/php.ini
     sed -i "s/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/" /etc/php5/apache2/php.ini
-    sed -i 's|;session.save_path = "/var/lib/php5"|session.save_path = "/tmp"|g' /etc/php5/apache2/php.ini
-    sed -i 's|"\/var\/log\/apache2\/error.log"|"\/data\/apache2\/error.log"|g' /etc/php5/apache2/php.ini
-
+    sed -i 's|;session.save_path = "/var/lib/php5"|session.save_path = "/tmp"|g' /etc/php5/apache2/php.ini   
     sed -i 's|#ServerRoot "\/etc\/apache2"|ServerRoot "\/data\/apache2"|g' /etc/apache2/apache2.conf
 
     # Allow the container to continuously update it's time

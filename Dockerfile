@@ -2,8 +2,7 @@ FROM htmlgraphic/base
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
 # Install packages then remove cache package list information
-RUN apt-get update && apt-get -yq install \
-        openssh-client \
+RUN apt-get update && apt-get -yq install openssh-client \
         apache2 \
         libapache2-mod-php5 \
         php5-mcrypt \
@@ -13,10 +12,9 @@ RUN apt-get update && apt-get -yq install \
         php-pear \
         php-apc
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y install \
-        supervisor \
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y install supervisor \
         rsyslog \
-        postfix && rm -rf /var/lib/apt/lists/*
+        postfix && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 
 # SUPERVISOR
@@ -24,8 +22,7 @@ RUN mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/supervisor
 ADD supervisord.conf /etc/supervisor/conf.d/
 
 # POSTFIX
-ADD ./postfix.sh /opt/postfix.sh
-RUN chmod 755 /opt/postfix.sh && cp /etc/hostname /etc/mailname
+RUN cp /etc/hostname /etc/mailname
 
 # APACHE
 RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
@@ -52,19 +49,11 @@ ENV APACHE_LOG_DIR /var/log/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
 ENV APACHE_PID_FILE /var/run/apache2.pid
 
-# Add coming page to root apache dir
-ADD ./apache-config.conf /opt/apache-config.conf
-
-# Add coming page to root apache dir
-ADD ./index.php /opt/temp.php
-
 # Add self signed SHA256 certs
-ADD ./ssl /opt
+ADD ./app/ssl /opt/ssl
 
-# Copy simple scripts to build
-ADD ./run.sh /opt/run.sh
-ADD ./postfix-local-setup.sh /opt/postfix-local-setup.sh
-ADD ./mac-permissions.sh /opt/mac-permissions.sh
+# Copy files / scripts to build application, add coming page to root apache dir
+ADD ./app /opt
 RUN chmod 755 /opt/*
 
 # Add VOLUMEs to allow backup of config and databases
