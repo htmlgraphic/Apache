@@ -33,7 +33,7 @@ push:
 	docker push $(IMAGE_NAME)
 
 local:
-	docker run -d -p 80:80 -p 443:443 -e NODE_ENVIRONMENT="local" --link mysql:mysql -v ~/Dropbox/SITES/docker:/data --name $(NAME) $(IMAGE_NAME):$(VERSION)
+	docker run -d -p 80:80 -p 443:443 -e NODE_ENVIRONMENT="dev" --link mysql:mysql -v ~/SITES/docker:/data --name $(NAME) $(IMAGE_NAME):$(VERSION)
 
 link:
 	docker run -d -p 80:80 -p 443:443 -e NODE_ENVIRONMENT="production" --link mysqld:mysql --volumes-from www-data1 --name $(NAME) $(IMAGE_NAME):$(VERSION)

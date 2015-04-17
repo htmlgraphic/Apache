@@ -29,16 +29,23 @@ if [ ! -d /data/apache2 ]; then
 	# Set the 'ServerName' directive globally
 	echo ServerName localhost >> /data/apache2/conf-enabled/servername.conf
 
-	# Customizable Apache conf file
-	sudo mv /opt/apache-config.conf /data/apache2/sites-enabled/apache-config.conf
-	
+    
+    pwd
+    ls -la /opt
+    ls -la /opt/ssl
+
+	# Customizable Apache configuration file(s)
+	sudo mv /opt/*.conf /data/apache2/sites-enabled/
+
+    # Move needed certificates into place
+    mv -f /opt/ssl/* /data/apache2/ssl
+
 	# Disable the default website
 	rm /data/apache2/sites-enabled/000-default.conf
 
 fi
 
-# Move needed certificates into place
-mv -f /opt/ssl /data/apache2
+
 
 
 if [ ! -f /etc/php5/apache2/build ]; then
@@ -51,7 +58,7 @@ if [ ! -f /etc/php5/apache2/build ]; then
     # Update the PHP.ini file, enable <? ?> tags and quiet logging.
     sed -i "s/short_open_tag = Off/short_open_tag = On/" /etc/php5/apache2/php.ini
     sed -i "s/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/" /etc/php5/apache2/php.ini
-    sed -i 's|;session.save_path = "/var/lib/php5"|session.save_path = "/tmp"|g' /etc/php5/apache2/php.ini   
+    sed -i 's|;session.save_path = "/var/lib/php5"|session.save_path = "/tmp"|g' /etc/php5/apache2/php.ini
     sed -i 's|#ServerRoot "\/etc\/apache2"|ServerRoot "\/data\/apache2"|g' /etc/apache2/apache2.conf
 
     # Allow the container to continuously update it's time

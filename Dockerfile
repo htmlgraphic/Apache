@@ -49,12 +49,14 @@ ENV APACHE_LOG_DIR /var/log/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
 ENV APACHE_PID_FILE /var/run/apache2.pid
 
-# Add self signed SHA256 certs
-ADD ./app/ssl /opt/ssl
 
 # Copy files / scripts to build application, add coming page to root apache dir
-ADD ./app /opt
+ADD ./app /opt/
 RUN chmod 755 /opt/*
+
+# Add self signed SHA256 certs
+ADD ./app/ssl /opt/ssl/
+
 
 # Add VOLUMEs to allow backup of config and databases
 VOLUME  ["/data"]

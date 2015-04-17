@@ -6,6 +6,7 @@
     $ git clone https://github.com/htmlgraphic/Apache.git && cd Apache
     $ make
     $ make build
+    $ make run
 ```
 
 ##Apache Docker
@@ -31,7 +32,16 @@ Consistent testing is important when making any edits, large or small. By using 
 
 [![Build Status](https://api.shippable.com/projects/54cf015b5ab6cc13528a7b6a/badge?branchName=develop)](https://app.shippable.com/projects/54cf015b5ab6cc13528a7b6a/builds/latest)
 
-#####Apache Web Server
+
+---
+
+* To use [CircleCI](https://circleci.com/gh/htmlgraphic/Docker) review the `circle.yml` file. 
+* To use [Shippable](http://shippable.com) review the `shippable.yml` file. This service will use a `circle.yml` file configuration but for the unique features provided by **Shippable** it is best to use the deadicated `shippable.yml` file. This service will fully test the creation of your container and can push the complete image to your private Docker repo if you desire.
+
+---
+
+
+#####Apache Web Server - Instance Breakdown
 * **.dockerignore** - Files that should be ignored during the build process
 * **app/apache-config.conf** - The default configuration used by Apache
 * **Dockerfile** - Uses a basefile build to help speed up the docker container build process
@@ -41,12 +51,6 @@ Consistent testing is important when making any edits, large or small. By using 
 * **app/postfix-local-setup.sh** - Script ran manually on container to direct email to a gated email relay server, no emails are sent out to actual inboxes
 * **app/postfix.sh** - Used by *supervisord.conf* to start Postfix
 * **app/run.sh** - Setup apache, move around conf files, start process on container
-* **app/sample.conf** - Move and edit this file into `/data/apache2/sites-enabled` to host the various domains you need to host
+* **app/sample.conf** - A copy of this fill will exist within `/data/apache2/sites-enabled` duplicate to host various domains
 *   **shippable.yml** - Configuration file used by [Shippable](Shippable.com)
 * **supervisord.conf** - Supervisor is a client / server system that allows its users to monitor and control a number of processes on UNIX-like operating systems
-
----
-
-* To use [CircleCI](https://circleci.com/gh/htmlgraphic/Docker) review the `circle.yml` file. 
-* To use [Shippable](http://shippable.com) review the `shippable.yml` file. This service will use a `circle.yml` file configuration but for the unique features provided by **Shippable** it is best to use the deadicated `shippable.yml` file. This service will fully test the creation of your container and can push the complete image to your private Docker repo if you desire.
-
