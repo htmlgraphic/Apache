@@ -2,19 +2,20 @@ language: python
 
 parallelized_test: true
 build_image: htmlgraphic/apache
-commit_container: htmlgraphic/apache
+#commit_container: htmlgraphic/apache
+
+git:
+ submodules: false
 
 env:
   - USER=p08tf1X PASS=p@ssw0Rd
 
+before_script:
+  - cd $PWD && bash app/run.sh
+
 script:
-  - true
-  - bash ls -la
-  - bash ls -la /app
-  - bash /app/run.sh
-  - sleep 20
   - /usr/sbin/postconf -n
-  - bash /tests/build_tests.sh
+  - bash tests/build_tests.sh
 
 notifications:
   email:
