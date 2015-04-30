@@ -1,4 +1,4 @@
-[![Build Status](https://api.shippable.com/projects/54cf015b5ab6cc13528a7b6a/badge?branchName=develop)](https://app.shippable.com/projects/54cf015b5ab6cc13528a7b6a/builds/latest) [![Circle CI](https://circleci.com/gh/htmlgraphic/Apache/tree/master.svg?style=svg&circle-token=6f8463477c38cc56c01834f54deaaac355916654)](https://circleci.com/gh/htmlgraphic/Apache/tree/master)
+[![Build Status](https://api.shippable.com/projects/54cf015b5ab6cc13528a7b6a/badge?branchName=master)](https://app.shippable.com/projects/54cf015b5ab6cc13528a7b6a/builds/latest) [![Circle CI](https://circleci.com/gh/htmlgraphic/Apache/tree/master.svg?style=svg&circle-token=6f8463477c38cc56c01834f54deaaac355916654)](https://circleci.com/gh/htmlgraphic/Apache/tree/master)
 
 
 ##Quick Start
