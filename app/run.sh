@@ -29,11 +29,6 @@ if [ ! -d /data/apache2 ]; then
 	# Set the 'ServerName' directive globally
 	echo ServerName localhost >> /data/apache2/conf-enabled/servername.conf
 
-    
-    pwd
-    ls -la /opt
-    ls -la /opt/ssl
-
 	# Customizable Apache configuration file(s)
 	sudo mv /opt/*.conf /data/apache2/sites-enabled/
 

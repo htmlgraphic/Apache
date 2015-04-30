@@ -27,7 +27,7 @@ help:
 	@echo "     make logs         - View logs in real time"
 
 build:
-	docker build --rm -t $(IMAGE_NAME):$(VERSION) .
+	docker build --rm --no-cache -t $(IMAGE_NAME):$(VERSION) .
 
 push:
 	docker push $(IMAGE_NAME):$(VERSION)
