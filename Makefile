@@ -3,7 +3,7 @@
 
 NAME = apache
 IMAGE_REPO = htmlgraphic
-VERSION = 1.1.0
+VERSION = 1.2.0
 IMAGE_NAME = $(IMAGE_REPO)/$(NAME)
 DOMAIN = htmlgraphic.com
 
