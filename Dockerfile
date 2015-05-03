@@ -48,6 +48,7 @@ ENV APACHE_RUN_GROUP www-data
 ENV APACHE_LOG_DIR /var/log/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
 ENV APACHE_PID_FILE /var/run/apache2.pid
+ENV NODE_ENVIRONMENT $NODE_ENVIRONMENT
 
 
 # Copy files / scripts to build application, add coming page to root apache dir
