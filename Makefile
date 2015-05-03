@@ -30,7 +30,7 @@ build:
 	docker build --rm -t $(IMAGE_NAME):$(VERSION) .
 
 push:
-	docker push $(IMAGE_NAME)
+	docker push $(IMAGE_NAME):$(VERSION)
 
 local:
 	docker run -d -p 80:80 -p 443:443 -e NODE_ENVIRONMENT="dev" --link mysql:mysql -v ~/SITES/docker:/data --name $(NAME) $(IMAGE_NAME):$(VERSION)
