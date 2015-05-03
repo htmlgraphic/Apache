@@ -47,27 +47,54 @@ fi
 
 
 
-
+#####
+#
+#  Edit files on the instance, check for proper environment 
+#
+#####
 if [ ! -f /etc/php5/apache2/build ]; then
 
     # Tweak Apache build
-    sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=1 \nIS_DEV=1 \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php5/apache2/php.ini
     sed -i 's|;include_path = ".:/usr/share/php"|include_path = ".:/usr/share/php:/data/pear"|g' /etc/php5/apache2/php.ini
     sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php5/apache2/php.ini
 
     # Update the PHP.ini file, enable <? ?> tags and quiet logging.
     sed -i "s/short_open_tag = Off/short_open_tag = On/" /etc/php5/apache2/php.ini
-    sed -i "s/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/" /etc/php5/apache2/php.ini
     sed -i 's|;session.save_path = "/var/lib/php5"|session.save_path = "/tmp"|g' /etc/php5/apache2/php.ini
     sed -i 's|#ServerRoot "\/etc\/apache2"|ServerRoot "\/data\/apache2"|g' /etc/apache2/apache2.conf
+    
+    if [[ ! -z "${NODE_ENVIRONMENT}" ]]; then
 
-    # Allow the container to continuously update it's time
-    echo "ntpdate ntp.ubuntu.com" > /etc/cron.daily/ntpdate && chmod 755 /etc/cron.daily/ntpdate
+        if [ "$NODE_ENVIRONMENT" == 'dev' ]; then
+            # Tweak Apache build
+            sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=0 \nIS_DEV=0 \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php5/apache2/php.ini
+            # Update the PHP.ini file, enable <? ?> tags and quiet logging.
+            sed -i "s/error_reporting = .*$/error_reporting = E_ALL/" /etc/php5/apache2/php.ini
+        fi
 
-    # Add build file to remove duplicate script execution
-    echo 1 > /etc/php5/apache2/build
 
+
+        if [ "$NODE_ENVIRONMENT" == 'production' ]; then
+            # Tweak Apache build
+            sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=1 \nIS_DEV=0 \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php5/apache2/php.ini
+            # Update the PHP.ini file, enable <? ?> tags and quiet logging.
+            sed -i "s/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/" /etc/php5/apache2/php.ini
+
+
+            # Allow the container to continuously update it's time
+            echo "ntpdate ntp.ubuntu.com" > /etc/cron.daily/ntpdate && chmod 755 /etc/cron.daily/ntpdate
+
+            # Add build file to remove duplicate script execution
+            echo 1 > /etc/php5/apache2/build
+        fi
+
+    else
+        # $NODE_ENVIRONMENT is not set on docker creation
+        echo "env NODE_ENVIRONMENT is not set."
+    fi
 fi
+
+
 
 # Postfix uses smart hosts in cluster to relay email
 postconf -e \
