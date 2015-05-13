@@ -6,7 +6,7 @@ if [ ! -d /data/www/public_html ]; then
 	
 	# Move default coming soon page...
 	mkdir -p /data/www/public_html
-	mv /opt/index.php /data/www/public_html/index.php
+	mv /opt/app/index.php /data/www/public_html/index.php
 
 fi
 
@@ -30,10 +30,10 @@ if [ ! -d /data/apache2 ]; then
 	echo ServerName localhost >> /data/apache2/conf-enabled/servername.conf
 
 	# Customizable Apache configuration file(s)
-	sudo mv /opt/*.conf /data/apache2/sites-enabled/
+	sudo mv /opt/app/*.conf /data/apache2/sites-enabled/
 
     # Move needed certificates into place
-    mv -f /opt/ssl/* /data/apache2/ssl
+    mv -f /opt/app/ssl/* /data/apache2/ssl
 
 	# Disable the default website
 	rm /data/apache2/sites-enabled/000-default.conf
