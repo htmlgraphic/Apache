@@ -35,7 +35,7 @@ testPostfixRelay()
 testHTTP()
 {
     echo 'Test Apache HTTP'
-    test=$(/usr/bin/wget -q -O- http://127.0.0.1 | grep -w "Coming soon\\!" | wc -l)
+    test=$(/usr/bin/wget -q -O- http://127.0.0.1 | grep -w "Hello World\\!" | wc -l)
     assertEquals 1 $test
     echo -e '\n'
 }
@@ -44,7 +44,7 @@ testHTTP()
 testHTTPS()
 {
     echo 'Test Apache HTTPS'
-    test=$(/usr/bin/wget -q -O- --no-check-certificate https://127.0.0.1 | grep -w "Coming soon\\!" | wc -l)
+    test=$(/usr/bin/wget -q -O- --no-check-certificate https://127.0.0.1 | grep -w "Hello World\\!" | wc -l)
     assertEquals 1 $test
     echo -e '\n'
 }

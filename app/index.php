@@ -19,9 +19,10 @@
 	<img id="logo" src="logo.png" width="200" />
 	<h1><?php echo "Hello ".($_ENV['NAME']?$_ENV['NAME']:"World")."!"; ?></h1>
 	<?php if ($_ENV['HOSTNAME']) {?><h3>My hostname is <?php echo $_ENV['HOSTNAME']; ?></h3><?php } ?>
-	<p>Current file: <strong><?= __FILE__ ?></strong>
-	<?php if ($_ENV('NODE_ENVIRONMENT')) { ?>
-	<p>NODE_ENVIRONMENT: <strong><?= $_ENV('NODE_ENVIRONMENT') ?></strong></p>
+	
+	<p>Current file: <strong><?= __FILE__ ?></strong></p>
+	<?php if ($_ENV['NODE_ENVIRONMENT']) { ?>
+	<p>NODE_ENVIRONMENT: <strong><?= $_ENV['NODE_ENVIRONMENT'] ?></strong></p>
 	<?php } else { ?>
 	<p>NODE_ENVIRONMENT: <strong>NOT SET</strong></p>
 	<?php }
