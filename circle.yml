@@ -10,11 +10,9 @@ test:
   override:
     # test apache
     - docker run -d -p 80:80 -p 443:443 -e NODE_ENVIRONMENT="dev" apache; sleep 20
-    - curl --retry 10 --retry-delay 5 -v http://localhost
-    - wget -q -O- http://127.0.0.1 | grep -w "Coming soon\\!"
-    - wget -q -O- --no-check-certificate https://127.0.0.1 | grep -w "Coming soon\\!"
+    - wget -q -O- http://127.0.0.1 | grep -w "Hello World\\!"
+    - wget -q -O- --no-check-certificate https://127.0.0.1 | grep -w "Hello World\\!"
 
     - docker run -d -p 80:80 -p 443:443 -e NODE_ENVIRONMENT="production" apache; sleep 20
-    - curl --retry 10 --retry-delay 5 -v http://localhost
-    - wget -q -O- http://127.0.0.1 | grep -w "Coming soon\\!"
-    - wget -q -O- --no-check-certificate https://127.0.0.1 | grep -w "Coming soon\\!"
+    - wget -q -O- http://127.0.0.1 | grep -w "Hello World\\!"
+    - wget -q -O- --no-check-certificate https://127.0.0.1 | grep -w "Hello World\\!"
