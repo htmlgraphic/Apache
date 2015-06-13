@@ -66,8 +66,7 @@ VOLUME  ["/data"]
 
 # Note that EXPOSE only works for inter-container links. It doesn't make ports 
 # accessible from the host. To expose port(s) to the host, at runtime, use the -p flag.
-EXPOSE 80
-EXPOSE 443
+EXPOSE 80 443
 
 
 CMD ["/opt/app/run.sh"]
