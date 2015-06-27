@@ -26,7 +26,7 @@ RUN chmod -R 755 /opt/*
 
 
 # SUPERVISOR
-RUN mkdir -p /var/log/supervisor && cp /opt/app/supervisord.conf /etc/supervisor/conf.d/
+RUN mkdir -p /var/log/supervisor && cp /opt/app/supervisord /etc/supervisor/conf.d/supervisord.conf
 
 
 # APACHE
