@@ -3,7 +3,7 @@
 
 NAME = apache
 IMAGE_REPO = htmlgraphic
-VERSION = 1.2.2
+VERSION = latest
 IMAGE_NAME = $(IMAGE_REPO)/$(NAME)
 DOMAIN = htmlgraphic.com
 
@@ -15,15 +15,15 @@ help:
 	@echo "-- Help Menu"
 	@echo ""
 	@echo "     make build		- Build image $(IMAGE_NAME)"
-	@echo "     make push			- Push $(IMAGE_NAME) to public docker repo"
+	@echo "     make push		- Push $(IMAGE_NAME) to public docker repo"
 	@echo "     make run		- Link $(NAME) to MySQL, access local system files and run $(NAME)"
-	@echo "     make link			- Link $(NAME) to MySQL and run $(NAME)"
+	@echo "     make link		- Link $(NAME) to MySQL and run $(NAME)"
 	@echo "     make start		- Start the EXISTING $(NAME) container"
-	@echo "     make stop			- Stop $(NAME) container"
+	@echo "     make stop		- Stop $(NAME) container"
 	@echo "     make restart	- Stop and start $(NAME) container"
-	@echo "     make remove		- Stop and remove $(NAME) container"
+	@echo "     make remove	- Stop and remove $(NAME) container"
 	@echo "     make state		- View state $(NAME) container"
-	@echo "     make logs			- View logs in real time"
+	@echo "     make logs		- View logs in real time"
 
 build:
 	docker build --rm --no-cache -t $(IMAGE_NAME):$(VERSION) .
