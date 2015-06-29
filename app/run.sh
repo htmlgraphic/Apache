@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo -e "$MYSQLD    mysql" | sed -e 's/"//g' >> /etc/hosts
-
 if [ ! -d /data/www/public_html ]; then
 
 	# Move default coming soon page...
