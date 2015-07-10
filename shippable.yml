@@ -1,14 +1,5 @@
 language: python
 
-parallelized_test: true
-build_image: htmlgraphic/apache
-#commit_container: htmlgraphic/apache
-
-
-git:
-  submodules: false
-
-
 env:
   - USER=p08tf1X PASS=p@ssw0Rd
 
