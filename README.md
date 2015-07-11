@@ -10,13 +10,19 @@
 
 Apache is a great web service. This repo will give you a turn key, fully functional build of a Docker container for use in production or your dev environment.
 
----
 
 If you found this repo you are probably looking into Docker or already have knowledge as to what Docker can help you with. In this repo you will find a number of complete Dockerfile builds used in **development** and **production** environments. Listed below are the types of systems available and an explanation of each file. 
 
-###Repo Breakdown
+---
 
-#####Test Driven Development
+
+**[Image Layers](https://imagelayers.io/?images=htmlgraphic/apache:latest)** -  Visualize Docker images and the layers that compose them.
+
+[![](https://badge.imagelayers.io/htmlgraphic/apache:latest.svg)](https://imagelayers.io/?images=htmlgraphic/apache:latest 'Get your own badge on imagelayers.io')
+
+
+
+##Test Driven Development
 
 **[CircleCI](https://circleci.com/gh/htmlgraphic/Postfix)** - Test the Dockerfile process, can the container be built the correctly? Verify the build process with a number of tests. Currently with this service no code can be tested on the running container. Data can be echo and available grepping the output via `docker logs | grep value`
 
@@ -27,8 +33,9 @@ If you found this repo you are probably looking into Docker or already have know
 
 [![Build Status](https://api.shippable.com/projects/54cf015b5ab6cc13528a7b6a/badge?branchName=master)](https://app.shippable.com/projects/54cf015b5ab6cc13528a7b6a/builds/latest)
 
+---
 
-#####Apache Web Server - Build Breakdown
+####Apache Web Server - Build Breakdown
 * **app/apache-config.conf** - The default configuration used by Apache
 * **app/index.php** - Default page displayed via Apache, type in the IP address of the running container and this page should load
 * **app/mac-permissions.sh** - Run manually on container to match uid / gid permissions of local docker container to Mac OS X
@@ -46,5 +53,5 @@ If you found this repo you are probably looking into Docker or already have know
 
 ---
 
-* To use [CircleCI](https://circleci.com/gh/htmlgraphic/Docker) review the `circle.yml` file. 
-* To use [Shippable](http://shippable.com) review the `shippable.yml` file. This service will use a `circle.yml` file configuration but for the unique features provided by **Shippable** it is best to use the deadicated `shippable.yml` file. This service will fully test the creation of your container and can push the complete image to your private Docker repo if you desire.
+* Using [CircleCI](https://circleci.com/gh/htmlgraphic/Docker) review the `circle.yml` file. 
+* Using [Shippable](http://shippable.com) review the `shippable.yml` file. This service will use a `circle.yml` file configuration but for the unique features provided by **Shippable** it is best to use the deadicated `shippable.yml` file. This service will fully test the creation of your container and can push the complete image to your private Docker repo if you desire.

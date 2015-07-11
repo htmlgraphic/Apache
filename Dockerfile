@@ -48,15 +48,13 @@ RUN a2enmod php5 && a2enmod suexec && a2enmod userdir && a2enmod rewrite && a2en
 # Install PHPUnit
 RUN curl -O https://phar.phpunit.de/phpunit.phar | bash && chmod +x phpunit.phar && mv phpunit.phar /usr/local/bin/phpunit
 
-# Manually set the apache environment variables in order to get apache to work
-# immediately.
-ENV APACHE_RUN_USER www-data
-ENV APACHE_RUN_GROUP www-data
-ENV APACHE_LOG_DIR /var/log/apache2
-ENV APACHE_LOCK_DIR /var/lock/apache2
-ENV APACHE_PID_FILE /var/run/apache2.pid
-ENV NODE_ENVIRONMENT $NODE_ENVIRONMENT
-
+# Manually set the apache environment variables in order to get apache to work immediately.
+ENV APACHE_RUN_USER=www-data \
+	APACHE_RUN_GROUP=www-data \
+	APACHE_LOG_DIR=/var/log/apache2 \
+	APACHE_LOCK_DIR=/var/lock/apache2 \
+	APACHE_PID_FILE=/var/run/apache2.pid \
+	NODE_ENVIRONMENT=$NODE_ENVIRONMENT
 
 
 # Add VOLUMEs to allow backup of config and databases
