@@ -1,11 +1,11 @@
 # Build a container via the command "make build"
 # By Jason Gegere <jason@htmlgraphic.com>
 
-NAME = apache
-IMAGE_REPO = htmlgraphic
-VERSION = latest
-IMAGE_NAME = $(IMAGE_REPO)/$(NAME)
-DOMAIN = htmlgraphic.com
+VERSION 			= latest
+NAME 				= apache
+IMAGE_REPO 	= htmlgraphic
+IMAGE_NAME 	= $(IMAGE_REPO)/$(NAME)
+DOMAIN 			= htmlgraphic.com
 
 all:: help
 
@@ -14,10 +14,9 @@ help:
 	@echo ""
 	@echo "-- Help Menu"
 	@echo ""
-	@echo "     make build		- Build image $(IMAGE_NAME)"
-	@echo "     make push		- Push $(IMAGE_NAME) to public docker repo"
-	@echo "     make run		- Link $(NAME) to MySQL, access local system files and run $(NAME)"
-	@echo "     make link		- Link $(NAME) to MySQL and run $(NAME)"
+	@echo "     make build		- Build image $(IMAGE_NAME):$(VERSION)"
+	@echo "     make push		- Push $(IMAGE_NAME):$(VERSION) to public docker repo"
+	@echo "     make run		- Link MySQL instance, access local system files and run $(NAME)"
 	@echo "     make start		- Start the EXISTING $(NAME) container"
 	@echo "     make stop		- Stop $(NAME) container"
 	@echo "     make restart	- Stop and start $(NAME) container"
@@ -33,9 +32,6 @@ push:
 
 run:
 	docker run --restart=always -d -p 80:80 -p 443:443 -e NODE_ENVIRONMENT="dev" --link mysql:mysql -v ~/SITES/docker:/data --name $(NAME) $(IMAGE_NAME):$(VERSION)
-
-link:
-	docker run --restart=always -d -p 80:80 -p 443:443 -e NODE_ENVIRONMENT="production" --link mysqld:mysql --volumes-from www-data1 --name $(NAME) $(IMAGE_NAME):$(VERSION)
 
 start:
 	@echo "Starting $(NAME)..."
