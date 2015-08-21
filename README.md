@@ -37,19 +37,20 @@ If you found this repo you are probably looking into Docker or already have know
 
 ####Apache Web Server - Build Breakdown
 * **app/apache-config.conf** - The default configuration used by Apache
-* **app/index.php** - Default page displayed via Apache, type in the IP address of the running container and this page should load
+* **app/index.php** - Default page displayed via Apache, enter the IP address of the running container and this page will load
 * **app/mac-permissions.sh** - Run manually on container to match uid / gid permissions of local docker container to Mac OS X
 * **app/postfix-local-setup.sh** - Script ran manually on container to direct email to a gated email relay server, no emails are sent out to actual inboxes
 * **app/postfix.sh** - Used by *supervisord.conf* to start Postfix
-* **app/run.sh** - Setup apache, move around conf files, start process on container
-* **app/sample.conf** - A copy of this fill will exist within `/data/apache2/sites-enabled` duplicate to host various domains
-* **app/supervisord.conf** - Supervisor is a client / server system that allows its users to monitor and control a number of processes on UNIX-like operating systems
-* **tests/build_tests.sh** - Build processes
+* **app/run.sh** - Setup apache, conf files, and start process on container
+* **app/sample.conf** - This file will exist on the container `/data/apache2/sites-enabled` duplicate / edit to host various domains
+* **app/supervisord.conf** - Supervisor is a client / server system which monitors and controls a number of processes on UNIX-like operating systems
+* **tests/build_tests.sh** - Build test processes
 * **.dockerignore** - Files that should be ignored during the build process - [best practices](https://docs.docker.com/articles/dockerfile_best-practices/#use-a-dockerignore-file)
-* **circle.yml** - CircleCI configuration
+* **circle.yml** - CircleCI conf
+* **docker-compose.test.yml** - Test for builds on Tutum
 * **Dockerfile** - Uses a basefile build to help speed up the docker container build process
 * **Makefile** - A helpful file used to streamline the creation of containers
-* **shippable.yml** - Shippable configuration
+* **shippable.yml** - Shippable conf
 
 ---
 
