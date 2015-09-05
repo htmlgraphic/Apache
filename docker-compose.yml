@@ -1,0 +1,25 @@
+apache:
+  build: .
+  container_name: apache
+  ports:
+    - "80:80"
+    - "443:433"
+  volumes:
+   - ~/SITES/docker:/data
+  links:
+    - mysql
+  environment:
+    - NODE_ENVIRONMENT=dev
+  restart: always
+mysql:
+  image: htmlgraphic/mysql
+  ports:
+    - "3306:3306"
+  expose:
+    - "3306"
+  volumes_from:
+    - db-data
+db-data:
+    image: busybox
+    volumes:
+    - /var/lib/mysql

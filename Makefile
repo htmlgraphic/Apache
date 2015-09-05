@@ -32,7 +32,7 @@ push:
 	docker push $(IMAGE_NAME):$(VERSION)
 
 run:
-	docker run --restart=always -d -p 80:80 -p 443:443 -e NODE_ENVIRONMENT="dev" --link mysql:mysql -v ~/SITES/docker:/data --name $(NAME) $(IMAGE_NAME):$(VERSION)
+	docker run --restart=always -d -p 80:80 -p 443:443 -e NODE_ENVIRONMENT="dev" -v ~/SITES/docker:/data --name $(NAME) $(IMAGE_NAME):$(VERSION)
 
 start:
 	@echo "Starting $(NAME)..."

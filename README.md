@@ -1,10 +1,28 @@
-##Quick Start
+##Docker Compose
+
+Build the **Apache** instance locally and setup a local MySQL database container for persistant database data
+
+```bash
+	$ git clone https://github.com/htmlgraphic/Apache.git && cd Apache
+	$ docker-compose up
+```
+
+##Docker Build
+
+Build a working **Apache** instance using a `Makefile` and a few terminal commands
+
 ```bash
 	$ git clone https://github.com/htmlgraphic/Apache.git && cd Apache
 	$ make
 	$ make build
 	$ make run
 ```
+
+##Deploy on Tutum
+
+[![Deploy to Tutum](https://s.tutum.co/deploy-to-tutum.svg)](https://dashboard.tutum.co/stack/deploy/)
+
+
 
 ##Apache Docker
 
