@@ -1,0 +1,20 @@
+apache:
+  extends:
+    file: docker-compose.common.yml
+    service: apache
+  links:
+    - "db:mysql"
+  environment:
+    - NODE_ENVIRONMENT=dev
+  volumes:
+   - "~/SITES/docker:/data"
+db:
+  extends:
+    file: docker-compose.common.yml
+    service: db
+  volumes_from:
+    - db_data
+db_data:
+  extends:
+    file: docker-compose.common.yml
+    service: db_data

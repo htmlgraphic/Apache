@@ -1,55 +1,9 @@
-##Docker Compose
-
-Build the **Apache** instance locally and setup a local MySQL database container for persistant database data
-
-```bash
-	$ git clone https://github.com/htmlgraphic/Apache.git && cd Apache
-	$ docker-compose up
-```
-
-##Docker Build
-
-Build a working **Apache** instance using a `Makefile` and a few terminal commands
-
-```bash
-	$ git clone https://github.com/htmlgraphic/Apache.git && cd Apache
-	$ make
-	$ make build
-	$ make run
-```
-
-##Deploy on Tutum
-
-[![Deploy to Tutum](https://s.tutum.co/deploy-to-tutum.svg)](https://dashboard.tutum.co/stack/deploy/)
-
-
-
 ##Apache Docker
 
-Apache is a great web service. This repo will give you a turn key, fully functional build of a Docker container for use in production or your dev environment.
+Apache is a great web service. This repo will give you a turn key, fully functional build of a Docker container for use in production or development environment.
 
 
 If you found this repo you are probably looking into Docker or already have knowledge as to what Docker can help you with. In this repo you will find a number of complete Dockerfile builds used in **development** and **production** environments. Listed below are the types of systems available and an explanation of each file. 
-
----
-
-
-**[Image Layers](https://imagelayers.io/?images=htmlgraphic/apache:latest)** -  Visualize Docker images and the layers that compose them.
-
-[![](https://badge.imagelayers.io/htmlgraphic/apache:latest.svg)](https://imagelayers.io/?images=htmlgraphic/apache:latest 'Get your own badge on imagelayers.io')
-
-
-
-##Test Driven Development
-
-**[CircleCI](https://circleci.com/gh/htmlgraphic/Postfix)** - Test the Dockerfile process, can the container be built the correctly? Verify the build process with a number of tests. Currently with this service no code can be tested on the running container. Data can be echo and available grepping the output via `docker logs | grep value`
-
-[![Circle CI](https://circleci.com/gh/htmlgraphic/Apache/tree/master.svg?style=svg&circle-token=6f8463477c38cc56c01834f54deaaac355916654)](https://circleci.com/gh/htmlgraphic/Apache/tree/master)
-
-
-**[Shippable](https://shippable.com)** - Run tests on the actual built container. These tests ensure the scripts have been setup properly and the service can start with parameters defined. If any test(s) fail the system should be reviewed closer.
-
-[![Build Status](https://api.shippable.com/projects/54cf015b5ab6cc13528a7b6a/badge?branchName=master)](https://app.shippable.com/projects/54cf015b5ab6cc13528a7b6a/builds/latest)
 
 ---
 
@@ -63,14 +17,62 @@ If you found this repo you are probably looking into Docker or already have know
 * **app/sample.conf** - This file will exist on the container `/data/apache2/sites-enabled` duplicate / edit to host various domains
 * **app/supervisord.conf** - Supervisor is a client / server system which monitors and controls a number of processes on UNIX-like operating systems
 * **tests/build_tests.sh** - Build test processes
-* **.dockerignore** - Files that should be ignored during the build process - [best practices](https://docs.docker.com/articles/dockerfile_best-practices/#use-a-dockerignore-file)
+* **.dockerignore** - Files that should be ignored during the build process - [best practice](https://docs.docker.com/articles/dockerfile_best-practices/#use-a-dockerignore-file)
 * **circle.yml** - CircleCI conf
-* **docker-compose.test.yml** - Test for builds on Tutum
+* **docker-compose.\*** - (various composer files for local and production builds)
+* **docker-compose.test.yml** - Test for builds on Tutum, *needs more work*
 * **Dockerfile** - Uses a basefile build to help speed up the docker container build process
 * **Makefile** - A helpful file used to streamline the creation of containers
 * **shippable.yml** - Shippable conf
 
+
+
 ---
 
-* Using [CircleCI](https://circleci.com/gh/htmlgraphic/Docker) review the `circle.yml` file. 
-* Using [Shippable](http://shippable.com) review the `shippable.yml` file. This service will use a `circle.yml` file configuration but for the unique features provided by **Shippable** it is best to use the deadicated `shippable.yml` file. This service will fully test the creation of your container and can push the complete image to your private Docker repo if you desire.
+[![](https://badge.imagelayers.io/htmlgraphic/apache:latest.svg)](https://imagelayers.io/?images=htmlgraphic/apache:latest 'Get your own badge on imagelayers.io') Visualize Docker images and the layers that compose them.
+
+---
+
+##Docker Compose
+
+Build the **Apache** instance locally and setup a local MySQL database container for persistant database data, the goal is to create a easy to use development environment.
+
+```bash
+    $ git clone https://github.com/htmlgraphic/Apache.git && cd Apache
+	$ docker-compose -f docker-compose.local.yml up -d
+```
+
+<br />
+
+[![Deploy to Tutum](https://s.tutum.co/deploy-to-tutum.svg)](https://dashboard.tutum.co/stack/deploy/)
+
+
+<br /><br />
+
+##Build Apache Image
+
+Build a working **Apache** instance using a `Makefile` and a few terminal commands
+
+```bash
+	$ git clone https://github.com/htmlgraphic/Apache.git && cd Apache
+	$ make
+	$ make build
+```
+
+<br /><br />
+
+##Test Driven Development
+
+**[CircleCI](https://circleci.com/gh/htmlgraphic/Apache)** - Test the Dockerfile process, can the container be built the correctly? Verify the build process with a number of tests. Currently with this service no code can be tested on the running container. Data can be echo and available grepping the output via `docker logs | grep value`
+
+[![Circle CI](https://circleci.com/gh/htmlgraphic/Apache/tree/master.svg?style=svg&circle-token=6f8463477c38cc56c01834f54deaaac355916654)](https://circleci.com/gh/htmlgraphic/Apache/tree/master)
+
+Using **CircleCI** review the `circle.yml` file. 
+
+<br /><br />
+
+**[Shippable](https://shippable.com)** - Run tests on the actual built container. These tests ensure the scripts have been setup properly and the service can start with parameters defined. If any test(s) fail the system should be reviewed closer.
+
+[![Build Status](https://img.shields.io/shippable/54cf015b5ab6cc13528a7b6a.svg)](https://app.shippable.com/projects/54cf015b5ab6cc13528a7b6a)
+
+Using **Shippable** review the `shippable.yml` file. This service will use a `circle.yml` file configuration but for the unique features provided by **Shippable** it is best to use the deadicated `shippable.yml` file. This service will fully test the creation of your container and can push the complete image to your private Docker repo if you desire.

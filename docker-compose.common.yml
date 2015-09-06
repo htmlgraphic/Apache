@@ -4,16 +4,10 @@ apache:
   ports:
     - "80:80"
     - "443:433"
-  links:
-    - "db:mysql"
-  environment:
-    - NODE_ENVIRONMENT=production
 db:
   image: tutum/mysql:5.5
   ports:
     - "3306:3306"
-  volumes_from:
-    - db_data
   expose:
     - "3306"
   environment:
