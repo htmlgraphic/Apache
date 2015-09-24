@@ -3,11 +3,9 @@ apache:
   container_name: apache
   ports:
     - "80:80"
-    - "443:433"
+    - "443:443"
 db:
   image: tutum/mysql:5.5
-  ports:
-    - "3306:3306"
   expose:
     - "3306"
   environment:
