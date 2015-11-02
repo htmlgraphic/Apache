@@ -10,8 +10,8 @@ db:
     - "3306"
   environment:
     - ON_CREATE_DB=htmlgraphic
-    - MYSQL_PASS=mysql123
+    - MYSQL_PASS="mysql123"
 db_data:
-    image: busybox
-    volumes:
-      - "/var/lib/mysql"
+  image: busybox
+  volumes:
+    - "/var/lib/mysql"

@@ -45,8 +45,9 @@ stop:
 restart:	stop start
 
 rm:
-	@echo "Removing $(NAME)..."
-	docker rm -f $(NAME) > /dev/null
+	@echo "Removing $(NAME) and $(NAME)_db_1"
+	docker rm -f $(NAME)
+	docker rm -f $(NAME)_db_1
 
 state:
 	docker ps -a | grep $(NAME)
