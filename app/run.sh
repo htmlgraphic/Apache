@@ -12,8 +12,12 @@ fi
 
 if [ ! -d /data/apache2 ]; then
 
-	mkdir -p /data/apache2/logs
-	mkdir -p /data/apache2/ssl
+	# Create directories for logs and ssl certificates
+	mkdir -p /data/apache2/{logs,ssl}
+
+	# Create diectory for any pear libaries
+	mkdir -p /data/pear
+	touch /data/pear/empty
 
 	# Move initial apache conf script into directory
 	cp -R /etc/apache2/* /data/apache2
