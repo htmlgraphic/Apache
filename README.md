@@ -1,6 +1,6 @@
 ##Apache Docker
 
-Apache is a great web service. This repo will give you a turn key, fully functional build of a Docker container for use in production or development environment.
+This repo will give you a turn key, fully functional build of a Docker container for use in production or development environment including a linked MySQL instance.
 
 
 If you found this repo you are probably looking into Docker or already have knowledge as to what Docker can help you with. In this repo you will find a number of complete Dockerfile builds used in **development** and **production** environments. Listed below are the types of systems available and an explanation of each file. 
@@ -9,9 +9,9 @@ If you found this repo you are probably looking into Docker or already have know
 
 ####Apache Web Server - Build Breakdown
 * **app/apache-config.conf** - The default configuration used by Apache
-* **app/index.php** - Default page displayed via Apache, enter the IP address of the running container and this page will load
+* **app/index.php** - Default page displayed via Apache, enter the IP address `docker-machine ls` to load this page.
 * **app/mac-permissions.sh** - Run manually on container to match uid / gid permissions of local docker container to Mac OS X
-* **app/postfix-local-setup.sh** - Script ran manually on container to direct email to a gated email relay server, no emails are sent out to actual inboxes
+* **app/postfix-local-setup.sh** - Run manually on container to direct email to a gated email relay server, no emails are sent out to actual inboxes
 * **app/postfix.sh** - Used by *supervisord.conf* to start Postfix
 * **app/run.sh** - Setup apache, conf files, and start process on container
 * **app/sample.conf** - This file will exist on the container `/data/apache2/sites-enabled` duplicate / edit to host various domains
@@ -38,16 +38,16 @@ If you found this repo you are probably looking into Docker or already have know
 Build the **Apache** instance locally and setup a local MySQL database container for persistant database data, the goal is to create a easy to use development environment.
 
 ```bash
-    $ git clone https://github.com/htmlgraphic/Apache.git && cd Apache
-	$ docker-compose -f docker-compose.local.yml up -d
+	$ git clone https://github.com/htmlgraphic/Apache.git && cd Apache
+	$ make run
 ```
 
-<br />
+---
 
 [![Deploy to Tutum](https://s.tutum.co/deploy-to-tutum.svg)](https://dashboard.tutum.co/stack/deploy/)
 
 
-<br /><br />
+---
 
 ##Build Apache Image
 
@@ -59,7 +59,7 @@ Build a working **Apache** instance using a `Makefile` and a few terminal comman
 	$ make build
 ```
 
-<br /><br />
+---
 
 ##Test Driven Development
 
@@ -69,7 +69,7 @@ Build a working **Apache** instance using a `Makefile` and a few terminal comman
 
 Using **CircleCI** review the `circle.yml` file. 
 
-<br /><br />
+---
 
 **[Shippable](https://shippable.com)** - Run tests on the actual built container. These tests ensure the scripts have been setup properly and the service can start with parameters defined. If any test(s) fail the system should be reviewed closer.
 
