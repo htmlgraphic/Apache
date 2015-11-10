@@ -1,7 +1,7 @@
 language: python
 
 env:
-  - USER=p08tf1X PASS=p@ssw0Rd
+  - USER=p08tf1X PASS=p@ssw0Rd NODE_ENVIRONMENT=dev LOG_TOKEN=$LOG_TOKEN
 
 
 script:

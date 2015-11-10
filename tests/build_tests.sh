@@ -49,4 +49,13 @@ testHTTPS()
 	echo -e '\n'
 }
 
+
+testNODE_ENVIRONMENT()
+{
+	echo 'Test env var NODE_ENVIRONMENT'
+	test=$(/usr/bin/wget -q -O- http://127.0.0.1 | grep -w "dev" | wc -l)
+	assertEquals 1 $test
+	echo -e '\n'
+}
+
 . shunit2-2.1.6/src/shunit2

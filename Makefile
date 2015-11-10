@@ -26,6 +26,7 @@ help:
 
 build:
 	docker build --rm --no-cache -t $(IMAGE_NAME):$(VERSION) .
+	docker build --rm --no-cache -t $(IMAGE_NAME):latest .
 
 push:
 	@echo "note: If the repository is set as an automatted build you will NOT be able to push"
