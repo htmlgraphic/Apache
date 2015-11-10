@@ -4,17 +4,20 @@ machine:
   environment:
     LOG_TOKEN: $LOG_TOKEN
 dependencies:
+  pre:
+    - sudo pip install -U docker-compose
   override:
-    - docker build -t apache .
+    - docker info
+    - docker build -t htmlgraphic/apache:latest .
 test:
   override:
+    # stop MySQL from running
+    - sudo service mysql stop
     # test apache
-    - docker run -d -p 80:80 -p 443:443 -e NODE_ENVIRONMENT="dev" apache; sleep 20
-    - wget -q -O- http://127.0.0.1 | grep -w "Hello World\\!"
+    - docker-compose -f docker-compose.local.yml up -d; sleep 20
     - wget -q -O- http://127.0.0.1 | grep -w "dev"
-    - wget -q -O- --no-check-certificate https://127.0.0.1 | grep -w "Hello World\\!"
-
-    - docker run -d -p 80:80 -p 443:443 -e NODE_ENVIRONMENT="production" apache; sleep 20
-    - wget -q -O- http://127.0.0.1 | grep -w "Hello World\\!"
+    - wget -q -O- --no-check-certificate https://127.0.0.1 | grep -w "dev"
+    - docker-compose -f docker-compose.local.yml kill; sleep 20
+    - docker-compose up -d; sleep 20
     - wget -q -O- http://127.0.0.1 | grep -w "production"
-    - wget -q -O- --no-check-certificate https://127.0.0.1 | grep -w "Hello World\\!"
+    - wget -q -O- --no-check-certificate https://127.0.0.1 | grep -w "production"
