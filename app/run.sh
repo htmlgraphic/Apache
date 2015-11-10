@@ -1,5 +1,20 @@
 #!/bin/bash
 
+OutputLog ()
+{
+	echo "=> Adding environmental variables:"
+	echo "=> NODE_ENVIRONMENT: $NODE_ENVIRONMENT"
+	echo "=> Log Key: $LOG_TOKEN"
+}
+
+# output logs to logentries.com
+cat <<EOF > /etc/rsyslog.d/logentries.conf
+\$template Logentries,"$LOG_TOKEN %HOSTNAME% %syslogtag%%msg%\n"
+
+*.* @@api.logentries.com:10000;Logentries
+EOF
+
+
 if [ ! -d /data/www/public_html ]; then
 
 	# Move default coming soon page...
@@ -93,6 +108,12 @@ if [ ! -f /etc/php5/apache2/build ]; then
 fi
 
 
+if [[ ! -z "${LOG_TOKEN}" ]]; then
+
+		# $LOG_TOKEN is not set on docker creation
+		echo "env LOG_TOKEN is not set."
+fi
+
 
 # Postfix uses smart hosts in cluster to relay email
 postconf -e "relayhost = [post-office.htmlgraphic.com]:25"
@@ -119,4 +140,11 @@ cp /etc/hostname /etc/mailname
 	chmod g+s /usr/sbin/post{drop,queue}
 
 
+# Display system credentials for build testing
+#
+OutputLog
+
+
+# Spin everything up
+#
 /usr/bin/supervisord -n -c /etc/supervisor/conf.d/supervisord.conf
