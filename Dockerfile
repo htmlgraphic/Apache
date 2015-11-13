@@ -44,8 +44,8 @@ RUN pear install HTML_QuickForm
 # Enable Apache mods.
 RUN a2enmod php5 && a2enmod suexec && a2enmod userdir && a2enmod rewrite && a2enmod ssl && php5enmod mcrypt
 
-# Install PHPUnit
-RUN curl -O https://phar.phpunit.de/phpunit.phar | bash && chmod +x phpunit.phar && mv phpunit.phar /usr/local/bin/phpunit
+# Install PHPUnit 4.8.9
+RUN curl -O https://phar.phpunit.de/phpunit-4.8.9.phar | bash && chmod +x phpunit-4.8.9.phar && mv phpunit-4.8.9.phar /usr/local/bin/phpunit
 
 # Manually set the apache environment variables in order to get apache to work immediately.
 ENV APACHE_RUN_USER=www-data \

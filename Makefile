@@ -1,7 +1,7 @@
 # Build a container via the command "make build"
 # By Jason Gegere <jason@htmlgraphic.com>
 
-VERSION 			= 1.2.5
+VERSION 			= 1.2.6
 NAME 				= apache
 IMAGE_REPO 	= htmlgraphic
 IMAGE_NAME 	= $(IMAGE_REPO)/$(NAME)
@@ -25,8 +25,8 @@ help:
 	@echo "     make logs		- View logs in real time"
 
 build:
-	docker build --rm --no-cache -t $(IMAGE_NAME):$(VERSION) .
-	docker build --rm --no-cache -t $(IMAGE_NAME):latest .
+	docker build --rm --no-cache -t $(VERSION) -t $(IMAGE_NAME):latest .
+	docker tag -f $(IMAGE_NAME):latest $(IMAGE_NAME):$(VERSION)
 
 push:
 	@echo "note: If the repository is set as an automatted build you will NOT be able to push"
