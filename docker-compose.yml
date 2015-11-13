@@ -16,7 +16,6 @@ hg_db:
     - "3306"
   environment:
     - ON_CREATE_DB=htmlgraphic
-    - MYSQL_PASS="mysql123"
 hg_db_data:
     image: busybox
     volumes:
