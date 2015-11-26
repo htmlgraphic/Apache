@@ -1,22 +1,22 @@
-hg_web:
+hg-web:
   image: htmlgraphic/apache:latest
   ports:
     - "80:80"
     - "443:443"
   links:
-    - "hg_db:mysql"
+    - "hg-db:mysql"
   environment:
     - NODE_ENVIRONMENT=production
     - LOG_TOKEN=$LOG_TOKEN
-hg_db:
+hg-db:
   image: tutum/mysql:5.5
   volumes_from:
-    - hg_db_data
+    - hg-db-data
   expose:
     - "3306"
   environment:
     - ON_CREATE_DB=htmlgraphic
-hg_db_data:
+hg-db-data:
     image: busybox
     volumes:
       - "/var/lib/mysql"

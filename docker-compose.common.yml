@@ -13,7 +13,7 @@ db:
   environment:
     - ON_CREATE_DB=htmlgraphic
     - MYSQL_PASS=new_password
-db_data:
+db-data:
   image: busybox
   volumes:
     - "/var/lib/mysql"
