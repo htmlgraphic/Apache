@@ -35,9 +35,7 @@ push:
 run:
 	docker-compose -f docker-compose.local.yml up -d
 
-start:
-	@echo "Starting $(NAME)..."
-	docker start $(NAME) > /dev/null
+start: run
 
 stop:
 	@echo "Stopping local environment setup"
@@ -46,8 +44,9 @@ stop:
 restart:	stop start
 
 rm:
-	@echo "Removing $(NAME) and $(NAME)_db_1"
-	docker rm -f $(NAME)
+	# As a precautionary measure the containers are specifally referenced so the DB data is not destroyed
+	@echo "Removing $(NAME)_web_1 and $(NAME)_db_1"
+	docker rm -f $(NAME)_web_1
 	docker rm -f $(NAME)_db_1
 
 state:
