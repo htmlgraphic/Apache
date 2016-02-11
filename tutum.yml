@@ -1,5 +1,7 @@
 hg-web:
   image: htmlgraphic/apache:latest
+  restart: always
+  autoredeploy: true
   ports:
     - "80:80"
     - "443:443"
