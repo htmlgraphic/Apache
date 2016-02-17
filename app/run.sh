@@ -76,6 +76,10 @@ if [ ! -f /etc/php5/apache2/build ]; then
 	sed -i 's|;session.save_path = "/var/lib/php5"|session.save_path = "/tmp"|g' /etc/php5/apache2/php.ini
 	sed -i 's|#ServerRoot "\/etc\/apache2"|ServerRoot "\/data\/apache2"|g' /etc/apache2/apache2.conf
 
+	# Increase upload file limitations
+	sed -i 's|upload_max_filesize = 2M|upload_max_filesize = 1000M|g' /etc/php5/apache2/php.ini
+	sed -i 's|post_max_size = 8M|post_max_size = 1000M|g' /etc/php5/apache2/php.ini
+
 	# Allow the container to continuously update it's time
 	echo "ntpdate ntp.ubuntu.com" > /etc/cron.daily/ntpdate && chmod 755 /etc/cron.daily/ntpdate
 
@@ -98,7 +102,6 @@ if [ ! -f /etc/php5/apache2/build ]; then
 					sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=1 \nIS_DEV=0 \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php5/apache2/php.ini
 					# Update the PHP.ini file, enable <? ?> tags and quiet logging.
 					sed -i "s/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/" /etc/php5/apache2/php.ini
-
 			fi
 
 	else
