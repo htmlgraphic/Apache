@@ -2,6 +2,8 @@ FROM htmlgraphic/base
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
 # Install packages then remove cache package list information
+ENV DEBIAN_FRONTEND noninteractive
+
 RUN apt-get update && apt-get -yq install openssh-client \
 	apache2 \
 	libapache2-mod-php5 \
@@ -10,9 +12,10 @@ RUN apt-get update && apt-get -yq install openssh-client \
 	php5-gd \
 	php5-curl \
 	php-pear \
-	php-apc
-
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y install supervisor \
+	php-apc \
+	php5-dev \
+	libmagickwand-dev \
+	supervisor \
 	rsyslog \
 	postfix && apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -40,6 +43,9 @@ RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/lo
 
 # PEAR Package needed for a web app
 RUN pear install HTML_QuickForm
+
+# Install imagick into Apache
+RUN pecl install imagick
 
 # Enable Apache mods.
 RUN a2enmod php5 && a2enmod suexec && a2enmod userdir && a2enmod rewrite && a2enmod ssl && php5enmod mcrypt
