@@ -65,7 +65,7 @@ Build a working **Apache** instance using a `Makefile` and a few terminal comman
 
 **[CircleCI](https://circleci.com/gh/htmlgraphic/Apache)** - Test the Dockerfile process, can the container be built the correctly? Verify the build process with a number of tests. Currently with this service no code can be tested on the running container. Data can be echo and available grepping the output via `docker logs | grep value`
 
-[![Circle CI](https://circleci.com/gh/htmlgraphic/Apache/tree/master.svg?style=svg&circle-token=6f8463477c38cc56c01834f54deaaac355916654)](https://circleci.com/gh/htmlgraphic/Apache/tree/master)
+[![Circle CI](https://circleci.com/gh/htmlgraphic/Apache/tree/develop.svg?style=svg)](https://circleci.com/gh/htmlgraphic/Apache/tree/develop)
 
 Using **CircleCI** review the `circle.yml` file. 
 
@@ -73,6 +73,6 @@ Using **CircleCI** review the `circle.yml` file.
 
 **[Shippable](https://shippable.com)** - Run tests on the actual built container. These tests ensure the scripts have been setup properly and the service can start with parameters defined. If any test(s) fail the system should be reviewed closer.
 
-[![Build Status](https://img.shields.io/shippable/54cf015b5ab6cc13528a7b6a.svg)](https://app.shippable.com/projects/54cf015b5ab6cc13528a7b6a)
+[![Run Status](https://api.shippable.com/projects/54cf015b5ab6cc13528a7b6a/badge?branch=develop)](https://app.shippable.com/projects/54cf015b5ab6cc13528a7b6a)
 
 Using **Shippable** review the `shippable.yml` file. This service will use a `circle.yml` file configuration but for the unique features provided by **Shippable** it is best to use the deadicated `shippable.yml` file. This service will fully test the creation of your container and can push the complete image to your private Docker repo if you desire.
