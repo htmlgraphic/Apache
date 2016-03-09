@@ -53,7 +53,7 @@ testHTTPS()
 testNODE_ENVIRONMENT()
 {
 	echo 'Test env var NODE_ENVIRONMENT'
-	test=$(/usr/bin/wget -q -O- http://127.0.0.1 | grep -w "dev" | wc -l)
+	test=$(/usr/bin/wget -q -O- http://127.0.0.2 | grep -w "dev" | wc -l)
 	assertEquals 1 $test
 	echo -e '\n'
 }

@@ -3,10 +3,12 @@ machine:
     - docker
   environment:
     LOG_TOKEN: $LOG_TOKEN
+
 dependencies:
   override:
     - docker info
     - docker build -t htmlgraphic/apache:latest .
+
 test:
   override:
     # stop MySQL from running
@@ -15,6 +17,7 @@ test:
     - docker-compose -f docker-compose.local.yml up -d; sleep 20
     - wget -q -O- http://127.0.0.1 | grep -w "dev"
     - wget -q -O- --no-check-certificate https://127.0.0.1 | grep -w "dev"
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' apache_web_1)" -- bash -c /opt/tests/build_tests.sh
     - docker-compose -f docker-compose.local.yml kill; sleep 20
     - docker-compose up -d; sleep 20
     - wget -q -O- http://127.0.0.1 | grep -w "production"
