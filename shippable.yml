@@ -1,21 +1,24 @@
-language: python
-
 env:
   - USER=p08tf1X PASS=p@ssw0Rd NODE_ENVIRONMENT=dev LOG_TOKEN=$LOG_TOKEN
 
-
-script:
-  - bash ./app/run.sh &
-  - sleep 20
-  - /usr/sbin/postconf -n
-  - bash ./tests/build_tests.sh
-
-
-branches:
-  only:
-  - master
-  - develop
-
+build:
+  pre_ci:
+    - docker build -t apache:shippable .
+  pre_ci_boot:
+    image_name: apache
+    image_tag: shippable
+    pull: false
+    options: --privileged=true
+  ci:
+    - /usr/sbin/postconf -n
+    - bash ./tests/build_tests.sh
+  post_ci:
+    - git clone https://github.com/docker-library/official-images.git ~/official-images
+    - ~/official-images/test/run.sh apache-web
+    - bash ./tests/build_tests.sh
+    - sudo pip install -U docker-compose
+    - docker-compose -f docker-compose.local.yml up -d
+    - docker ps
 
 notifications:
   email:
