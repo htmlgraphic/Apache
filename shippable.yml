@@ -8,14 +8,12 @@ build:
     image_name: apache
     image_tag: shippable
     pull: false
-    options: --privileged=true
   ci:
     - /usr/sbin/postconf -n
     - bash ./tests/build_tests.sh
-  post_ci:
     - git clone https://github.com/docker-library/official-images.git ~/official-images
     - ~/official-images/test/run.sh apache-web
-    - bash ./tests/build_tests.sh
+  post_ci:
     - sudo pip install -U docker-compose
     - docker-compose -f docker-compose.local.yml up -d
     - docker ps
