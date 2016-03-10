@@ -1,15 +1,15 @@
 env:
+  matrix:
   - NODE_ENVIRONMENT=dev
   - NODE_ENVIRONMENT=production
 
 build:
   pre_ci:
-    - docker build --no-cache -t apache:shippable .
+    - docker build --force-rm=true --no-cache -t apache:shippable .
   pre_ci_boot:
     image_name: apache
     image_tag: shippable
     pull: false
-    options:
   ci:
     - /usr/sbin/postconf -n
     - bash ./tests/build_tests.sh
@@ -23,6 +23,8 @@ integrations:
     - integrationName: email
       type: email
       recipients:
-        - jason@htmlgraphic.com
+        - jason+github@htmlgraphic.com
       on_success: change
       on_failure: always
+
+
