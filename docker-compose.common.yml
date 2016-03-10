@@ -5,7 +5,6 @@ web:
     - "443:443"
   environment:
     - NODE_ENVIRONMENT=dev
-    - LOG_TOKEN=$LOG_TOKEN
 db:
   image: tutum/mysql:5.5
   expose:
