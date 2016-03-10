@@ -7,7 +7,6 @@ hg-web:
     - "hg-db:mysql"
   environment:
     - NODE_ENVIRONMENT=production
-    - LOG_TOKEN=$LOG_TOKEN
 hg-db:
   image: tutum/mysql:5.5
   volumes_from:

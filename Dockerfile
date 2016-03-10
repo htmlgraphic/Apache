@@ -6,6 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && apt-get -yq install openssh-client \
 	apache2 \
+	wget \
 	libapache2-mod-php5 \
 	php5-mcrypt \
 	php5-mysql \
@@ -50,13 +51,16 @@ RUN pecl install imagick
 # Enable Apache mods.
 RUN a2enmod php5 && a2enmod suexec && a2enmod userdir && a2enmod rewrite && a2enmod ssl && php5enmod mcrypt
 
-# Manually set the apache environment variables in order to get apache to work immediately.
+# Environment variables contained within build container.
 ENV APACHE_RUN_USER=www-data \
 	APACHE_RUN_GROUP=www-data \
 	APACHE_LOG_DIR=/var/log/apache2 \
 	APACHE_LOCK_DIR=/var/lock/apache2 \
 	APACHE_PID_FILE=/var/run/apache2.pid \
-	NODE_ENVIRONMENT=$NODE_ENVIRONMENT
+	NODE_ENVIRONMENT=$NODE_ENVIRONMENT \
+	USER=p08tf1X \
+	PASS=p@ssw0Rd \
+	LOG_TOKEN=$LOG_TOKEN
 
 
 # Add VOLUMEs to allow backup of config and databases
