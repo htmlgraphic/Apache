@@ -4,11 +4,12 @@ env:
 
 build:
   pre_ci:
-    - docker build -t apache:shippable .
+    - docker build --no-cache -t apache:shippable .
   pre_ci_boot:
     image_name: apache
     image_tag: shippable
     pull: false
+    options:
   ci:
     - /usr/sbin/postconf -n
     - bash ./tests/build_tests.sh
@@ -17,9 +18,11 @@ build:
     - docker-compose -f docker-compose.local.yml up -d
     - docker ps
 
-notifications:
-  email:
-    recipients:
-      - jason@htmlgraphic.com
-    on_success: change
-    on_failure: always
+integrations:
+  notifications:
+    - integrationName: email
+      type: email
+      recipients:
+        - jason@htmlgraphic.com
+      on_success: change
+      on_failure: always
