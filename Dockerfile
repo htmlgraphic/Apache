@@ -71,4 +71,6 @@ VOLUME  ["/data"]
 EXPOSE 80 443
 
 
-CMD ["/opt/app/run.sh"]
+#CMD ["/opt/app/run.sh"]
+tail -F /var/log/apache2/* &
+exec apache2 -D FOREGROUND
