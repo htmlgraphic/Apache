@@ -2,7 +2,7 @@ machine:
   services:
     - docker
   environment:
-    LOG_TOKEN: $LOG_TOKEN
+    NODE_ENVIRONMENT: dev
 
 dependencies:
   override:

@@ -1,5 +1,6 @@
 env:
-  - USER=p08tf1X PASS=p@ssw0Rd NODE_ENVIRONMENT=dev LOG_TOKEN=$LOG_TOKEN
+  - NODE_ENVIRONMENT=dev
+  - NODE_ENVIRONMENT=production
 
 build:
   pre_ci:
@@ -11,8 +12,6 @@ build:
   ci:
     - /usr/sbin/postconf -n
     - bash ./tests/build_tests.sh
-    - git clone https://github.com/docker-library/official-images.git ~/official-images
-    - ~/official-images/test/run.sh apache-web
   post_ci:
     - sudo pip install -U docker-compose
     - docker-compose -f docker-compose.local.yml up -d

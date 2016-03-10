@@ -99,7 +99,6 @@ if [ ! -f /etc/php5/apache2/build ]; then
 			fi
 
 
-
 			if [ "$NODE_ENVIRONMENT" == 'production' ]; then
 					# Tweak Apache build
 					sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=1 \nIS_DEV=0 \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php5/apache2/php.ini
@@ -115,7 +114,6 @@ fi
 
 
 if [[ ! -z "${LOG_TOKEN}" ]]; then
-
 		# $LOG_TOKEN is not set on docker creation
 		echo "env LOG_TOKEN is not set."
 fi
@@ -123,7 +121,7 @@ fi
 
 # Postfix uses smart hosts in cluster to relay email
 postconf -e "relayhost = [post-office.htmlgraphic.com]:25"
-postconf -e "smtp_sasl_password_maps = static:$USER:$PASS"
+postconf -e "smtp_sasl_password_maps = static:${USER}:${PASS}"
 postconf -e "inet_protocols = ipv4"
 
 # Postfix is not using /etc/resolv.conf is because it is running inside a chroot jail, needs its own copy.
