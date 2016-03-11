@@ -5,14 +5,15 @@ env:
 
 build:
   pre_ci:
-    - docker build --force-rm=true --no-cache -t apache:shippable .
+    - docker build -t apache:shippable .
   pre_ci_boot:
     image_name: apache
     image_tag: shippable
     pull: false
   ci:
-    - /usr/sbin/postconf -n
-    - bash ./tests/build_tests.sh
+    - "bash ls -la"
+    - "/usr/sbin/postconf -n"
+    - "bash ./opt/tests/build_tests.sh"
   post_ci:
     - sudo pip install -U docker-compose
     - docker-compose -f docker-compose.local.yml up -d
