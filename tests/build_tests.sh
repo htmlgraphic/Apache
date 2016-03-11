@@ -52,9 +52,22 @@ testHTTPS()
 
 testNODE_ENVIRONMENT()
 {
-	echo 'Test env var NODE_ENVIRONMENT'
-	test=$(/usr/bin/wget -q -O- http://127.0.0.1 | grep -w "dev" | wc -l)
-	assertEquals 1 $test
+	echo 'Test env NODE_ENVIRONMENT'
+
+	# Depending on the type of environment dev or production should appear
+	# on the initial landing page of built container
+
+	dev=$(/usr/bin/wget -q -O- http://127.0.0.1 | grep -w "dev" | wc -l);
+	prod=$(/usr/bin/wget -q -O- http://127.0.0.1 | grep -w "production" | wc -l)
+
+	if [ "$dev" == 1 ]; then
+		# build is dev
+		assertEquals 1 $dev
+	else
+		# build is dev
+		assertEquals 1 $prod
+	fi
+
 	echo -e '\n'
 }
 
