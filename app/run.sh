@@ -121,7 +121,7 @@ fi
 
 # Postfix uses smart hosts in cluster to relay email
 postconf -e "relayhost = [post-office.htmlgraphic.com]:25"
-postconf -e "smtp_sasl_password_maps = static:${USER}:${PASS}"
+postconf -e "smtp_sasl_password_maps = static:${SASL_USER}:${SASL_PASS}"
 postconf -e "inet_protocols = ipv4"
 
 # Postfix is not using /etc/resolv.conf is because it is running inside a chroot jail, needs its own copy.
