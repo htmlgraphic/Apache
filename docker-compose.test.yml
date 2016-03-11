@@ -1,3 +1,0 @@
-sut:
-  image: this
-  command: echo "Test pass!"
