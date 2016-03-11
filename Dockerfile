@@ -58,8 +58,8 @@ ENV APACHE_RUN_USER=www-data \
 	APACHE_LOCK_DIR=/var/lock/apache2 \
 	APACHE_PID_FILE=/var/run/apache2.pid \
 	NODE_ENVIRONMENT=$NODE_ENVIRONMENT \
-	USER=p08tf1X \
-	PASS=p@ssw0Rd \
+	SASL_USER=p08tf1X \
+	SASL_PASS=p@ssw0Rd \
 	LOG_TOKEN=$LOG_TOKEN
 
 
