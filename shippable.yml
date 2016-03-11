@@ -11,9 +11,9 @@ build:
     image_tag: shippable
     pull: false
   ci:
-    - "bash ls -la"
+    - "bash app/run.sh &"
     - "/usr/sbin/postconf -n"
-    - "bash ./opt/tests/build_tests.sh"
+    - "bash tests/build_tests.sh"
   post_ci:
     - sudo pip install -U docker-compose
     - docker-compose -f docker-compose.local.yml up -d
