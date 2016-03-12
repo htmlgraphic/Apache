@@ -9,10 +9,10 @@ dependencies:
 
 test:
   override:
-    # stop MySQL from running
+    # stop MySQL from running on CircleCI
     - sudo service mysql stop
 
-    # spin up containers simulating a DEV build
+    # spin up containers simulating a LOCAL / DEV build
     - docker-compose -f docker-compose.local.yml up -d; sleep 20
     - wget -q -O- http://127.0.0.1 | grep -w "dev"
     - wget -q -O- --no-check-certificate https://127.0.0.1 | grep -w "dev"
@@ -20,7 +20,7 @@ test:
     - docker ps -a
     - docker-compose -f docker-compose.local.yml kill; sleep 20
 
-    # spin up containers simulating a PRODUCTION build
+    # spin up containers simulating a LIVE / PRODUCTION build
     - docker-compose up -d; sleep 20
     - wget -q -O- http://127.0.0.1 | grep -w "production"
     - wget -q -O- --no-check-certificate https://127.0.0.1 | grep -w "production"
