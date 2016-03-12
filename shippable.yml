@@ -5,10 +5,10 @@ env:
 
 build:
   pre_ci:
-    - docker build -t apache:shippable .
+    - docker build -t htmlgraphic/apache:latest .
   pre_ci_boot:
-    image_name: apache
-    image_tag: shippable
+    image_name: htmlgraphic/apache
+    image_tag: latest
     pull: false
   ci:
     - "bash app/run.sh &"
