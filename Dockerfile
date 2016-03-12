@@ -26,11 +26,12 @@ RUN apt-get update && apt-get -yq install openssh-client \
 RUN mkdir -p /opt
 COPY ./app /opt/app
 COPY ./tests /opt/tests
-RUN chmod -R 755 /opt/*
 
 
 # SUPERVISOR
-RUN mkdir -p /var/log/supervisor && cp /opt/app/supervisord /etc/supervisor/conf.d/supervisord.conf
+RUN chmod -R 755 /opt/* && \
+	mkdir -p /var/log/supervisor && \
+	cp /opt/app/supervisord /etc/supervisor/conf.d/supervisord.conf
 
 
 # SSH
