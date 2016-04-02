@@ -6,7 +6,7 @@ web:
   environment:
     - NODE_ENVIRONMENT=dev
 db:
-  image: htmlgraphic/mysql:latest
+  image: htmlgraphic/mysql:5.5
   expose:
     - "3306"
   environment:

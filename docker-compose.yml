@@ -8,7 +8,7 @@ hg-web:
   environment:
     - NODE_ENVIRONMENT=production
 hg-db:
-  image: tutum/mysql:5.5
+  image: htmlgraphic/mysql:5.5
   volumes_from:
     - hg-db-data
   expose:
