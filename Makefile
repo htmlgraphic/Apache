@@ -50,8 +50,8 @@ rm:
 	docker rm -f $(NAME)_db_1
 
 state:
-	docker ps -a | grep $(NAME)
+	docker ps -a | grep $(NAME)_web_1
 
 logs:
 	@echo "Build $(NAME)..."
-	docker logs -f $(NAME)
+	docker logs -f $(NAME)_db_1
