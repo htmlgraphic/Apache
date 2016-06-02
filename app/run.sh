@@ -93,7 +93,7 @@ if [ ! -f /etc/php5/apache2/build ]; then
 
 			if [ "$NODE_ENVIRONMENT" == 'dev' ]; then
 					# Tweak Apache build
-					sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=0 \nIS_DEV=0 \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php5/apache2/php.ini
+					sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=0 \nIS_DEV=0 \nNODE_ENVIRONMENT=dev \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php5/apache2/php.ini
 					# Update the PHP.ini file, enable <? ?> tags and quiet logging.
 					sed -i "s/error_reporting = .*$/error_reporting = E_ALL/" /etc/php5/apache2/php.ini
 			fi
@@ -101,7 +101,7 @@ if [ ! -f /etc/php5/apache2/build ]; then
 
 			if [ "$NODE_ENVIRONMENT" == 'production' ]; then
 					# Tweak Apache build
-					sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=1 \nIS_DEV=0 \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php5/apache2/php.ini
+					sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=1 \nIS_DEV=0 \nNODE_ENVIRONMENT=production \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php5/apache2/php.ini
 					# Update the PHP.ini file, enable <? ?> tags and quiet logging.
 					sed -i "s/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/" /etc/php5/apache2/php.ini
 			fi
