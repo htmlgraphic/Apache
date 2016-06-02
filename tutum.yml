@@ -25,7 +25,7 @@ hg-db-data:
     volumes:
       - "/var/lib/mysql"
 hg-web-data:
-  image: 'ubuntu:latest'
+  image: busybox
   deployment_strategy: every_node
   volumes:
     - /data
