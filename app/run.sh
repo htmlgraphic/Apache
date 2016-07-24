@@ -28,24 +28,17 @@ fi
 if [ ! -d /data/apache2 ]; then
 
 	# Create directories for logs and ssl certificates
-	mkdir -p /data/apache2/{logs,ssl}
+	mkdir -p /data/apache2/{logs,ssl,sites-enabled}
 
 	# Create diectory for any pear libaries
 	mkdir -p /data/pear
 	touch /data/pear/empty
 
-	# Move initial apache conf script into directory
-	cp -R /etc/apache2/* /data/apache2
-
-	# Symlink modules for Apache so 'a2enmod' can be setup correctly
-	cd /data/apache2 && ln -s /etc/apache2/mods-available mods-available
-	cd /data/apache2 && ln -s /etc/apache2/mods-enabled mods-enabled
-
 	# Strict permissions on Apache conf files
 	cd /etc/apache2/ && chmod 700 *
 
 	# Set the 'ServerName' directive globally
-	echo ServerName localhost >> /data/apache2/conf-enabled/servername.conf
+	echo ServerName localhost >> /etc/apache2/conf-enabled/servername.conf
 
 	# Customizable Apache configuration file(s)
 	sudo mv /opt/app/*.conf /data/apache2/sites-enabled/
@@ -69,12 +62,12 @@ if [ ! -f /etc/php5/apache2/build ]; then
 
 	# Tweak Apache build
 	sed -i 's|;include_path = ".:/usr/share/php"|include_path = ".:/usr/share/php:/data/pear"|g' /etc/php5/apache2/php.ini
-	sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php5/apache2/php.ini
+	sed -i 's/variables_order.*/variables_order = \"EGPCS\"/g' /etc/php5/apache2/php.ini
+	sed -i 's/IncludeOptional sites-enabled\/\*.conf/IncludeOptional \/data\/apache2\/sites-enabled\/*.conf/' /etc/apache2/apache2.conf
 
 	# Update the PHP.ini file, enable <? ?> tags and quiet logging.
-	sed -i "s/short_open_tag = Off/short_open_tag = On/" /etc/php5/apache2/php.ini
+	sed -i 's|short_open_tag = Off|short_open_tag = On|g' /etc/php5/apache2/php.ini
 	sed -i 's|;session.save_path = "/var/lib/php5"|session.save_path = "/tmp"|g' /etc/php5/apache2/php.ini
-	sed -i 's|#ServerRoot "\/etc\/apache2"|ServerRoot "\/data\/apache2"|g' /etc/apache2/apache2.conf
 
 	# Increase upload file limitations
 	sed -i 's|upload_max_filesize = 2M|upload_max_filesize = 1000M|g' /etc/php5/apache2/php.ini
