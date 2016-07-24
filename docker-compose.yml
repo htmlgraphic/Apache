@@ -6,7 +6,9 @@ hg-web:
   links:
     - "hg-db:mysql"
   environment:
-    - NODE_ENVIRONMENT=production
+    - NODE_ENVIRONMENT=production \
+    - SASL_USER=p08tf1X \
+    - SASL_PASS=p@ssw0Rd \
 hg-db:
   image: htmlgraphic/mysql:5.5
   volumes_from:

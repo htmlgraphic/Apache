@@ -5,6 +5,7 @@ OutputLog ()
 	echo "=> Adding environmental variables:"
 	echo "=> NODE_ENVIRONMENT: $NODE_ENVIRONMENT"
 	echo "=> Log Key: $LOG_TOKEN"
+	echo "=> Postfix Outgoing SMTP: $SASL_USER:${SASL_PASS}"
 }
 
 # output logs to logentries.com
@@ -47,7 +48,7 @@ if [ ! -d /data/apache2 ]; then
 	mv -f /opt/app/ssl/* /data/apache2/ssl
 
 	# Disable the default website
-	rm /data/apache2/sites-enabled/000-default.conf
+	rm /etc/apache2/sites-enabled/000-default.conf
 
 fi
 
