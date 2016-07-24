@@ -1,6 +1,7 @@
 web:
   volumes:
-   - "~/SITES/docker:/data"
+   #- "~/SITES/docker:/data"
+   - "/c/Users/southpark/docker:/data"
   links:
     - "db:mysql"
   extends:
