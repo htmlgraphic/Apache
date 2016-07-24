@@ -12,7 +12,7 @@ stdout_logfile=/var/log/supervisor/%(program_name)s-stdout.log
 stderr_logfile=/var/log/supervisor/%(program_name)s-stderr.log
 
 [program:apache2]
-command=/bin/bash -c "source /data/apache2/envvars && exec /usr/sbin/apache2 -D FOREGROUND"
+command=/bin/bash -c "source /etc/apache2/envvars && exec /usr/sbin/apache2 -D FOREGROUND"
 
 [program:rsyslogd]
 command=/usr/sbin/rsyslogd -n
