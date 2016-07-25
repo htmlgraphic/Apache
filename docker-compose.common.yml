@@ -4,9 +4,9 @@ web:
     - "80:80"
     - "443:443"
   environment:
-    - NODE_ENVIRONMENT=dev \
-    - SASL_USER=p08tf1X \
-    - SASL_PASS=p@ssw0Rd \
+    - NODE_ENVIRONMENT=dev
+  env_file:
+    - ./common.env
 db:
   image: htmlgraphic/mysql:5.5
   expose:

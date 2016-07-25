@@ -3,14 +3,14 @@
 OutputLog ()
 {
 	echo "=> Adding environmental variables:"
-	echo "=> NODE_ENVIRONMENT: $NODE_ENVIRONMENT"
-	echo "=> Log Key: $LOG_TOKEN"
-	echo "=> Postfix Outgoing SMTP: $SASL_USER:${SASL_PASS}"
+	echo "=> NODE_ENVIRONMENT: ${NODE_ENVIRONMENT}"
+	echo "=> Log Key: ${LOG_TOKEN}"
+	echo "=> Postfix Outgoing SMTP: ${SASL_USER}:${SASL_PASS}"
 }
 
 # output logs to logentries.com
 cat <<EOF > /etc/rsyslog.d/logentries.conf
-\$template Logentries,"$LOG_TOKEN %HOSTNAME% %syslogtag%%msg%\n"
+\$template Logentries,"${LOG_TOKEN} %HOSTNAME% %syslogtag%%msg%\n"
 
 *.* @@api.logentries.com:10000;Logentries
 EOF

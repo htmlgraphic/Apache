@@ -2,6 +2,10 @@ env:
   matrix:
   - NODE_ENVIRONMENT=dev
   - NODE_ENVIRONMENT=production
+  global:
+    - SASL_USER=p08tf1X
+    - SASL_PASS=p@ssw0Rd
+
 
 build:
   pre_ci:
@@ -28,5 +32,3 @@ integrations:
         - jason+github@htmlgraphic.com
       on_success: change
       on_failure: always
-
-
