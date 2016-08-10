@@ -10,6 +10,7 @@ RUN apt-get update && apt-get -yq install openssh-client \
 	libapache2-mod-php5 \
 	php5-mcrypt \
 	php5-mysql \
+	php5-sqlite \
 	php5-gd \
 	php5-curl \
 	php-pear \
