@@ -44,6 +44,9 @@ COPY ./authorized_keys /root/.ssh/authorized_keys
 # APACHE
 RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
 
+# LARAVEL
+RUN composer global require "laravel/installer"
+
 # PEAR Package needed for a web app
 RUN pear install HTML_QuickForm
 
@@ -60,8 +63,10 @@ ENV APACHE_RUN_USER=www-data \
 	APACHE_LOCK_DIR=/var/lock/apache2 \
 	APACHE_PID_FILE=/var/run/apache2.pid \
 	NODE_ENVIRONMENT=$NODE_ENVIRONMENT \
+	SMTP_HOST=$SMTP_HOST \
 	SASL_USER=$SASL_USER \
 	SASL_PASS=$SASL_PASS \
+	PATH="~/.composer/vendor/bin:$PATH" \
 	LOG_TOKEN=$LOG_TOKEN
 
 

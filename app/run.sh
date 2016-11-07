@@ -5,7 +5,7 @@ OutputLog ()
 	echo "=> Adding environmental variables:"
 	echo "=> NODE_ENVIRONMENT: ${NODE_ENVIRONMENT}"
 	echo "=> Log Key: ${LOG_TOKEN}"
-	echo "=> Postfix Outgoing SMTP: ${SASL_USER}:${SASL_PASS}"
+	echo "=> Postfix Outgoing SMTP (${SMTP_HOST}): ${SASL_USER}:${SASL_PASS}"
 }
 
 # output logs to logentries.com
@@ -80,6 +80,7 @@ if [ ! -f /etc/php5/apache2/build ]; then
 	# Add imagick extension
 	echo "extension=imagick.so" >> /etc/php5/apache2/php.ini
 
+
 	# Add build file to remove duplicate script execution
 	echo 1 > /etc/php5/apache2/build
 
@@ -114,7 +115,7 @@ fi
 
 
 # Postfix uses smart hosts in cluster to relay email
-postconf -e "relayhost = [post-office.htmlgraphic.com]:25"
+postconf -e "relayhost = [${SMTP_HOST}]:587"
 postconf -e "smtp_sasl_password_maps = static:${SASL_USER}:${SASL_PASS}"
 postconf -e "inet_protocols = ipv4"
 
