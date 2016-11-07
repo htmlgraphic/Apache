@@ -4,6 +4,9 @@ apache:
   deployment_strategy: high_availability
   environment:
     - NODE_ENVIRONMENT=production
+    - SMTP_HOST=
+    - SASL_PASS=
+    - SASL_USER=
   links:
     - 'mysql.DB:mysql'
   ports:
