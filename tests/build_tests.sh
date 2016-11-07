@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-curl -L "https://shunit2.googlecode.com/files/shunit2-2.1.6.tgz" | tar zx
+curl -L "https://github.com/aetheric/shunit2/archive/2.1.6.tar.gz" | tar zx
 
 	#### Extra breathing room
 	echo -e '\n'
