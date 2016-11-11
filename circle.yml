@@ -3,8 +3,9 @@ machine:
     - docker
 
 dependencies:
-  override:
+  pre:
     - docker info
+    - sudo pip install docker-compose
     - docker build -t htmlgraphic/apache:latest .
 
 test:
@@ -17,8 +18,8 @@ test:
     - wget -q -O- http://127.0.0.1 | grep -w "dev"
     - wget -q -O- --no-check-certificate https://127.0.0.1 | grep -w "dev"
     - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' apache_web_1)" -- bash -c /opt/tests/build_tests.sh
-    - docker-compose logs
     - docker ps -a
+    - docker-compose logs
     - docker-compose -f docker-compose.local.yml kill; sleep 20
 
     # spin up containers simulating a LIVE / PRODUCTION build
