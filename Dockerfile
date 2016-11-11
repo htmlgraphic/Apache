@@ -1,26 +1,40 @@
-FROM htmlgraphic/base
+FROM ubuntu:16.04
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
 # Install packages then remove cache package list information
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update && apt-get -yq install openssh-client \
-	apache2 \
+RUN apt-get update && apt-get -yq install python-software-properties software-properties-common \
+	openssh-client
+
+RUN apt-get update && apt-get -yq install apache2 \
+	vim \
+	curl \
+	mailutils \
 	wget \
-	libapache2-mod-php5 \
-	php5-mcrypt \
-	php5-mysql \
-	php5-sqlite \
-	php5-gd \
-	php5-curl \
-	php-pear \
-	php-apc \
-	php5-dev \
+	zip \
+	unzip \
+	language-pack-en \
+	apache2 \
+	php7.0 \
+	libapache2-mod-php7.0 \
+	php-apcu \
+	php7.0-zip \
+	php7.0-mysql \
+	php7.0-curl \
+	php7.0-gd \
+	php7.0-json \
+	php7.0-mcrypt \
+	php7.0-mbstring \
+	php7.0-opcache \
+	php7.0-xml \
 	libmagickwand-dev \
 	supervisor \
 	rsyslog \
 	postfix && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# POSTFIX
+RUN update-locale LANG=en_US.UTF-8
 
 # Copy files to build app, add coming page to root apache dir, include self
 # signed SHA256 certs, unit tests to check over the setup
@@ -47,14 +61,8 @@ RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/lo
 # LARAVEL
 RUN composer global require "laravel/installer"
 
-# PEAR Package needed for a web app
-RUN pear install HTML_QuickForm
-
-# Install imagick into Apache
-RUN pecl install imagick
-
 # Enable Apache mods.
-RUN a2enmod php5 && a2enmod suexec && a2enmod userdir && a2enmod rewrite && a2enmod ssl && php5enmod mcrypt
+RUN a2enmod userdir && a2enmod rewrite && a2enmod ssl
 
 # Environment variables contained within build container.
 ENV APACHE_RUN_USER=www-data \
