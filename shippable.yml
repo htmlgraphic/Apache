@@ -16,13 +16,16 @@ build:
     image_tag: latest
     pull: false
   ci:
-    - "bash app/run.sh &"
+    - ls -la
+    - "bash /opt/app/run.sh &"
     - "/usr/sbin/postconf -n"
-    - "bash tests/build_tests.sh"
+    - "cat /data/apache2/logs/error_log"
+    - "bash /opt/tests/build_tests.sh"
   post_ci:
     - sudo apt-get update && apt-get -y install python-pip
     - sudo pip install -U docker-compose
     - docker-compose -f docker-compose.local.yml up -d
+    - docker-compose logs
     - docker ps -a
 
 integrations:
