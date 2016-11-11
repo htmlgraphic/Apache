@@ -78,10 +78,6 @@ if [ ! -f /etc/php/7.0/apache2/build ]; then
 	# Allow the container to continuously update it's time
 	echo "ntpdate ntp.ubuntu.com" > /etc/cron.daily/ntpdate && chmod 755 /etc/cron.daily/ntpdate
 
-	# Add imagick extension
-	echo "extension=imagick.so" >> /etc/php/7.0/apache2/php.ini
-
-
 	# Add build file to remove duplicate script execution
 	echo 1 > /etc/php/7.0/apache2/build
 
