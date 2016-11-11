@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM htmlgraphic/base:16.04
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
 # Install packages then remove cache package list information
@@ -8,13 +8,6 @@ RUN apt-get update && apt-get -yq install python-software-properties software-pr
 	openssh-client
 
 RUN apt-get update && apt-get -yq install apache2 \
-	vim \
-	curl \
-	mailutils \
-	wget \
-	zip \
-	unzip \
-	language-pack-en \
 	apache2 \
 	php7.0 \
 	libapache2-mod-php7.0 \
