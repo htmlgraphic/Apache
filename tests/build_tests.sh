@@ -57,8 +57,8 @@ testNODE_ENVIRONMENT()
 	# Depending on the type of environment dev or production should appear
 	# on the initial landing page of built container
 
-	dev=$(/usr/bin/wget -q -O- http://127.0.0.1 | grep -w "dev" | wc -l);
-	prod=$(/usr/bin/wget -q -O- http://127.0.0.1 | grep -w "production" | wc -l)
+	dev=$(/usr/bin/wget -q -O- http://127.0.0.1 | grep -w "NODE_ENVIRONMENT: dev" | wc -l);
+	prod=$(/usr/bin/wget -q -O- http://127.0.0.1 | grep -w "NODE_ENVIRONMENT: production" | wc -l)
 
 	if [ "$dev" == 1 ]; then
 		# build is dev
