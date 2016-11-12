@@ -11,8 +11,6 @@ db:
   extends:
     file: docker-compose.common.yml
     service: db
-  ports:
-    - "3306:3306"
   volumes_from:
     - db-data
 db-data:
