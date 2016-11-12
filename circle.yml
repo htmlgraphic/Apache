@@ -20,7 +20,7 @@ test:
     - sudo lxc-attach -n "$(docker inspect --format "{{.Id}}" apache_web_1)" -- bash -c /opt/tests/build_tests.sh
 
     - docker ps -a
-    - docker logs -f apache_web_1
+    - docker logs -f apache_web_1; sleep 10
     - docker-compose -f docker-compose.local.yml kill; sleep 20
 
     # spin up containers simulating a LIVE / PRODUCTION build

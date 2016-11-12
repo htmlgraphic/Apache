@@ -42,7 +42,7 @@ if [ ! -d /data/apache2 ]; then
 	echo ServerName localhost >> /etc/apache2/conf-enabled/servername.conf
 
 	# Customizable Apache configuration file(s)
-	sudo mv /opt/app/*.conf /data/apache2/sites-enabled/
+	mv /opt/app/*.conf /data/apache2/sites-enabled/
 
 	# Move needed certificates into place
 	mv -f /opt/app/ssl/* /data/apache2/ssl
