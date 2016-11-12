@@ -10,7 +10,6 @@ env:
 
 build:
   pre_ci:
-    - sudo pip install -U docker-compose
     - docker build --no-cache -t htmlgraphic/apache:latest .
   pre_ci_boot:
     image_name: htmlgraphic/apache
@@ -22,6 +21,7 @@ build:
     - "bash tests/build_tests.sh"
   post_ci:
     - sudo apt-get update && apt-get -y install python-pip
+    - sudo pip install -U docker-compose
     - docker-compose -f docker-compose.local.yml up -d
     - docker-compose logs
     - docker ps -a
