@@ -1,6 +1,6 @@
 ##Apache Docker
 
-This repo will give you a turn key, build of a Docker container for use in production OR local development. The setup includes an Apache web service, linked MySQL instance and a data container volume.
+This repo will give you a turn key Docker container build for use in production OR local development. The setup includes an Apache web service, linked MySQL instance and a data container volume.
 
 
 If you found this repo you are probably looking into Docker or already have knowledge as to what Docker can help you with. In this repo you will find a number of complete Dockerfile builds used in **development** and **production** environments. Listed below is an explanation of each file
@@ -14,15 +14,16 @@ If you found this repo you are probably looking into Docker or already have know
 * **app/postfix-local-setup.sh** - Run manually on container to direct email to a gated email relay server, no emails are sent out to actual inboxes
 * **app/postfix.sh** - Used by *supervisord.conf* to start Postfix
 * **app/run.sh** - Setup apache, conf files, and start process on container
-* **app/sample.conf** - This file will exist on the container `/data/apache2/sites-enabled` duplicate / edit to host various domains
+* **app/sample.conf** - located within `/data/apache2/sites-enabled` duplicate / modify to host others domains
 * **app/supervisord.conf** - Supervisor is a client / server system which monitors and controls a number of processes on UNIX-like operating systems
-* **tests/build_tests.sh** - Build test processes
 * **.dockerignore** - Files that should be ignored during the build process - [best practice](https://docs.docker.com/articles/dockerfile_best-practices/#use-a-dockerignore-file)
+* **.env.example** - Rename file to `.env` for local environment variables used within build
 * **circle.yml** - CircleCI conf
-* **docker-compose.\*** - (various composer files for local and production builds)
+* **docker-compose.\*** - (various composer files for local and production builds) [more info](https://docs.docker.com/docker-cloud/apps/deploy-to-cloud-btn/)
 * **Dockerfile** - Uses a basefile build to help speed up the docker container build process
 * **Makefile** - A helpful file used to streamline build commands
 * **shippable.yml** - Shippable conf
+* **tests/build_tests.sh** - Build test processes
 
 
 
@@ -34,7 +35,7 @@ If you found this repo you are probably looking into Docker or already have know
 
 ##Docker Compose
 
-Build the **Apache** instance locally and setup a local MySQL database container for persistant database data, the goal is to create a easy to use development environment.
+Launch the **Apache** instance locally and setup a local MySQL database container for persistant database data, the goal is to create a easy to use development environment. Type `make` for more build options
 
 ```bash
 	$ git clone https://github.com/htmlgraphic/Apache.git && cd Apache
@@ -43,20 +44,8 @@ Build the **Apache** instance locally and setup a local MySQL database container
 
 ---
 
-[![Deploy to Tutum](https://s.tutum.co/deploy-to-tutum.svg)](https://dashboard.tutum.co/stack/deploy/)
+[![Deploy to Docker Cloud](https://files.cloud.docker.com/images/deploy-to-dockercloud.svg)](https://cloud.docker.com/stack/deploy/)
 
-
----
-
-##Build Apache Image
-
-Build a working **Apache** instance using a `Makefile` and a few terminal commands
-
-```bash
-	$ git clone https://github.com/htmlgraphic/Apache.git && cd Apache
-	$ make
-	$ make build
-```
 
 ---
 
