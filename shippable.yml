@@ -3,9 +3,9 @@ env:
   - NODE_ENVIRONMENT=dev
   - NODE_ENVIRONMENT=production
   global:
-    - SASL_USER=p08tf1X
-    - SASL_PASS=p@ssw0Rd
-    - SMTP_HOST=email-test.htmlgraphic.com
+    - SASL_USER="p08tf1X"
+    - SASL_PASS="p@ssw0Rd"
+    - SMTP_HOST="email-test.htmlgraphic.com"
 
 build:
   pre_ci:
@@ -18,7 +18,9 @@ build:
     pull: false
   ci:
     - "bash app/run.sh &"
+    - sleep 5
     - "/usr/sbin/postconf -n"
+    - sleep 5
     - "bash tests/build_tests.sh"
   #post_ci:
     #- touch .env
