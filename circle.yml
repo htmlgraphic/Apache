@@ -15,18 +15,17 @@ test:
 
     # spin up containers simulating a LOCAL / DEV build
     - touch .env
-    - docker-compose -f docker-compose.local.yml up -d; sleep 20
-    - wget -q -O- http://127.0.0.1 | grep -w "dev"
-    - wget -q -O- --no-check-certificate https://127.0.0.1 | grep -w "dev"
+    - docker-compose -f docker-compose.local.yml up -d; sleep 10
     - sudo lxc-attach -n "$(docker inspect --format "{{.Id}}" apache_web_1)" -- bash -c /opt/tests/build_tests.sh
 
     - docker ps -a
     - docker logs apache_web_1 > log_output
     - mv log_output $CIRCLE_ARTIFACTS/log_output.txt
-    - docker-compose -f docker-compose.local.yml kill; sleep 20
+    - docker-compose -f docker-compose.local.yml kill; sleep 10
 
-    # spin up containers simulating a LIVE / PRODUCTION build
-    - docker-compose up -d; sleep 20
-    - wget -q -O- http://127.0.0.1 | grep -w "production"
-    - wget -q -O- --no-check-certificate https://127.0.0.1 | grep -w "production"
+    # spin up containers simulating a LIVE / PRODUCTION build, very similar to build_test.sh
+    - docker-compose up -d; sleep 10
+    - sudo lxc-attach -n "$(docker inspect --format "{{.Id}}" apache_hg-web_1)" -- bash -c /opt/tests/build_tests.sh
     - docker ps -a
+
+
