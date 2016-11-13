@@ -25,8 +25,7 @@ help:
 	@echo "     make logs		- View logs in real time"
 
 build:
-	docker build --rm -t $(VERSION) -t $(IMAGE_NAME):latest .
-	docker tag $(IMAGE_NAME):latest $(VERSION)
+	docker build --rm -t $(IMAGE_NAME):$(VERSION) -t $(IMAGE_NAME):latest .
 
 push:
 	@echo "note: If the repository is set as an automatted build you will NOT be able to push"
