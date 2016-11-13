@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-curl -L "https://github.com/aetheric/shunit2/archive/2.1.6.tar.gz" | tar zx
-
-	#### Extra breathing room
-	echo -e '\n'
+#### Extra breathing room
+echo -e '\n'
 
 testPostfixUsername()
 {
@@ -71,4 +69,4 @@ testNODE_ENVIRONMENT()
 	echo -e '\n'
 }
 
-. shunit2-2.1.6/src/shunit2
+. /opt/tests/shunit2-2.1.6/src/shunit2

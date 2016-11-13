@@ -5,9 +5,7 @@ MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && apt-get -yq install python-software-properties software-properties-common \
-	openssh-client
-
-RUN apt-get update && apt-get -yq install apache2 \
+	openssh-client \
 	apache2 \
 	php7.0 \
 	libapache2-mod-php7.0 \
@@ -36,6 +34,8 @@ RUN mkdir -p /opt
 COPY ./app /opt/app
 COPY ./tests /opt/tests
 
+# Unit tests run via build_tests.sh
+RUN curl -L "https://github.com/aetheric/shunit2/archive/2.1.6.tar.gz" | tar zx -C /opt/tests/
 
 # SUPERVISOR
 RUN chmod -R 755 /opt/* && \
