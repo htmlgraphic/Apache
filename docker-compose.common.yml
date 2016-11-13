@@ -6,7 +6,7 @@ web:
   environment:
     - NODE_ENVIRONMENT=dev
   env_file:
-    - ./common.env
+    - .env
 db:
   image: htmlgraphic/mysql:5.5
   expose:
@@ -14,7 +14,9 @@ db:
   environment:
     - ON_CREATE_DB=htmlgraphic
     - MYSQL_PASS=new_password
+  ports:
+    - "3306:3306"
 db-data:
-  image: busybox
+  image: busybox:latest
   volumes:
     - "/var/lib/mysql"
