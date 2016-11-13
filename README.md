@@ -11,7 +11,6 @@ If you found this repo you are probably looking into Docker or already have know
 * **app/apache-config.conf** - Default configuration used by Apache
 * **app/index.php** - Default web page, enter the IP address `docker-machine ls` to load this page.
 * **app/mac-permissions.sh** - Run manually on container to match uid / gid permissions of local docker container to Mac OS X
-* **app/postfix-local-setup.sh** - Run manually on container to direct email to a gated email relay server, no emails are sent out to actual inboxes
 * **app/postfix.sh** - Used by *supervisord.conf* to start Postfix
 * **app/run.sh** - Setup apache, conf files, and start process on container
 * **app/sample.conf** - located within `/data/apache2/sites-enabled` duplicate / modify to host others domains
