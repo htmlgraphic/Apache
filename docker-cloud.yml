@@ -1,49 +1,52 @@
 hg-web:
-  image: "htmlgraphic/apache:latest"
   autoredeploy: true
   deployment_strategy: high_availability
   environment:
     - NODE_ENVIRONMENT=production
-    - SMTP_HOST=
     - SASL_PASS=
     - SASL_USER=
+    - SMTP_HOST=
+  image: 'htmlgraphic/apache:latest'
   links:
-    - "mysql.DB:mysql"
+    - 'mysql.DB:mysql'
   ports:
-    - "80:80"
-    - "443:443"
+    - '80:80'
+    - '443:443'
   restart: always
   sequential_deployment: true
   tags:
-    - production
-    - nodecluster-name=web
-  target_num_containers: 2
+    - testing
   volumes_from:
     - hg-web-data
 hg-web-data:
-  image: "busybox:latest"
-  deployment_strategy: every_node
+  image: 'busybox:latest'
+  tags:
+    - testing
   volumes:
     - /data
 hg-db:
-  image: htmlgraphic/mysql:5.5
-  volumes_from:
-    - hg-db-data
-  expose:
-    - "3306"
   environment:
     - ON_CREATE_DB=htmlgraphic
+  expose:
+    - '3306'
+  image: 'htmlgraphic/mysql:5.5'
+  tags:
+    - testing
+  volumes_from:
+    - hg-db-data
 hg-db-data:
-    image: busybox
-    volumes:
-      - "/var/lib/mysql"
+  image: 'busybox:latest'
+  tags:
+    - testing
+  volumes:
+    - /var/lib/mysql
 ssh:
-  image: "tutum/ubuntu:latest"
   environment:
-    - "AUTHORIZED_KEYS=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbKBlYPbK29pUUwtwRIIjwCtZNujOUb77qHIeohOMk+O8z0gEIgkUwVI3x91AlbhctgpQor3IIeFITwGgIKVo33WW64HI9Nfr2vGx9EAfl9CL9cfDj9M9u4EFOn8NkD/TQMH4d1Fslt59eyl4fSV62d98zJ8goJwrolXM5NlS3hss8FtXhN6bNM0V5nliPUrv/1//3ZoZ5p0inOI1xWNHcMEILGllG+yqaknH9yIk880WoCYZuR7q2ddE6mxrBeJFiyryW5nhsxmXfHnsDVGiLh1C3hltEXzZ0Bdj11jhJfgIcuKU1iUFZg3kKVjRAvrteBQA328s5+UJswV+NWFiH hosting@htmlgraphic.com"
+    - AUTHORIZED_KEYS=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbKBlYPbK29pUUwtwRIIjwCtZNujOUb77qHIeohOMk+O8z0gEIgkUwVI3x91AlbhctgpQor3IIeFITwGgIKVo33WW64HI9Nfr2vGx9EAfl9CL9cfDj9M9u4EFOn8NkD/TQMH4d1Fslt59eyl4fSV62d98zJ8goJwrolXM5NlS3hss8FtXhN6bNM0V5nliPUrv/1//3ZoZ5p0inOI1xWNHcMEILGllG+yqaknH9yIk880WoCYZuR7q2ddE6mxrBeJFiyryW5nhsxmXfHnsDVGiLh1C3hltEXzZ0Bdj11jhJfgIcuKU1iUFZg3kKVjRAvrteBQA328s5+UJswV+NWFiH hosting@htmlgraphic.com
+  image: 'tutum/ubuntu:latest'
   links:
-    - "mysql.DB:mysql"
+    - 'mysql.DB:mysql'
   ports:
-    - "2222:22"
+    - '2222:22'
   volumes_from:
     - hg-web-data
