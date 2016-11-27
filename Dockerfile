@@ -11,6 +11,7 @@ RUN apt-get update && apt-get -yq install python-software-properties software-pr
 	libapache2-mod-php7.0 \
 	php-apcu \
 	php-imagick \
+	php7.0-fpm \
 	php7.0-zip \
 	php7.0-mysql \
 	php7.0-curl \
