@@ -9,12 +9,12 @@ env:
 
 build:
   pre_ci:
-    - docker build --no-cache -t htmlgraphic/apache:latest .
+    - docker build --no-cache -t htmlgraphic/apache:shippable .
     #- sudo apt-get update && apt-get -y install python-pip
     #- sudo pip install -U docker-compose
   pre_ci_boot:
     image_name: htmlgraphic/apache
-    image_tag: latest
+    image_tag: shippable
     pull: false
   ci:
     - "bash app/run.sh &"
