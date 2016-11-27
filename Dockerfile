@@ -42,13 +42,6 @@ RUN chmod -R 755 /opt/* && \
 	mkdir -p /var/log/supervisor && \
 	cp /opt/app/supervisord /etc/supervisor/conf.d/supervisord.conf
 
-
-# SSH
-# Add public key for root access
-RUN mkdir -p /root/.ssh
-COPY ./authorized_keys /root/.ssh/authorized_keys
-
-
 # APACHE
 RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
 
@@ -69,7 +62,8 @@ ENV APACHE_RUN_USER=www-data \
 	SASL_USER=$SASL_USER \
 	SASL_PASS=$SASL_PASS \
 	PATH="~/.composer/vendor/bin:$PATH" \
-	LOG_TOKEN=$LOG_TOKEN
+	LOG_TOKEN=$LOG_TOKEN \
+	AUTHORIZED_KEYS=$AUTHORIZED_KEYS
 
 
 # Add VOLUMEs to allow backup of config and databases
