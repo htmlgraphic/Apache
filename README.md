@@ -63,3 +63,8 @@ Using **CircleCI** review the `circle.yml` file.
 [![Run Status](https://api.shippable.com/projects/54cf015b5ab6cc13528a7b6a/badge?branch=develop)](https://app.shippable.com/projects/54cf015b5ab6cc13528a7b6a)
 
 Using **Shippable** review the `shippable.yml` file. This continuous integration service will fully test the creation of your container and can push the complete image to your private Docker repo if you desire.
+
+## Support on Beerpay
+Hey dude! Help me out for a couple of :beers:!
+
+[![Beerpay](https://beerpay.io/htmlgraphic/Apache/badge.svg?style=beer-square)](https://beerpay.io/htmlgraphic/Apache)  [![Beerpay](https://beerpay.io/htmlgraphic/Apache/make-wish.svg?style=flat-square)](https://beerpay.io/htmlgraphic/Apache?focus=wish)
