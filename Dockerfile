@@ -71,6 +71,19 @@ ENV APACHE_RUN_USER=www-data \
 	PATH="~/.composer/vendor/bin:$PATH" \
 	LOG_TOKEN=$LOG_TOKEN
 
+# Build-time metadata as defined at http://label-schema.org
+    ARG BUILD_DATE
+    ARG VCS_REF
+    ARG VERSION
+    LABEL org.label-schema.build-date=$BUILD_DATE \
+          org.label-schema.name="Apache Docker" \
+          org.label-schema.description="Docker container running Apache running on Ubuntu, Composer, Lavavel, TDD via Shippable & CircleCI" \
+          org.label-schema.url="https://htmlgraphic.com" \
+          org.label-schema.vcs-ref=$VCS_REF \
+          org.label-schema.vcs-url="https://github.com/htmlgraphic/Apache" \
+          org.label-schema.vendor="HTMLgraphic, LLC" \
+          org.label-schema.version=$VERSION \
+          org.label-schema.schema-version="1.0"
 
 # Add VOLUMEs to allow backup of config and databases
 VOLUME  ["/data"]
