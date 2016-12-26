@@ -20,7 +20,7 @@ test:
     - docker ps -a
     - docker logs apache_web_1 > log_output
     - mv log_output $CIRCLE_ARTIFACTS/log_output.txt
-    - docker-compose -f docker-compose.local.yml kill; sleep 2
+    - make rm; sleep 2
 
     # spin up containers simulating a LIVE / PRODUCTION build, very similar to build_test.sh
     - docker-compose up -d; sleep 2
