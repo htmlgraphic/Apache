@@ -5,7 +5,7 @@ machine:
 dependencies:
   pre:
     - docker info
-    - docker build --rm=false -t htmlgraphic/apache:latest .
+    - docker build --rm=false --no-cache -t htmlgraphic/apache:latest .
     - sudo pip install docker-compose
 
 test:
@@ -14,8 +14,7 @@ test:
     - sudo service mysql stop
 
     # spin up containers simulating a LOCAL / DEV build
-    - touch .env
-    - docker-compose -f docker-compose.local.yml up -d; sleep 2
+    - make run; sleep 2
     - sudo lxc-attach -n "$(docker inspect --format "{{.Id}}" apache_web_1)" -- bash -c /opt/tests/build_tests.sh
 
     - docker ps -a
