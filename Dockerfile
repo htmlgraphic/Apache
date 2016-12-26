@@ -9,6 +9,7 @@ RUN apt-get update && apt-get -yq install python-software-properties software-pr
 	apache2 \
 	php7.0 \
 	libapache2-mod-php7.0 \
+	mysql-client \
 	php-apcu \
 	php-imagick \
 	php7.0-fpm \
