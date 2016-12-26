@@ -15,8 +15,6 @@ db:
   environment:
     - ON_CREATE_DB=htmlgraphic
     - MYSQL_PASS=new_password
-  ports:
-    - "3306:3306"
 db-data:
   image: busybox:latest
   volumes:
