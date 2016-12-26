@@ -1,11 +1,11 @@
 # Build a container via the command "make build"
 # By Jason Gegere <jason@htmlgraphic.com>
 
-VERSION 		= 1.6.0
-NAME 				= apache
+VERSION 	= 1.6.1
+NAME 		= apache
 IMAGE_REPO 	= htmlgraphic
 IMAGE_NAME 	= $(IMAGE_REPO)/$(NAME)
-DOMAIN 			= htmlgraphic.com
+DOMAIN 		= htmlgraphic.com
 
 all:: help
 
@@ -25,13 +25,17 @@ help:
 	@echo "     make logs		- View logs in real time"
 
 build:
-	docker build --rm -t $(IMAGE_NAME):$(VERSION) -t $(IMAGE_NAME):latest .
+	docker build \
+        --build-arg VCS_REF=`git rev-parse --short HEAD` \
+        --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
+        --rm -t $(IMAGE_NAME):$(VERSION) -t $(IMAGE_NAME):envoyer .
 
 push:
 	@echo "note: If the repository is set as an automatted build you will NOT be able to push"
 	docker push $(IMAGE_NAME):$(VERSION)
 
 run:
+	php -r 'file_exists(".env") || copy(".env.example", ".env");'
 	docker-compose -f docker-compose.local.yml up -d
 
 start: run
