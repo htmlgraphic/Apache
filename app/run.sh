@@ -59,7 +59,7 @@ fi
 #  Edit files on the instance, check for proper environment
 #
 #####
-if [ ! -f /etc/php/7.0/apache2/build ]; then
+if [ ! -f /etc/php5/apache2/build ]; then
 
 	# Tweak Apache build
 	sed -i 's|;include_path = ".:/usr/share/php"|include_path = ".:/usr/share/php:/data/pear"|g' /etc/php5/apache2/php.ini
@@ -80,8 +80,6 @@ if [ ! -f /etc/php/7.0/apache2/build ]; then
 	# Add imagick extension
 	echo "extension=imagick.so" >> /etc/php5/apache2/php.ini
 
-	# Allow the container to continuously update it's time
-	echo "ntpdate ntp.ubuntu.com" > /etc/cron.daily/ntpdate && chmod 755 /etc/cron.daily/ntpdate
 
 	# Add build file to remove duplicate script execution
 	echo 1 > /etc/php5/apache2/build
