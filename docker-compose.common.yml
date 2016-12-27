@@ -15,6 +15,6 @@ db:
     - ON_CREATE_DB=htmlgraphic
     - MYSQL_PASS=new_password
 db-data:
-  image: busybox
+  image: busybox:latest
   volumes:
     - "/var/lib/mysql"

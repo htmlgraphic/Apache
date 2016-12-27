@@ -5,7 +5,7 @@ OutputLog ()
 	echo "=> Adding environmental variables:"
 	echo "=> NODE_ENVIRONMENT: ${NODE_ENVIRONMENT}"
 	echo "=> Log Key: ${LOG_TOKEN}"
-	echo "=> Postfix Outgoing SMTP: ${SASL_USER}:${SASL_PASS}"
+	echo "=> Postfix Outgoing SMTP (${SMTP_HOST}): ${SASL_USER}:${SASL_PASS}"
 }
 
 # output logs to logentries.com
@@ -42,7 +42,7 @@ if [ ! -d /data/apache2 ]; then
 	echo ServerName localhost >> /etc/apache2/conf-enabled/servername.conf
 
 	# Customizable Apache configuration file(s)
-	sudo mv /opt/app/*.conf /data/apache2/sites-enabled/
+	mv /opt/app/*.conf /data/apache2/sites-enabled/
 
 	# Move needed certificates into place
 	mv -f /opt/app/ssl/* /data/apache2/ssl
@@ -59,7 +59,7 @@ fi
 #  Edit files on the instance, check for proper environment
 #
 #####
-if [ ! -f /etc/php5/apache2/build ]; then
+if [ ! -f /etc/php/7.0/apache2/build ]; then
 
 	# Tweak Apache build
 	sed -i 's|;include_path = ".:/usr/share/php"|include_path = ".:/usr/share/php:/data/pear"|g' /etc/php5/apache2/php.ini
@@ -79,6 +79,9 @@ if [ ! -f /etc/php5/apache2/build ]; then
 
 	# Add imagick extension
 	echo "extension=imagick.so" >> /etc/php5/apache2/php.ini
+
+	# Allow the container to continuously update it's time
+	echo "ntpdate ntp.ubuntu.com" > /etc/cron.daily/ntpdate && chmod 755 /etc/cron.daily/ntpdate
 
 	# Add build file to remove duplicate script execution
 	echo 1 > /etc/php5/apache2/build
@@ -113,9 +116,17 @@ if [[ ! -z "${LOG_TOKEN}" ]]; then
 fi
 
 
-# Postfix uses smart hosts in cluster to relay email
-postconf -e "relayhost = [post-office.htmlgraphic.com]:25"
+# Postfix uses remote testing mail server which holds email(s) from being released into the REAL Internet
+postconf -e "myhostname = dev-build.htmlgraphic.com"
+postconf -e 'mail_spool_directory="/var/spool/mail/"'
+postconf -e 'mydestination="localhost.localdomain localhost"'
+postconf -e "mydomain=htmlgraphic.com"
+postconf -e "relayhost = [${SMTP_HOST}]:587"
+postconf -e "smtp_sasl_auth_enable=yes"
 postconf -e "smtp_sasl_password_maps = static:${SASL_USER}:${SASL_PASS}"
+postconf -e "smtp_sasl_security_options=noanonymous"
+postconf -e "smtp_tls_security_level=encrypt"
+postconf -e "header_size_limit=4096000"
 postconf -e "inet_protocols = ipv4"
 
 # Postfix is not using /etc/resolv.conf is because it is running inside a chroot jail, needs its own copy.

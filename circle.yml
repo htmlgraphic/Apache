@@ -6,6 +6,7 @@ dependencies:
   override:
     - docker info
     - docker build --no-cache -t htmlgraphic/apache:$CIRCLE_BRANCH .
+    - sudo pip install docker-compose
 
 test:
   override:

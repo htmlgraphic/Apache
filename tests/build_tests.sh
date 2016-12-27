@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-curl -L "https://shunit2.googlecode.com/files/shunit2-2.1.6.tgz" | tar zx
-
-	#### Extra breathing room
-	echo -e '\n'
+#### Extra breathing room
+echo -e '\n'
 
 testPostfixUsername()
 {
@@ -57,8 +55,8 @@ testNODE_ENVIRONMENT()
 	# Depending on the type of environment dev or production should appear
 	# on the initial landing page of built container
 
-	dev=$(/usr/bin/wget -q -O- http://127.0.0.1 | grep -w "dev" | wc -l);
-	prod=$(/usr/bin/wget -q -O- http://127.0.0.1 | grep -w "production" | wc -l)
+	dev=$(/usr/bin/wget -q -O- http://127.0.0.1 | grep -w "NODE_ENVIRONMENT: dev" | wc -l);
+	prod=$(/usr/bin/wget -q -O- http://127.0.0.1 | grep -w "NODE_ENVIRONMENT: production" | wc -l)
 
 	if [ "$dev" == 1 ]; then
 		# build is dev
@@ -71,4 +69,4 @@ testNODE_ENVIRONMENT()
 	echo -e '\n'
 }
 
-. shunit2-2.1.6/src/shunit2
+. /opt/tests/shunit2-2.1.6/src/shunit2
