@@ -6,7 +6,7 @@ web:
   environment:
     - NODE_ENVIRONMENT=dev
   env_file:
-    - ./common.env
+    - .env
 db:
   image: htmlgraphic/mysql:5.5
   expose:

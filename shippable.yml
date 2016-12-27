@@ -6,23 +6,21 @@ env:
     - SASL_USER=p08tf1X
     - SASL_PASS=p@ssw0Rd
 
-
 build:
   pre_ci:
-    - docker build --no-cache -t htmlgraphic/apache:latest .
+    - docker build --no-cache -t htmlgraphic/apache:$BRANCH .
   pre_ci_boot:
     image_name: htmlgraphic/apache
-    image_tag: latest
+    image_tag: $BRANCH
     pull: false
   ci:
     - "bash app/run.sh &"
+    - sleep 5
     - "/usr/sbin/postconf -n"
+    - sleep 5
     - "bash tests/build_tests.sh"
-  post_ci:
-    - sudo apt-get update && apt-get -y install python-pip
-    - sudo pip install -U docker-compose
-    - docker-compose -f docker-compose.local.yml up -d
-    - docker ps -a
+  on_failure:
+    - docker logs apache_web_1
 
 integrations:
   notifications:

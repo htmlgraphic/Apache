@@ -1,7 +1,7 @@
 # Build a container via the command "make build"
 # By Jason Gegere <jason@htmlgraphic.com>
 
-VERSION 		= 1.4.0
+VERSION 		= 1.4.1
 NAME 				= apache
 IMAGE_REPO 	= htmlgraphic
 IMAGE_NAME 	= $(IMAGE_REPO)/$(NAME)
@@ -33,6 +33,7 @@ push:
 	docker push $(IMAGE_NAME):$(VERSION)
 
 run:
+	php -r 'file_exists(".env") || copy(".env.example", ".env");'
 	docker-compose -f docker-compose.local.yml up -d
 
 start: run
