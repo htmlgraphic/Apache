@@ -12,6 +12,8 @@ hg-db:
   extends:
     file: docker-compose.common.yml
     service: db
+  expose:
+    - "3306"
 db-data:
   extends:
     file: docker-compose.common.yml
