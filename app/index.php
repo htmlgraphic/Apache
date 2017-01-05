@@ -2,31 +2,118 @@
 <html>
 <head>
 	<title>Coming soon!</title>
-	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-	<style>
-	body {text-align: center; padding: 50px; font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;}
-	div img#logo {margin: 0 auto 40px auto; float: none;}
-	</style>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<style>
+body { font-size: 1.4em; text-align: center; padding: 50px; }
+div img#logo {margin: 0 auto 40px auto; float: none;}
+.e {
+	background-color: #ccf;
+	width: 300px;
+	font-weight: bold;
+}
+.v {
+	background-color: #ddd;
+	max-width: 300px;
+	overflow-x: auto;
+	word-wrap: break-word;
+}
+.h {
+    background-color: #99c;
+    font-weight: bold;
+}
+.center table {
+    margin: 1em auto;
+    text-align: left;
+}
+table {
+    border-collapse: collapse;
+    border: 0;
+    width: 934px;
+}
+td, th {
+    border: 1px solid #666;
+    vertical-align: baseline;
+    padding: 4px 5px;
+}
+img {
+    float: right;
+    border: 0;
+}
+.h h1 {
+    font-size: 150%;
+}
+</style>
+
+<?php
+if (getenv('NODE_ENVIRONMENT')) {
+	$node_env = getenv('NODE_ENVIRONMENT');
+} else {
+	$node_env = 'NOT SET';
+}
+
+if (getenv('DOCKERCLOUD_SERVICE_FQDN')) {
+	$hostname = getenv('DOCKERCLOUD_SERVICE_FQDN');
+} else {
+	$hostname = getenv('HOSTNAME');
+}
+?>
+
+
+
+
 </head>
 <body>
-	<div>
+<div class="container">
 		<img id="logo" src="logo.png" width="200" />
 		<h1><?= "Hello ".((getenv("NAME"))? $name:"World")."!"; ?></h1>
-		<?php if (getenv('HOSTNAME')) {?><h3>My hostname is <?= getenv('HOSTNAME'); ?></h3><?php } ?>
-		<?php if (getenv('MYSQL_PORT')) {?>MySQL <strong><?= getenv('MYSQL_PORT'); ?></strong><?php } ?>
-		<p>Current file: <strong><?= __FILE__ ?></strong></p>
-		<p>SMTP Host: <strong><?= getenv('SMTP_HOST'); ?></strong></p>
-		<?php if (getenv('NODE_ENVIRONMENT')) { ?>
-		<p>NODE_ENVIRONMENT: <?= getenv('NODE_ENVIRONMENT') ?></p>
-		<?php } else { ?>
-		<p>NODE_ENVIRONMENT: NOT SET</p>
+
+<div class="row">
+	<div class="col-xs-8 col-xs-offset-2">
+		<div class="table-responsive">
+			<table class="table table-bordered table-striped">
+			<tbody>
+			<tr>
+				<td class="text-right">SMTP HOST</td>
+				<td class="text-left"><?= getenv('SMTP_HOST'); ?></td>
+			</tr>
+			<tr>
+				<td class="text-right">HOSTNAME</td>
+				<td class="text-left"><?= $hostname ?></td>
+			</tr>
+		<?php if ($node_env == 'dev') { ?>
+			<tr>
+				<td class="text-right">CURRENT FILE</td>
+				<td class="text-left"><?= __FILE__ ?></td>
+			</tr>
+			<?php if (getenv('MYSQL_PORT')) {?>
+			<tr>
+				<td class="text-right">MySQL</td>
+				<td class="text-left"><?= getenv('MYSQL_PORT'); ?></td>
+			</tr>
+			<?php } ?>
+			<tr>
+				<td class="text-right">NODE_ENVIRONMENT</td>
+				<td class="text-left"><?= $node_env ?></td>
+			</tr>
 		<?php } ?>
+			</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
 	</div>
 	<div style="clear: both;"></div>
 <?php
 	if (getenv("NODE_ENVIRONMENT") == 'dev') {
+		ob_start();
 		phpinfo();
+		$pinfo = preg_replace( '%^.*<body>(.*)</body>.*$%ms','$1', ob_get_contents());
+		ob_end_clean();
+		echo $pinfo;
 	}
 ?>
+</div>
 </body>
 </html>

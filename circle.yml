@@ -11,19 +11,19 @@ dependencies:
 test:
   override:
     # stop MySQL from running on CircleCI
-    - sudo service mysql stop
+    - sudo service mysql stop; sleep 5
 
     # spin up containers simulating a LOCAL / DEV build
-    - make run; sleep 2
+    - make run; sleep 5
     - sudo lxc-attach -n "$(docker inspect --format "{{.Id}}" apache_web_1)" -- bash -c /opt/tests/build_tests.sh
 
     - docker ps -a
     - docker logs apache_web_1 > log_output
     - mv log_output $CIRCLE_ARTIFACTS/log_output.txt
-    - make rm; sleep 2
+    - make rm; sleep 5
 
     # spin up containers simulating a LIVE / PRODUCTION build, very similar to build_test.sh
-    - docker-compose up -d; sleep 2
+    - docker-compose up -d; sleep 5
     - sudo lxc-attach -n "$(docker inspect --format "{{.Id}}" apache_hg-web_1)" -- bash -c /opt/tests/build_tests.sh
     - docker ps -a
 
