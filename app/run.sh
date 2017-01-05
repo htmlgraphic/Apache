@@ -4,9 +4,20 @@ OutputLog ()
 {
 	echo "=> Adding environmental variables:"
 	echo "=> NODE_ENVIRONMENT: ${NODE_ENVIRONMENT}"
-	echo "=> Log Key: ${LOG_TOKEN}"
+
+	if [[ -z "${LOG_TOKEN}" ]]; then
+		# $LOG_TOKEN is set on container creation
+		echo "=> env LOG_TOKEN is not set."
+	else
+		echo "=> Log Key: ${LOG_TOKEN}"
+	fi
+
 	echo "=> Postfix Outgoing SMTP (${SMTP_HOST}): ${SASL_USER}:${SASL_PASS}"
 }
+
+
+
+
 
 # output logs to logentries.com
 cat <<EOF > /etc/rsyslog.d/logentries.conf
@@ -83,7 +94,7 @@ if [ ! -f /etc/php/7.0/apache2/build ]; then
 	# Add build file to remove duplicate script execution
 	echo 1 > /etc/php/7.0/apache2/build
 
-	if [[ ! -z "${NODE_ENVIRONMENT}" ]]; then
+	if [[ -z "${NODE_ENVIRONMENT}" ]]; then
 
 			if [ "$NODE_ENVIRONMENT" == 'dev' ]; then
 					# Tweak Apache build
@@ -101,19 +112,13 @@ if [ ! -f /etc/php/7.0/apache2/build ]; then
 			fi
 
 	else
-			# $NODE_ENVIRONMENT is not set on docker creation
+			# $NODE_ENVIRONMENT is set on container creation
 			echo "env NODE_ENVIRONMENT is not set."
 	fi
 fi
 
 
-if [[ ! -z "${LOG_TOKEN}" ]]; then
-		# $LOG_TOKEN is not set on docker creation
-		echo "env LOG_TOKEN is not set."
-fi
-
-# SSH
-# Add public key for root access
+# SSH - Add public key for root access
 if [ "${AUTHORIZED_KEYS}" != "**None**" ]; then
 	echo "=> Found authorized keys"
 	mkdir -p /root/.ssh
