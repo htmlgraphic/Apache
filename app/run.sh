@@ -87,10 +87,6 @@ if [ ! -f /etc/php/7.0/apache2/build ]; then
 	sed -i 's|upload_max_filesize = 2M|upload_max_filesize = 1000M|g' /etc/php/7.0/apache2/php.ini
 	sed -i 's|post_max_size = 8M|post_max_size = 1000M|g' /etc/php/7.0/apache2/php.ini
 
-
-	# Allow the container to continuously update it's time
-	echo "ntpdate ntp.ubuntu.com" > /etc/cron.daily/ntpdate && chmod 755 /etc/cron.daily/ntpdate
-
 	# Add build file to remove duplicate script execution
 	echo 1 > /etc/php/7.0/apache2/build
 
