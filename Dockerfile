@@ -54,7 +54,8 @@ RUN composer global require "laravel/installer"
 RUN a2enmod userdir && a2enmod rewrite && a2enmod ssl
 
 # Environment variables contained within build container.
-ENV APACHE_RUN_USER=www-data \
+ENV TERM=xterm \
+	APACHE_RUN_USER=www-data \
 	APACHE_RUN_GROUP=www-data \
 	APACHE_LOG_DIR=/var/log/apache2 \
 	APACHE_LOCK_DIR=/var/lock/apache2 \
