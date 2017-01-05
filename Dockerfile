@@ -44,8 +44,11 @@ RUN chmod -R 755 /opt/* && \
 	mkdir -p /var/log/supervisor && \
 	cp /opt/app/supervisord /etc/supervisor/conf.d/supervisord.conf
 
-# APACHE
+# COMPOSER
 RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
+
+# WP-CLI
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && chmod +x wp-cli.phar && mv wp-cli.phar /usr/local/bin/wp
 
 # LARAVEL
 RUN composer global require "laravel/installer"
