@@ -51,30 +51,30 @@ testHTTPS()
 testNODE_ENVIRONMENT()
 {
 	echo 'Test env NODE_ENVIRONMENT, currently set to "'$NODE_ENVIRONMENT'"'
-	node_env=false;
+	node_env=0;
 
 	# Depending on the type of environment dev or production an
 	# environmental variable should be set
 	if [[ "${NODE_ENVIRONMENT}" == 'dev' ]] || [[ "${NODE_ENVIRONMENT}" == 'production' ]]; then
-		node_env=true;
+		node_env=1;
 	fi
-	assertTrue $node_env
+	assertEquals 1 $test
 	echo -e '\n'
 }
 
 testNODE_ENVIRONMENT_PHP()
 {
 	echo 'Test env NODE_ENVIRONMENT within Apache'
-	node_env=false;
+	node_env=0;
 	dev=$(/usr/bin/wget -q -O- http://127.0.0.1 | grep -w "NODE_ENVIRONMENT=dev" | wc -l);
 	prod=$(/usr/bin/wget -q -O- http://127.0.0.1 | grep -w "NODE_ENVIRONMENT=production" | wc -l)
 
 	# Depending on the type of environment dev or production an
 	# environmental variable should be set
 	if [[ $dev == 1 ]] || [[ $prod == 1 ]]; then
-		node_env=true;
+		node_env=1;
 	fi
-	assertTrue $node_env
+	assertEquals 1 $test
 	echo -e '\n'
 }
 

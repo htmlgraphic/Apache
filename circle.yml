@@ -15,7 +15,7 @@ test:
 
     # spin up containers simulating a LOCAL / DEV build
     - make run; sleep 5
-    - sudo lxc-attach -n "$(docker inspect --format "{{.Id}}" apache_web_1)" -- bash -c /opt/tests/build_tests.sh
+    - sudo docker exec apache_web_1 /opt/tests/build_tests.sh
 
     - docker ps -a
     - docker logs apache_web_1 > log_output
@@ -24,7 +24,7 @@ test:
 
     # spin up containers simulating a LIVE / PRODUCTION build, very similar to build_test.sh
     - docker-compose up -d; sleep 5
-    - sudo lxc-attach -n "$(docker inspect --format "{{.Id}}" apache_hg-web_1)" -- bash -c /opt/tests/build_tests.sh
+    - sudo docker exec apache_hg-web_1 /opt/tests/build_tests.sh
     - docker ps -a
 
 
