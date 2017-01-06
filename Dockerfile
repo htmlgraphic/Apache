@@ -93,4 +93,5 @@ VOLUME  ["/data"]
 EXPOSE 80 443
 
 
+#CMD ["/opt/app/run.sh", "env | grep _ >> /etc/environment && supervisord -n"]
 CMD ["/opt/app/run.sh"]

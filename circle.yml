@@ -5,7 +5,7 @@ machine:
 dependencies:
   pre:
     - docker info
-    - docker build --rm=false --no-cache -t htmlgraphic/apache:$CIRCLE_BRANCH .
+    - docker build --rm=false -t htmlgraphic/apache:$CIRCLE_BRANCH .
     - sudo pip install docker-compose
 
 test:

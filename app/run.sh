@@ -173,3 +173,4 @@ OutputLog
 # Spin everything up
 # http://stackoverflow.com/questions/34630571/docker-env-variables-not-set-while-log-via-shell
 env | grep NODE_ENVIRONMENT >> /etc/environment && /usr/bin/supervisord -n -c /etc/supervisor/conf.d/supervisord.conf
+#/bin/bash -c env | grep NODE_ENVIRONMENT >> /etc/environment && /usr/bin/supervisord -n -c /etc/supervisor/conf.d/supervisord.conf
