@@ -15,17 +15,16 @@ test:
 
     # spin up containers simulating a LOCAL / DEV build
     - make run; sleep 5
-    - sudo lxc-attach -n "$(docker inspect --format "{{.Id}}" apache_web_1)" --keep-env -- bash -c /opt/tests/build_tests.sh
-
+    - sudo lxc-attach -n "$(docker inspect --format "{{.Id}}" apache_web_1)" -- bash -c /opt/tests/build_tests.sh
     - docker ps -a
+
     - docker logs apache_web_1 > log_output
     - mv log_output $CIRCLE_ARTIFACTS/log_output.txt
-    - make stop; sleep 2
-    - make rm; sleep 2
+    - make stop && make rm; sleep 2
 
     # spin up containers simulating a LIVE / PRODUCTION build, very similar to build_test.sh
-    - docker-compose up -d --remove-orphans; sleep 5
-    - sudo lxc-attach -n "$(docker inspect --format "{{.Id}}" apache_hg-web_1)" --keep-env -- bash -c /opt/tests/build_tests.sh
+    - docker-compose up -d; sleep 5
+    - sudo lxc-attach -n "$(docker inspect --format "{{.Id}}" apache_hg-web_1)" -- bash -c /opt/tests/build_tests.sh
     - docker ps -a
 
 
