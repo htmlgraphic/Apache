@@ -64,6 +64,7 @@ testNODE_ENVIRONMENT()
 
 testNODE_ENVIRONMENT_PHP()
 {
+	echo 'Test env NODE_ENVIRONMENT within Apache'
 	node_env=false;
 	dev=$(/usr/bin/wget -q -O- http://127.0.0.1 | grep -w "NODE_ENVIRONMENT=dev" | wc -l);
 	prod=$(/usr/bin/wget -q -O- http://127.0.0.1 | grep -w "NODE_ENVIRONMENT=production" | wc -l)
