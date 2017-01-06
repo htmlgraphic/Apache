@@ -91,25 +91,22 @@ if [ ! -f /etc/php/7.0/apache2/build ]; then
 	echo 1 > /etc/php/7.0/apache2/build
 
 	if [[ -z "${NODE_ENVIRONMENT}" ]]; then
-
-			if [ "$NODE_ENVIRONMENT" == 'dev' ]; then
-					# Tweak Apache build
-					sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=0 \nIS_DEV=0 \nNODE_ENVIRONMENT=dev \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php/7.0/apache2/php.ini
-					# Update the PHP.ini file, enable <? ?> tags and quiet logging.
-					sed -i "s/error_reporting = .*$/error_reporting = E_ALL/" /etc/php/7.0/apache2/php.ini
-			fi
-
-
-			if [ "$NODE_ENVIRONMENT" == 'production' ]; then
-					# Tweak Apache build
-					sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=1 \nIS_DEV=0 \nNODE_ENVIRONMENT=production \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php/7.0/apache2/php.ini
-					# Update the PHP.ini file, enable <? ?> tags and quiet logging.
-					sed -i "s/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/" /etc/php/7.0/apache2/php.ini
-			fi
-
-	else
 			# $NODE_ENVIRONMENT is set on container creation
 			echo "env NODE_ENVIRONMENT is not set."
+	else
+		if [ "$NODE_ENVIRONMENT" == 'dev' ]; then
+			# Tweak Apache build
+			sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=0 \nIS_DEV=0 \nNODE_ENVIRONMENT=dev \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php/7.0/apache2/php.ini
+			# Update the PHP.ini file, enable <? ?> tags and quiet logging.
+			sed -i "s/error_reporting = .*$/error_reporting = E_ALL/" /etc/php/7.0/apache2/php.ini
+		fi
+
+		if [ "$NODE_ENVIRONMENT" == 'production' ]; then
+			# Tweak Apache build
+			sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=1 \nIS_DEV=0 \nNODE_ENVIRONMENT=production \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php/7.0/apache2/php.ini
+			# Update the PHP.ini file, enable <? ?> tags and quiet logging.
+			sed -i "s/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/" /etc/php/7.0/apache2/php.ini
+		fi
 	fi
 fi
 
