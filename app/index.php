@@ -3,7 +3,7 @@
 <head>
 	<title>Coming soon!</title>
 	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <style>
 body { font-size: 1.4em; text-align: center; padding: 50px; }
 div img#logo {margin: 0 auto 40px auto; float: none;}
@@ -74,26 +74,22 @@ if (getenv('DOCKERCLOUD_SERVICE_FQDN')) {
 			<table class="table table-bordered table-striped">
 			<tbody>
 			<tr>
-				<td class="text-right">SMTP HOST</td>
-				<td class="text-left"><?= getenv('SMTP_HOST'); ?></td>
-			</tr>
-			<tr>
 				<td class="text-right">HOSTNAME</td>
 				<td class="text-left"><?= $hostname ?></td>
 			</tr>
-		<?php if ($node_env == 'dev') { ?>
 			<tr>
-				<td class="text-right">CURRENT FILE</td>
-				<td class="text-left"><?= __FILE__ ?></td>
+				<td class="text-right">$SMTP_HOST</td>
+				<td class="text-left"><?= getenv('SMTP_HOST'); ?></td>
 			</tr>
+		<?php if ($node_env == 'dev') { ?>
 			<?php if (getenv('MYSQL_PORT')) {?>
 			<tr>
-				<td class="text-right">MySQL</td>
+				<td class="text-right">$MYSQL_PORT</td>
 				<td class="text-left"><?= getenv('MYSQL_PORT'); ?></td>
 			</tr>
 			<?php } ?>
 			<tr>
-				<td class="text-right">NODE_ENVIRONMENT</td>
+				<td class="text-right">$NODE_ENVIRONMENT</td>
 				<td class="text-left"><?= $node_env ?></td>
 			</tr>
 		<?php } ?>
