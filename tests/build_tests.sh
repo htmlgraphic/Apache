@@ -50,7 +50,7 @@ testHTTPS()
 
 testNODE_ENVIRONMENT()
 {
-	echo 'Test env NODE_ENVIRONMENT, currently set to "'$NODE_ENVIRONMENT'"'
+	echo 'Test env NODE_ENVIRONMENT, currently set to "'${NODE_ENVIRONMENT}'"'
 	node_env=0;
 
 	# Depending on the type of environment dev or production an
