@@ -2,10 +2,10 @@ hg-web:
   extends:
     file: docker-compose.common.yml
     service: web
-  environment:
-    - NODE_ENVIRONMENT=production
   env_file:
     - .env
+  environment:
+    - NODE_ENVIRONMENT=production
   links:
     - "hg-db:mysql"
 hg-db:

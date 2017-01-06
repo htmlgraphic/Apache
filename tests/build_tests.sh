@@ -50,11 +50,11 @@ testHTTPS()
 
 testNODE_ENVIRONMENT()
 {
-	echo 'Test env NODE_ENVIRONMENT'
+	echo 'Test env NODE_ENVIRONMENT, currently set to "'$NODE_ENVIRONMENT'"'
 	node_env=false;
 	# Depending on the type of environment dev or production an
 	# environmental variable should be set
-	if [[ "$NODE_ENVIRONMENT" == 'dev' ]] || [[ "$NODE_ENVIRONMENT" == 'production' ]]; then
+	if [[ "${NODE_ENVIRONMENT}" == 'dev' ]] || [[ "${NODE_ENVIRONMENT}" == 'production' ]]; then
 		node_env=true;
 	fi
 	assertTrue $node_env
