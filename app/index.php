@@ -64,6 +64,7 @@ if (getenv('DOCKERCLOUD_SERVICE_FQDN')) {
 
 </head>
 <body>
+<?= "<!-- NODE_ENVIRONMENT=". getenv('NODE_ENVIRONMENT') ." -->"; ?>
 <div class="container">
 		<img id="logo" src="logo.png" width="200" />
 		<h1><?= "Hello ".((getenv("NAME"))? $name:"World")."!"; ?></h1>

@@ -24,8 +24,8 @@ build:
     - "bash tests/build_tests.sh"
   on_failure:
     - docker logs apache_web_1
-  on_success:
-    - docker push htmlgraphic/apache:$BRANCH
+  # on_success:
+  #   - docker push htmlgraphic/apache:$BRANCH
 
 integrations:
   hub:

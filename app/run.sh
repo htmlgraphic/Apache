@@ -3,16 +3,16 @@
 OutputLog ()
 {
 	echo "=> Adding environmental variables:"
-	echo "=> NODE_ENVIRONMENT: ${NODE_ENVIRONMENT}"
+	echo "	NODE_ENVIRONMENT: ${NODE_ENVIRONMENT}"
 
 	if [[ -z "${LOG_TOKEN}" ]]; then
 		# $LOG_TOKEN is set on container creation
-		echo "=> env LOG_TOKEN is not set."
+		echo "	env LOG_TOKEN is not set."
 	else
-		echo "=> Log Key: ${LOG_TOKEN}"
+		echo "	Log Key: ${LOG_TOKEN}"
 	fi
 
-	echo "=> Postfix Outgoing SMTP (${SMTP_HOST}): ${SASL_USER}:${SASL_PASS}"
+	echo "	Postfix Outgoing SMTP (${SMTP_HOST}): ${SASL_USER}:${SASL_PASS}"
 }
 
 
@@ -92,7 +92,7 @@ if [ ! -f /etc/php/7.0/apache2/build ]; then
 
 	if [[ -z "${NODE_ENVIRONMENT}" ]]; then
 			# $NODE_ENVIRONMENT is set on container creation
-			echo "env NODE_ENVIRONMENT is not set."
+			echo "	env NODE_ENVIRONMENT is not set, Apache is not configured correctly."
 	else
 		if [ "$NODE_ENVIRONMENT" == 'dev' ]; then
 			# Tweak Apache build
@@ -107,6 +107,9 @@ if [ ! -f /etc/php/7.0/apache2/build ]; then
 			# Update the PHP.ini file, enable <? ?> tags and quiet logging.
 			sed -i "s/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/" /etc/php/7.0/apache2/php.ini
 		fi
+
+		export NODE_ENVIRONMENT=$NODE_ENVIRONMENT
+
 	fi
 fi
 
