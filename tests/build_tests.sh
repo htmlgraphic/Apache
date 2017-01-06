@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+. /etc/environment
 
 #### Extra breathing room
 echo -e '\n'
@@ -58,7 +59,7 @@ testNODE_ENVIRONMENT()
 	if [[ "${NODE_ENVIRONMENT}" == 'dev' ]] || [[ "${NODE_ENVIRONMENT}" == 'production' ]]; then
 		node_env=1;
 	fi
-	assertEquals 1 $test
+	assertEquals 1 $node_env
 	echo -e '\n'
 }
 
@@ -74,7 +75,7 @@ testNODE_ENVIRONMENT_PHP()
 	if [[ $dev == 1 ]] || [[ $prod == 1 ]]; then
 		node_env=1;
 	fi
-	assertEquals 1 $test
+	assertEquals 1 $node_env
 	echo -e '\n'
 }
 

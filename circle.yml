@@ -24,7 +24,7 @@ test:
     - make rm; sleep 2
 
     # spin up containers simulating a LIVE / PRODUCTION build, very similar to build_test.sh
-    - docker-compose up -d; sleep 5
+    - docker-compose up -d --remove-orphans; sleep 5
     - sudo lxc-attach -n "$(docker inspect --format "{{.Id}}" apache_hg-web_1)" --keep-env -- bash -c /opt/tests/build_tests.sh
     - docker ps -a
 
