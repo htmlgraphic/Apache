@@ -28,9 +28,11 @@ build:
   #   - docker push htmlgraphic/apache:$BRANCH
 
 integrations:
-  hub:
-    - integrationName: "Docker Hub"
-      type: docker
+  # using matrix builds multiple images so this is not ideal
+  # falling back to git repo build on docker hub
+  # hub:
+  #   - integrationName: "Docker Hub"
+  #     type: docker
 
   notifications:
     - integrationName: email
