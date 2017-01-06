@@ -108,8 +108,6 @@ if [ ! -f /etc/php/7.0/apache2/build ]; then
 			sed -i "s/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/" /etc/php/7.0/apache2/php.ini
 		fi
 
-		export NODE_ENVIRONMENT=$NODE_ENVIRONMENT
-
 	fi
 fi
 
@@ -173,5 +171,5 @@ OutputLog
 
 
 # Spin everything up
-#
-/usr/bin/supervisord -n -c /etc/supervisor/conf.d/supervisord.conf
+# http://stackoverflow.com/questions/34630571/docker-env-variables-not-set-while-log-via-shell
+env | grep NODE_ENVIRONMENT >> /etc/environment && /usr/bin/supervisord -n -c /etc/supervisor/conf.d/supervisord.conf
