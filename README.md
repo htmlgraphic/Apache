@@ -21,7 +21,6 @@ If you found this repo you are probably looking into Docker or already have know
 * **app/run.sh** - Setup apache, conf files, and start process on container
 * **app/sample.conf** - located within `/data/apache2/sites-enabled` duplicate / modify to host others domains
 * **app/supervisord.conf** - Supervisor is a client / server system which monitors and controls a number of processes on UNIX-like operating systems
-* **.dockerignore** - Files that should be ignored during the build process - [best practice](https://docs.docker.com/articles/dockerfile_best-practices/#use-a-dockerignore-file)
 * **.env.example** - Rename file to `.env` for local environment variables used within build
 * **circle.yml** - Configuration for CircleCI.com testing
 * **docker-compose.\*** - (various composer files for local and production builds) [more info](https://docs.docker.com/docker-cloud/apps/deploy-to-cloud-btn/)
