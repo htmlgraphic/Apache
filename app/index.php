@@ -5,7 +5,7 @@
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <style>
-body { font-size: 1.4em; text-align: center; padding: 50px; }
+body {font-family: 'Open Sans', sans-serif; font-weight: 300; font-size: 14px; text-align: center; padding: 50px; }
 div img#logo {margin: 0 auto 40px auto; float: none;}
 .e {
 	background-color: #ccf;
@@ -69,7 +69,7 @@ if (getenv('DOCKERCLOUD_SERVICE_FQDN')) {
 		<img id="logo" src="logo.png" width="200" />
 		<h1><?= "Hello ".((getenv("NAME"))? $name:"World")."!"; ?></h1>
 
-<div class="row">
+<div class="row center">
 	<div class="col-xs-8 col-xs-offset-2">
 		<table class="table table-bordered table-striped">
 		<tbody>
