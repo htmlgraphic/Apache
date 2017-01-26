@@ -1,23 +1,27 @@
 web:
+  image: htmlgraphic/apache:envoyer
   volumes:
    - "~/SITES/docker:/data"
    #- "/c/Users/southpark/docker:/data"
   links:
     - "db:mysql"
-  extends:
-    file: docker-compose.common.yml
-    service: web
+  ports:
+    - "80:80"
+    - "443:443"
   environment:
     - NODE_ENVIRONMENT=dev
+  env_file:
+    - .env
 db:
-  extends:
-    file: docker-compose.common.yml
-    service: db
+  image: htmlgraphic/mysql:5.5
   volumes_from:
     - db-data
   ports:
     - "3306:3306"
+  environment:
+    - ON_CREATE_DB=htmlgraphic
+    - MYSQL_PASS=new_password
 db-data:
-  extends:
-    file: docker-compose.common.yml
-    service: db-data
+  image: busybox:latest
+  volumes:
+    - "/var/lib/mysql"
