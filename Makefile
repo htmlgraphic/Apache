@@ -42,6 +42,7 @@ start: run
 
 stop:
 	@echo "Stopping local environment setup"
+	rm -f .env
 	docker-compose stop
 
 restart:	stop start
