@@ -7,6 +7,8 @@ web:
   extends:
     file: docker-compose.common.yml
     service: web
+  environment:
+    - NODE_ENVIRONMENT=dev
 db:
   extends:
     file: docker-compose.common.yml
