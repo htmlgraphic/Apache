@@ -1,7 +1,8 @@
 hg-web:
-  extends:
-    file: docker-compose.common.yml
-    service: web
+  image: htmlgraphic/apache:latest
+  ports:
+    - "80:80"
+    - "443:443"
   environment:
     - NODE_ENVIRONMENT=production
   env_file:
@@ -9,10 +10,13 @@ hg-web:
   links:
     - "hg-db:mysql"
 hg-db:
-  extends:
-    file: docker-compose.common.yml
-    service: db
+  image: htmlgraphic/mysql:5.5
+  environment:
+    - ON_CREATE_DB=htmlgraphic
+    - MYSQL_PASS=new_password
+  expose:
+    - "3306"
 db-data:
-  extends:
-    file: docker-compose.common.yml
-    service: db-data
+  image: busybox:latest
+  volumes:
+    - "/var/lib/mysql"
