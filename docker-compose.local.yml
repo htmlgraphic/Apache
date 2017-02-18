@@ -1,7 +1,7 @@
 web:
-  image: htmlgraphic/apache:envoyer
+  image: 'htmlgraphic/apache:envoyer'
   volumes:
-   - "~/SITES/docker:/data"
+   - "/Volumes/Case/SITES/docker:/data"
    #- "/c/Users/southpark/docker:/data"
   links:
     - "db:mysql"
@@ -13,15 +13,17 @@ web:
   env_file:
     - .env
 db:
-  image: htmlgraphic/mysql:5.5
+  image: 'mysql:5.7'
   volumes_from:
     - db-data
   ports:
     - "3306:3306"
   environment:
-    - ON_CREATE_DB=htmlgraphic
-    - MYSQL_PASS=new_password
+    - MYSQL_DATABASE=htmlgraphic
+    - MYSQL_PASSWORD=new_password
+    - MYSQL_ROOT_PASSWORD=new_passwordac
+    - MYSQL_USER=admin
 db-data:
-  image: busybox:latest
+  image: 'busybox:latest'
   volumes:
     - "/var/lib/mysql"
