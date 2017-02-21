@@ -21,6 +21,9 @@ RUN apt-get update && apt-get -yq install python-software-properties software-pr
 	php7.0-mbstring \
 	php7.0-opcache \
 	php7.0-xml \
+	ghostscript \
+	libgs-dev \
+	imagemagick \
 	libmagickwand-dev \
 	supervisor \
 	rsyslog \
