@@ -15,7 +15,7 @@ web:
 db:
   image: 'mysql:5.7'
   volumes_from:
-    - db-data
+    - db-data2
   ports:
     - "3306:3306"
   environment:
@@ -23,7 +23,7 @@ db:
     - MYSQL_PASSWORD=new_password
     - MYSQL_ROOT_PASSWORD=new_passwordac
     - MYSQL_USER=admin
-db-data:
+db-data2:
   image: 'busybox:latest'
   volumes:
     - "/var/lib/mysql"

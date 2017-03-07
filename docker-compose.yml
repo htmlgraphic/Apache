@@ -18,7 +18,9 @@ hg-db:
     - MYSQL_USER=admin
   expose:
     - "3306"
-db-data:
+  volumes_from:
+    - db-data2
+db-data2:
   image: 'busybox:latest'
   volumes:
     - "/var/lib/mysql"
