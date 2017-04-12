@@ -3,6 +3,7 @@ jobs:
   build:
     machine: true
     working_directory: ~/apache
+    parallelism: 3
     steps:
       - checkout
 
@@ -12,10 +13,11 @@ jobs:
             echo "Building Docker Image"
             docker build -t htmlgraphic/apache:$CIRCLE_BRANCH .
 
-# WORKS TO HERE
+
+# DEV Build
 
       - run:
-          name: Start Container & Verify
+          name: Start DEV Container
           command: |
             set -x
             ls -la
@@ -23,19 +25,34 @@ jobs:
             make run
             docker ps -a
 
-
-
       - run:
-          name: Build Tests
+          name: DEV Build Tests
           command: |
-            bash -c /opt/tests/build_tests.sh
+            docker exec -it apache_web_1 /bin/bash /opt/tests/build_tests.sh
 
       - run: |
           docker logs apache_web_1 > log_output
           mv log_output $CIRCLE_ARTIFACTS/log_output.txt
 
+      - run:
+          name: Kill running containers
+          command: |
+            make stop && make rm
+
+
+# LIVE Build
+
+      - run:
+          name: Start LIVE Container
+          command: |
+            docker-compose up -d
+            docker ps -a
+
+      - run:
+          name: LIVE Build Tests
+          command: |
+            docker exec -it apache_web_1 /bin/bash /opt/tests/build_tests.sh
+
       - run: |
-          docker-compose up -d; sleep 5
-          docker run -d --name apache_web_1 
-          bash -c /opt/tests/build_tests.sh
-          docker ps -a
+          docker logs apache_web_1 > log_output
+          mv log_output $CIRCLE_ARTIFACTS/log_output-LIVE.txt
