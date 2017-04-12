@@ -1,12 +1,10 @@
 version: 2
 jobs:
   build:
-    docker:
-      - image: htmlgraphic/ubuntu-with-git-and-docker-for-circleci-2.0
+    machine: true
     working_directory: ~/apache
     steps:
       - checkout
-      - setup_remote_docker
 
       - run:
           name: Build Docker image
@@ -17,7 +15,7 @@ jobs:
 # WORKS TO HERE
 
       - run:
-          name: Start container and verify it's working
+          name: Start Container & Verify
           command: |
             set -x
             ls -la
