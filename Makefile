@@ -33,9 +33,9 @@ build:
 push:
 	@echo "note: If the repository is set as an automatted build you will NOT be able to push"
 	docker push $(IMAGE_NAME):$(VERSION)
-
+	
 run:
-	php -r 'file_exists(".env") || copy(".env.example", ".env");'
+	[ ! -f .env ] && echo '.env2 file does not exist, copy a base env template' && cp .env.example .env || echo "env file exists"
 	docker-compose -f docker-compose.local.yml up -d
 
 start: run
