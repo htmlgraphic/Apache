@@ -1,0 +1,43 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: htmlgraphic/ubuntu-with-git-and-docker-for-circleci-2.0
+    working_directory: ~/apache
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      - run:
+          name: Build Docker image
+          command: |
+            echo "Building Docker Image"
+            docker build -t htmlgraphic/apache:$CIRCLE_BRANCH .
+
+# WORKS TO HERE
+
+      - run:
+          name: Start container and verify it's working
+          command: |
+            set -x
+            ls -la
+            pwd
+            make run
+            docker ps -a
+
+
+
+      - run:
+          name: Build Tests
+          command: |
+            bash -c /opt/tests/build_tests.sh
+
+      - run: |
+          docker logs apache_web_1 > log_output
+          mv log_output $CIRCLE_ARTIFACTS/log_output.txt
+
+      - run: |
+          docker-compose up -d; sleep 5
+          docker run -d --name apache_web_1 
+          bash -c /opt/tests/build_tests.sh
+          docker ps -a
