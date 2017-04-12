@@ -1,0 +1,41 @@
+version: 2
+jobs:
+  build:
+    machine: true
+    working_directory: ~/apache
+    steps:
+      - checkout
+
+      - run:
+          name: Build Docker image
+          command: |
+            echo "Building Docker Image"
+            docker build -t htmlgraphic/apache:envoyer .
+
+# WORKS TO HERE
+
+      - run:
+          name: Start Container & Verify
+          command: |
+            set -x
+            ls -la
+            pwd
+            make run
+            docker ps -a
+
+
+
+      - run:
+          name: Build Tests
+          command: |
+            bash -c /opt/tests/build_tests.sh
+
+      - run: |
+          docker logs apache_web_1 > log_output
+          mv log_output $CIRCLE_ARTIFACTS/log_output.txt
+
+      - run: |
+          docker-compose up -d; sleep 5
+          docker run -d --name apache_web_1 
+          bash -c /opt/tests/build_tests.sh
+          docker ps -a

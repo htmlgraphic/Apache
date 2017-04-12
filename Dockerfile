@@ -4,7 +4,7 @@ MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 # Install packages then remove cache package list information
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update && apt-get -yq install python-software-properties software-properties-common \
+RUN apt-get update && apt-get install -yq --no-install-recommends python-software-properties software-properties-common \
 	apache2 \
 	php7.0 \
 	libapache2-mod-php7.0 \
