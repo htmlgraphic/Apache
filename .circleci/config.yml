@@ -11,7 +11,7 @@ jobs:
           name: Build Docker image
           command: |
             echo "Building Docker Image"
-            docker build -t htmlgraphic/apache:$CIRCLE_BRANCH .
+            docker build -t htmlgraphic/apache:envoyer .
 
 
 # DEV Build
