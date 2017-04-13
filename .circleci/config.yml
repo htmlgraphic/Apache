@@ -35,7 +35,7 @@ jobs:
       - run:
           name: DEV Build Tests
           command: |
-            docker exec apache_web_1 /bin/bash -c "/usr/bin/wget -q -O- http://127.0.0.1"
+            /bin/bash -c "/usr/bin/wget -q -O- http://127.0.0.1"
 
       - run:
           name: DEV Build Tests 1
