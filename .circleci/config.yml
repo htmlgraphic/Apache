@@ -30,20 +30,15 @@ jobs:
 
       - run: |
           mkdir -p $CIRCLE_ARTIFACTS
-          docker logs apache_web_1 > $CIRCLE_ARTIFACTS/log_output.txt
+          docker logs apache_web_1 > ${CIRCLE_ARTIFACTS}/log_output-DEV.txt
 
       - run:
-          name: DEV Build Tests
-          command: |
-            /bin/bash -c "/usr/bin/wget -q -O- http://127.0.0.1"
-
-      - run:
-          name: DEV Build Tests 1
+          name: Global Environment Vars
           command: |
             docker exec apache_web_1 /bin/bash -c "export"
             
       - run:
-          name: DEV Build Tests 2
+          name: DEV Build Tests
           command: |
             docker exec apache_web_1 /bin/bash /opt/tests/build_tests.sh
 
@@ -54,28 +49,28 @@ jobs:
             make stop && make rm
 
 
+# LIVE Build
+
+      - run:
+          name: Start LIVE Container
+          command: |
+            docker-compose up -d
+            docker ps -a
+
+      - run:
+          name: LIVE Build Tests
+          command: |
+            docker exec apache_web_1 /bin/bash /opt/tests/build_tests.sh
+
+      - run: |
+          docker logs apache_web_1 > ${CIRCLE_ARTIFACTS}/log_output-LIVE.txt
+
+
 
       - store_artifacts:
-          path: ~/logs/container-build
+          path: ${CIRCLE_ARTIFACTS}
           destination: raw-test-output
 
       - store_test_results:
-          path: ~/logs/container-build
+          path: ${CIRCLE_ARTIFACTS}
 
-
-# LIVE Build
-
-      # - run:
-      #     name: Start LIVE Container
-      #     command: |
-      #       docker-compose up -d
-      #       docker ps -a
-
-      # - run:
-      #     name: LIVE Build Tests
-      #     command: |
-      #       docker exec -it apache_web_1 /bin/bash /opt/tests/build_tests.sh
-
-      # - run: |
-      #     docker logs apache_web_1 > log_output
-      #     mv log_output $CIRCLE_ARTIFACTS/log_output-LIVE.txt
