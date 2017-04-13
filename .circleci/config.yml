@@ -3,16 +3,13 @@ jobs:
   build:
     machine: true
     working_directory: ~/apache
-    environment:
-      CIRCLE_ARTIFACTS: ~/logs/container-build
 
     steps:
       - checkout
 
       - run:
-          name: Build Docker image
+          name: Build Apache Docker image
           command: |
-            echo "Building Docker Image"
             docker build -t htmlgraphic/apache:envoyer .
 
 
@@ -26,24 +23,23 @@ jobs:
             pwd
             make run
             docker ps -a
+            sleep 10
 
 
-      - run: |
-          mkdir -p $CIRCLE_ARTIFACTS
-          docker logs apache_web_1 > $CIRCLE_ARTIFACTS/log_output.txt
+      - run: mkdir -p ~/apache/logs/container-build
 
       - run:
-          name: DEV Build Tests
+          name: Container Logs
           command: |
-            docker exec apache_web_1 /bin/bash -c "/usr/bin/wget -q -O- http://127.0.0.1"
+            docker logs apache_web_1 > ~/apache/logs/container-build/log_output-DEV.txt
 
       - run:
-          name: DEV Build Tests 1
+          name: Global Environment Vars
           command: |
             docker exec apache_web_1 /bin/bash -c "export"
             
       - run:
-          name: DEV Build Tests 2
+          name: DEV Build Tests
           command: |
             docker exec apache_web_1 /bin/bash /opt/tests/build_tests.sh
 
@@ -54,28 +50,31 @@ jobs:
             make stop && make rm
 
 
+# LIVE Build
+
+      - run:
+          name: Start LIVE Container
+          command: |
+            docker-compose up -d
+            docker ps -a
+            sleep 10
+
+      - run:
+          name: LIVE Build Tests
+          command: |
+            docker exec apache_hg-web_1 /bin/bash /opt/tests/build_tests.sh
+
+      - run:
+          name: Container Logs
+          command: |
+            docker logs apache_hg-web_1 > ~/apache/logs/container-build/log_output-LIVE.txt
+
+
 
       - store_artifacts:
-          path: ~/logs/container-build
+          path: ~/apache/logs/container-build
           destination: raw-test-output
 
       - store_test_results:
-          path: ~/logs/container-build
+          path: ~/apache/logs/container-build
 
-
-# LIVE Build
-
-      # - run:
-      #     name: Start LIVE Container
-      #     command: |
-      #       docker-compose up -d
-      #       docker ps -a
-
-      # - run:
-      #     name: LIVE Build Tests
-      #     command: |
-      #       docker exec -it apache_web_1 /bin/bash /opt/tests/build_tests.sh
-
-      # - run: |
-      #     docker logs apache_web_1 > log_output
-      #     mv log_output $CIRCLE_ARTIFACTS/log_output-LIVE.txt
