@@ -1,0 +1,79 @@
+version: 2
+jobs:
+  build:
+    machine: true
+    working_directory: ~/apache
+
+    steps:
+      - checkout
+
+      - run:
+          name: Build Apache Docker image
+          command: |
+            docker build -t htmlgraphic/apache:envoyer .
+
+
+# DEV Build
+
+      - run:
+          name: Start DEV Container
+          command: |
+            set -x
+            ls -la
+            pwd
+            make run
+            docker ps -a
+            sleep 10
+
+
+      - run: mkdir -p ~/apache/logs/container-build
+
+      - run:
+          name: Container Logs
+          command: |
+            docker logs apache_web_1 > ~/apache/logs/container-build/log_output-DEV.txt
+
+      - run:
+          name: Global Environment Vars
+          command: |
+            docker exec apache_web_1 /bin/bash -c "export"
+            
+      - run:
+          name: DEV Build Tests
+          command: |
+            docker exec apache_web_1 /bin/bash /opt/tests/build_tests.sh
+
+
+      - run:
+          name: Kill running containers
+          command: |
+            make stop && make rm
+
+
+# LIVE Build
+
+      - run:
+          name: Start LIVE Container
+          command: |
+            docker-compose up -d
+            docker ps -a
+            sleep 10
+
+      - run:
+          name: LIVE Build Tests
+          command: |
+            docker exec apache_hg-web_1 /bin/bash /opt/tests/build_tests.sh
+
+      - run:
+          name: Container Logs
+          command: |
+            docker logs apache_hg-web_1 > ~/apache/logs/container-build/log_output-LIVE.txt
+
+
+
+      - store_artifacts:
+          path: ~/apache/logs/container-build
+          destination: raw-test-output
+
+      - store_test_results:
+          path: ~/apache/logs/container-build
