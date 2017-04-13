@@ -4,7 +4,7 @@ MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 # Install packages then remove cache package list information
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update && apt-get -yq install openssh-client \
+RUN apt-get update && apt-get install -yq --no-install-recommends openssh-client \
 	apache2 \
 	wget \
 	libapache2-mod-php5 \
