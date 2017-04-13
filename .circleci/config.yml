@@ -3,7 +3,9 @@ jobs:
   build:
     machine: true
     working_directory: ~/apache
-    parallelism: 3
+    environment:
+      CIRCLE_ARTIFACTS: ~/logs/container-build
+
     steps:
       - checkout
 
@@ -25,14 +27,26 @@ jobs:
             make run
             docker ps -a
 
+
+      - run: |
+          mkdir -p $CIRCLE_ARTIFACTS
+          docker logs apache_web_1 > $CIRCLE_ARTIFACTS/log_output.txt
+
       - run:
           name: DEV Build Tests
           command: |
-            docker exec -it apache_web_1 /bin/bash /opt/tests/build_tests.sh
+            docker exec apache_web_1 /bin/bash -c "/usr/bin/wget -q -O- http://127.0.0.1"
 
-      - run: |
-          docker logs apache_web_1 > log_output
-          mv log_output $CIRCLE_ARTIFACTS/log_output.txt
+      - run:
+          name: DEV Build Tests 1
+          command: |
+            docker exec apache_web_1 /bin/bash -c "export"
+            
+      - run:
+          name: DEV Build Tests 2
+          command: |
+            docker exec apache_web_1 /bin/bash /opt/tests/build_tests.sh
+
 
       - run:
           name: Kill running containers
@@ -40,19 +54,28 @@ jobs:
             make stop && make rm
 
 
+
+      - store_artifacts:
+          path: ~/logs/container-build
+          destination: raw-test-output
+
+      - store_test_results:
+          path: ~/logs/container-build
+
+
 # LIVE Build
 
-      - run:
-          name: Start LIVE Container
-          command: |
-            docker-compose up -d
-            docker ps -a
+      # - run:
+      #     name: Start LIVE Container
+      #     command: |
+      #       docker-compose up -d
+      #       docker ps -a
 
-      - run:
-          name: LIVE Build Tests
-          command: |
-            docker exec -it apache_web_1 /bin/bash /opt/tests/build_tests.sh
+      # - run:
+      #     name: LIVE Build Tests
+      #     command: |
+      #       docker exec -it apache_web_1 /bin/bash /opt/tests/build_tests.sh
 
-      - run: |
-          docker logs apache_web_1 > log_output
-          mv log_output $CIRCLE_ARTIFACTS/log_output-LIVE.txt
+      # - run: |
+      #     docker logs apache_web_1 > log_output
+      #     mv log_output $CIRCLE_ARTIFACTS/log_output-LIVE.txt
