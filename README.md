@@ -1,4 +1,4 @@
-##Apache Docker
+## Apache Docker
 
 [![Run Status](https://api.shippable.com/projects/54cf015b5ab6cc13528a7b6a/badge?branch=envoyer)](https://app.shippable.com/projects/54cf015b5ab6cc13528a7b6a)
 [![Circle CI](https://circleci.com/gh/htmlgraphic/Apache/tree/envoyer.svg?style=svg)](https://circleci.com/gh/htmlgraphic/Apache/tree/envoyer) 
@@ -13,7 +13,7 @@ If you found this repo you are probably looking into Docker or already have know
 
 ---
 
-####Apache Web Server - Build Breakdown
+#### Apache Web Server - Build Breakdown
 * **app/apache-config.conf** - Default configuration used by Apache
 * **app/index.php** - Default web page, enter the IP address `docker-machine ls` to load this page.
 * **app/mac-permissions.sh** - Run manually on container to match uid / gid permissions of local docker container to Mac OS X
@@ -32,7 +32,7 @@ If you found this repo you are probably looking into Docker or already have know
 
 
 
-##Docker Compose
+## Docker Compose
 
 Launch the **Apache** instance locally and setup a local MySQL database container for persistant database data, the goal is to create a easy to use development environment. Type `make` for more build options
 
@@ -50,7 +50,7 @@ Launch the **Apache** instance locally and setup a local MySQL database containe
 
 ---
 
-##Test Driven Development
+## Test Driven Development
 These continuous integration services will fully test the creation of your container and can push the complete image to your private Docker repo if you desire.
 
 
