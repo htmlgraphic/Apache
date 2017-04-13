@@ -3,16 +3,13 @@ jobs:
   build:
     machine: true
     working_directory: ~/apache
-    environment:
-      CIRCLE_ARTIFACTS: ~/apache/logs/container-build
 
     steps:
       - checkout
 
       - run:
-          name: Build Docker image
+          name: Build Apache Docker image
           command: |
-            echo "Building Docker Image"
             docker build -t htmlgraphic/apache:envoyer .
 
 
@@ -29,12 +26,12 @@ jobs:
             sleep 10
 
 
-      - run: mkdir -p $CIRCLE_ARTIFACTS
+      - run: mkdir -p ~/apache/logs/container-build
 
       - run:
           name: Container Logs
           command: |
-            docker logs apache_web_1 > $CIRCLE_ARTIFACTS/log_output-DEV.txt
+            docker logs apache_web_1 > ~/apache/logs/container-build/log_output-DEV.txt
 
       - run:
           name: Global Environment Vars
@@ -70,7 +67,7 @@ jobs:
       - run:
           name: Container Logs
           command: |
-            docker logs apache_hg-web_1 > $CIRCLE_ARTIFACTS/log_output-LIVE.txt
+            docker logs apache_hg-web_1 > ~/apache/logs/container-build/log_output-LIVE.txt
 
 
 
