@@ -6,7 +6,7 @@ hg-web:
     - SASL_PASS=
     - SASL_USER=
     - SMTP_HOST=
-  image: 'htmlgraphic/apache:latest'
+  image: 'htmlgraphic/apache:envoyer'
   links:
     - 'mysql.DB:mysql'
   ports:
