@@ -49,6 +49,16 @@ testHTTPS()
 }
 
 
+testNODE_MemoryLimit()
+{
+	memory_limit=$(php -i | grep 'memory_limit')
+	echo 'Test memory_limit, currently set to '. $memory_limit
+	test=$(echo $memory_limit | grep 'memory_limit => -1 => -1' | wc -l)
+	assertEquals 1 $test
+	echo -e '\n'
+}
+
+
 testNODE_ENVIRONMENT()
 {
 	echo 'Test env NODE_ENVIRONMENT, currently set to "'${NODE_ENVIRONMENT}'"'
@@ -62,6 +72,7 @@ testNODE_ENVIRONMENT()
 	assertEquals 1 $node_env
 	echo -e '\n'
 }
+
 
 testNODE_ENVIRONMENT_PHP()
 {
