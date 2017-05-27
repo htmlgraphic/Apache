@@ -6,8 +6,13 @@ echo -e '\n'
 
 testPostfixUsername()
 {
-	echo 'Testing Postfix username'
-	test=$(/usr/sbin/postconf smtp_sasl_password_maps | grep 'p08tf1X' | wc -l)
+	test=0
+	echo 'Testing Postfix username, currently set to "'${SASL_USER}'"'
+	if [ ! -z "${SASL_USER}" ]; then
+		test=$(/usr/sbin/postconf smtp_sasl_password_maps | grep "${SASL_USER}" | wc -l)
+	else
+		echo 'ENV $SASL_USER is not set';
+	fi
 	assertEquals 1 $test
 	echo -e '\n'
 }
@@ -15,8 +20,12 @@ testPostfixUsername()
 
 testPostfixPassword()
 {
-	echo 'Testing Postfix password'
-	test=$(/usr/sbin/postconf smtp_sasl_password_maps | grep 'p@ssw0Rd' | wc -l)
+	echo 'Testing Postfix password, currently set to "'${SASL_PASS}'"'
+	if [ ! -z "${SASL_PASS}" ]; then
+		test=$(/usr/sbin/postconf smtp_sasl_password_maps | grep "${SASL_PASS}" | wc -l)
+	else
+		echo 'ENV $SASL_PASS is not set';
+	fi
 	assertEquals 1 $test
 	echo -e '\n'
 }
@@ -66,7 +75,7 @@ testNODE_ENVIRONMENT()
 
 	# Depending on the type of environment dev or production an
 	# environmental variable should be set
-	if [[ "${NODE_ENVIRONMENT}" == 'dev' ]] || [[ "${NODE_ENVIRONMENT}" == 'production' ]]; then
+	if [[ ${NODE_ENVIRONMENT} == 'dev' ]] || [[ ${NODE_ENVIRONMENT} == 'production' ]]; then
 		node_env=1;
 	fi
 	assertEquals 1 $node_env
