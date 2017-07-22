@@ -61,7 +61,7 @@ testHTTPS()
 testNODE_MemoryLimit()
 {
 	memory_limit=$(php -i | grep 'memory_limit')
-	echo 'Test memory_limit, currently set to '. $memory_limit
+	echo 'Test memory_limit, currently set to "'$memory_limit'"'
 	test=$(echo $memory_limit | grep 'memory_limit => -1 => -1' | wc -l)
 	assertEquals 1 $test
 	echo -e '\n'
