@@ -53,9 +53,8 @@ RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/lo
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && chmod +x wp-cli.phar && mv wp-cli.phar /usr/local/bin/wp
 
 # wkhtmltox > HTML > PDF Conversation
-RUN wget https://downloads.wkhtmltopdf.org/0.12/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz && tar xf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz && cd wkhtmltox/bin && mv wk* /usr/bin/
+RUN tar xf /opt/app/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -C /opt && mv /opt/wkhtmltox/bin/wk* /usr/bin/
 RUN wkhtmltopdf --version
-
 
 # LARAVEL
 RUN composer global require "laravel/installer"
