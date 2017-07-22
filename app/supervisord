@@ -2,7 +2,7 @@
 nodaemon=true
 
 [program:crond]
-command=/usr/sbin/cron -f
+command=cron -f -L 15
 process_name=%(program_name)s
 autostart=true
 autorestart=true

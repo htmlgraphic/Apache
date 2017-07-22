@@ -26,6 +26,7 @@ RUN apt-get update && apt-get install -yq --no-install-recommends python-softwar
 	imagemagick \
 	libmagickwand-dev \
 	supervisor \
+	cron \
 	rsyslog \
 	postfix && apt-get clean && rm -rf /var/lib/apt/lists/*
 
