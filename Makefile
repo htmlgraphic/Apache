@@ -1,7 +1,7 @@
 # Build a container via the command "make build"
 # By Jason Gegere <jason@htmlgraphic.com>
 
-VERSION 	= 1.6.5
+VERSION 	= 1.6.6
 NAME 		= apache
 IMAGE_REPO 	= htmlgraphic
 IMAGE_NAME 	= $(IMAGE_REPO)/$(NAME)
@@ -33,7 +33,7 @@ build:
 push:
 	@echo "note: If the repository is set as an automatted build you will NOT be able to push"
 	docker push $(IMAGE_NAME):$(VERSION)
-	
+
 run:
 	[ ! -f .env ] && echo '.env file does not exist, copy env template' && cp .env.example .env || echo "env file exists"
 	docker-compose -f docker-compose.local.yml up -d
