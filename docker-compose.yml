@@ -10,7 +10,7 @@ hg-web:
   links:
     - "hg-db:mysql"
 hg-db:
-  image: 'mysql:5.7'
+  image: 'htmlgraphic/mysql:5.7.18'
   environment:
     - MYSQL_DATABASE=htmlgraphic
     - MYSQL_PASSWORD=new_password
@@ -19,8 +19,8 @@ hg-db:
   expose:
     - "3306"
   volumes_from:
-    - db-data2
-db-data2:
+    - db-data
+db-data:
   image: 'busybox:latest'
   volumes:
     - "/var/lib/mysql"

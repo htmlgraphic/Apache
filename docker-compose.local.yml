@@ -13,17 +13,17 @@ web:
   env_file:
     - .env
 db:
-  image: 'mysql:5.7'
+  image: 'htmlgraphic/mysql:5.7.18'
   volumes_from:
-    - db-data2
+    - db-data
   ports:
     - "3306:3306"
   environment:
-    - MYSQL_DATABASE=htmlgraphic
-    - MYSQL_PASSWORD=new_password
     - MYSQL_ROOT_PASSWORD=new_passwordac
+    - MYSQL_DATABASE=htmlgraphic
     - MYSQL_USER=admin
-db-data2:
+    - MYSQL_PASSWORD=new_password
+db-data:
   image: 'busybox:latest'
   volumes:
     - "/var/lib/mysql"

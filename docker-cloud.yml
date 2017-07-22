@@ -32,12 +32,12 @@ hg-db:
     - MYSQL_USER=admin
   expose:
     - '3306'
-  image: 'mysql:5.7'
+  image: 'htmlgraphic/mysql:5.7.18'
   tags:
     - testing
   volumes_from:
-    - hg-db-data2
-hg-db-data2:
+    - hg-db-data
+hg-db-data:
   image: 'busybox:latest'
   tags:
     - testing
