@@ -32,21 +32,20 @@ If you found this repo you are probably looking into Docker or already have know
 
 
 
-## Docker Compose
+## Quick Start
 
 Launch the **Apache** instance locally and setup a local MySQL database container for persistant database data, the goal is to create a easy to use development environment. Type `make` for more build options
 
 ```bash
 	$ git clone https://github.com/htmlgraphic/Apache.git && cd Apache
-```
-```bash
 	$ make run
 ```
 
 ---
+## Deploy to Docker Cloud
+Create a [Docker Cloud](https://cloud.docker.com) account, add a   **Cloud provider**. Once complete, `one click` will create a functional Apache & MySQL Service.
 
 [![Deploy to Docker Cloud](https://files.cloud.docker.com/images/deploy-to-dockercloud.svg)](https://cloud.docker.com/stack/deploy/)
-
 
 ---
 
