@@ -14,23 +14,30 @@ If you found this repo you are probably looking into Docker or already have know
 ---
 
 #### Apache Web Server - Build Breakdown
-* **app/apache-config.conf** - Default Apache configuration
-* **app/index.php** - Default web page, enter the IP address `docker-machine ls` to load this page.
-* **app/mac-permissions.sh** - Run manually on container to match uid / gid permissions of local docker container to Mac OS X
-* **app/postfix.sh** - Used by *supervisord.conf* to start Postfix
-* **app/run.sh** - Setup apache, conf files, and start process on container
-* **app/sample.conf** - located within `/data/apache2/sites-enabled` duplicate / modify to host others domains
-* **app/supervisord.conf** - Supervisor is a client / server system which monitors and controls a number of processes on UNIX-like operating systems
-* **.env.example** - Rename file to `.env` for local environment variables used within build
-* **.circleci/\*** - Configuration for CircleCI 2.0 testing
-* **docker-compose.\*** - (various composer files for local and production builds) [more info](https://docs.docker.com/docker-cloud/apps/deploy-to-cloud-btn/)
-* **Dockerfile** - Uses a basefile build to help speed up the docker container build process
-* **Makefile** - A helpful file used to streamline build commands
-* **shippable.yml** - Configuration for Shippable.com testing
-* **tests/build_tests.sh** - Build test processes
 
-
-
+```shell
+Apache                       # → Root of Docker Build
+├── app/                     # → App conf to manage application on container
+│   ├── apache-config.conf   # → Default Apache configuration
+│   ├── index.php            # → Default web page, enter the IP address `docker-machine ls` to load this page.
+│   ├── mac-permissions.sh   # → Run manually on container to match uid / gid permissions of local docker container to Mac OS X
+│   ├── postfix.sh           # → Used by *supervisord.conf* to start Postfix
+│   ├── run.sh               # → Setup apache, conf files, and start process on container
+│   ├── sample.conf          # → located within `/data/apache2/sites-enabled` duplicate / modify to host others domains
+│   └── supervisord          # → Supervisor is a client / server system which monitors and controls a number of processes on UNIX-like operating systems
+├── .env.example             # → Rename file to `.env` for local environment variables used within build
+├── .circleci/               # → CircleCI 2.0
+│   └── config.yml           # → CircleCI Configuration
+├── docker-cloud.yml         # → Used to lauch a container directly to Docker Cloud
+├── docker-compose.local.yml # → Local build 
+├── docker-compose.yml       # → Production build
+├── Dockerfile               # → Uses a basefile build to help speed up the docker container build process
+├── Makefile                 # → Build command shortcuts
+├── shippable.yml            # → Configuration for Shippable.com testing
+└── tests/
+    └── build_tests.sh       # → Build test processes
+```
+Docker Compose YML configuration guide [more info](https://docs.docker.com/docker-cloud/apps/deploy-to-cloud-btn/) 
 
 ## Quick Start
 
@@ -59,10 +66,3 @@ These continuous integration services will fully test the creation of your conta
 ---
 
 **[Shippable](https://shippable.com)** - Test **production** and **dev** Docker builds, can the container be built the without error? The ```/tests/build_tests.sh``` file ensures the can run with parameters defined. Shippable allows the use of [matrix environment variables](http://docs.shippable.com/ci_configure/#using-environment-variables) reducing build time and offer a more robust tests. If any test(s) fail the system should be reviewed closer.
-
-
-
-
-
-
-
