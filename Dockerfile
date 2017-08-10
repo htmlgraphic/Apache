@@ -61,7 +61,7 @@ RUN wkhtmltopdf --version
 RUN composer global require "laravel/installer"
 
 # Enable Apache mods.
-RUN a2enmod userdir && a2enmod rewrite && a2enmod ssl
+RUN a2enmod userdir && a2enmod rewrite && a2enmod ssl && a2enmod expires
 
 # Environment variables contained within build container.
 ENV TERM=xterm \
