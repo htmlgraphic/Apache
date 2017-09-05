@@ -6,7 +6,13 @@ jobs:
 
     steps:
       - checkout
-
+      - run:
+          name: Install Docker Compose
+          command: |
+            set -x
+            curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+            chmod +x ~/docker-compose
+            sudo mv ~/docker-compose /usr/local/bin/docker-compose
       - run:
           name: Build Apache Docker image
           command: |
@@ -25,7 +31,6 @@ jobs:
             docker ps -a
             sleep 10
 
-
       - run: mkdir -p ~/apache/logs/container-build
 
       - run:
@@ -37,7 +42,7 @@ jobs:
           name: Global Environment Vars
           command: |
             docker exec apache_web_1 /bin/bash -c "export"
-            
+
       - run:
           name: DEV Build Tests
           command: |
