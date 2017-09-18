@@ -36,6 +36,11 @@ push:
 
 run:
 	[ ! -f .env ] && echo '.env file does not exist, copy env template' && cp .env.example .env || echo "env file exists"
+	@echo "# Upon initial setup run the following on the MySQL system:"
+	@echo ""
+	@echo "mysql -p <MYSQL_ROOT_PASSWORD>"
+	@echo "GRANT ALL PRIVILEGES ON * . * TO 'admin'@'%';"
+	@echo ""
 	docker-compose -f docker-compose.local.yml up -d
 
 start: run
@@ -47,7 +52,7 @@ stop:
 restart:	stop start
 
 rm:
-	# As a precautionary measure the containers are specifally referenced so the DB data is not destroyed
+	@echo "# As a precautionary measure containers are specifally referenced to not destroy DB data"
 	@echo "Removing $(NAME)_web_1 and $(NAME)_db_1"
 	docker rm -f $(NAME)_web_1
 	docker rm -f $(NAME)_db_1
