@@ -11,6 +11,12 @@ This repo will give you a turn key Docker container build for use in production 
 
 If you found this repo you are probably looking into Docker or already have knowledge as to what Docker can help you with. In this repo you will find a number of complete Dockerfile builds used in **development** and **production** environments. Listed below is an explanation of each file. [Ask a question](https://github.com/htmlgraphic/Apache/issues/new)
 
+#### Dependencies
+- Docker
+- Docker Compose
+- Git
+- Make ([Windows](https://stackoverflow.com/questions/32127524/how-to-install-and-use-make-in-windows-8-1))
+
 ---
 
 #### Apache Web Server - Build Breakdown

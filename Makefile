@@ -39,7 +39,7 @@ run:
 	@echo "# Upon initial setup run the following on the MySQL system:"
 	@echo ""
 	@echo "mysql -p <MYSQL_ROOT_PASSWORD>"
-	@echo "GRANT ALL PRIVILEGES ON * . * TO 'admin'@'%';"
+	@echo "GRANT ALL PRIVILEGES ON * . * TO 'admin'@'%' with grant option;"
 	@echo ""
 	docker-compose -f docker-compose.local.yml up -d
 
