@@ -19,7 +19,7 @@ If you found this repo you are probably looking into Docker or already have know
 
 ---
 
-#### Apache Web Server - Build Breakdown
+## Build Breakdown
 
 ```shell
 Apache                       # → Root of Docker Build
@@ -51,7 +51,9 @@ Launch the **Apache** instance locally and setup a local MySQL database containe
 
 ```bash
 	$ git clone https://github.com/htmlgraphic/Apache.git && cd Apache
-	$ make run
+	$ make run 
+	OR (non Make Windows)
+	$ docker-compose -f docker-compose.local.yml up -d
 ```
 
 ---
@@ -72,3 +74,57 @@ These continuous integration services will fully test the creation of your conta
 ---
 
 **[Shippable](https://shippable.com)** - Test **production** and **dev** Docker builds, can the container be built the without error? The ```/tests/build_tests.sh``` file ensures the can run with parameters defined. Shippable allows the use of [matrix environment variables](http://docs.shippable.com/ci_configure/#using-environment-variables) reducing build time and offer a more robust tests. If any test(s) fail the system should be reviewed closer.
+
+
+## Interacting with containers:
+
+  View all running containers:
+
+  `docker ps`
+
+  View all containers (including stopped containers):
+
+  `docker ps -a`
+
+  Read the log of a running container:
+
+  `docker logs [container name or id]`
+
+  Follow the log of a running container:
+
+  `docker logs -f [container name or id]`
+
+  Read the Apache log:
+
+  `docker exec apache_web_1 cat ./data/apache2/logs/access_log`
+
+  Follow the Apache log:
+
+  `docker exec apache_web_1 tail -f ./data/apache2/logs/access_log`
+
+  Follow the outgoing mail log:
+
+  `docker exec apache_web_1 tail -f ./var/log/mail.log`
+
+  Gain terminal access to a running container:
+
+  `docker exec -it [container name or id] sh`
+
+  Restart a running container:
+
+  `docker restart [container name or id]`
+
+  Stop and start a container in separate operations:
+
+  `docker stop [container name or id]`
+
+  `docker start [container name or id]`
+
+## Teardown 
+#### (Stop all running containers started by Docker Compose):
+
+```
+    $ make rm 
+    OR (non Make Windows)
+    $ docker rm -f apache_web_1 && docker rm -f apache_db_1
+```
