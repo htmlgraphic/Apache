@@ -70,23 +70,26 @@ if (getenv('DOCKERCLOUD_SERVICE_FQDN')) {
 		<table class="table table-bordered table-striped">
 		<tbody>
 		<tr>
-			<td class="text-right">$HOSTNAME</td>
+			<th colspan="2">SYSTEM VARIABLES</th>
+		</tr>
+		<tr>
+			<td class="text-right">HOSTNAME</td>
 			<td class="text-left"><?= $hostname ?></td>
 		</tr>
 	<?php if ($node_env == 'dev') { ?>
 		<?php if (getenv('MYSQL_PORT')) {?>
 		<tr>
-			<td class="text-right">$MYSQL_PORT</td>
+			<td class="text-right">MYSQL_PORT</td>
 			<td class="text-left"><?= getenv('MYSQL_PORT'); ?></td>
 		</tr>
 		<?php } ?>
 		<tr>
-			<td class="text-right">$NODE_ENVIRONMENT</td>
+			<td class="text-right">NODE_ENVIRONMENT</td>
 			<td class="text-left"><?= $node_env ?></td>
 		</tr>
 	<?php } ?>
 		<tr>
-			<td class="text-right">$SMTP_HOST</td>
+			<td class="text-right">SMTP_HOST</td>
 			<td class="text-left"><?= getenv('SMTP_HOST'); ?></td>
 		</tr>
 		</tbody>
