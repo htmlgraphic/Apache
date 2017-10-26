@@ -78,47 +78,47 @@ These continuous integration services will fully test the creation of your conta
 
 ## Interacting with containers:
 
-  View all running containers:
+List all running containers:
 
-  `docker ps`
+`docker ps`
 
-  View all containers (including stopped containers):
+List all containers (including stopped containers):
 
-  `docker ps -a`
+`docker ps -a`
 
-  Read the log of a running container:
+Read the log of a running container:
 
-  `docker logs [container name or id]`
+`docker logs [container name or id]`
 
-  Follow the log of a running container:
+Follow the log of a running container:
 
-  `docker logs -f [container name or id]`
+`docker logs -f [container name or id]`
 
-  Read the Apache log:
+Read the Apache log:
 
-  `docker exec apache_web_1 cat ./data/apache2/logs/access_log`
+`docker exec apache_web_1 cat ./data/apache2/logs/access_log`
 
-  Follow the Apache log:
+Follow the Apache log:
 
-  `docker exec apache_web_1 tail -f ./data/apache2/logs/access_log`
+`docker exec apache_web_1 tail -f ./data/apache2/logs/access_log`
 
-  Follow the outgoing mail log:
+Follow the outgoing mail log:
 
-  `docker exec apache_web_1 tail -f ./var/log/mail.log`
+`docker exec apache_web_1 tail -f ./var/log/mail.log`
 
-  Gain terminal access to a running container:
+Gain terminal access to a running container:
 
-  `docker exec -it [container name or id] sh`
+`docker exec -it [container name or id] /bin/bash`
 
-  Restart a running container:
+Restart a running container:
 
-  `docker restart [container name or id]`
+`docker restart [container name or id]`
 
-  Stop and start a container in separate operations:
+Stop and start a container in separate operations:
 
-  `docker stop [container name or id]`
+`docker stop [container name or id]`
 
-  `docker start [container name or id]`
+`docker start [container name or id]`
 
 ## Teardown 
 #### (Stop all running containers started by Docker Compose):
