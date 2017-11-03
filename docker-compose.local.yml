@@ -2,6 +2,7 @@ version: "3"
 services:
   web:
     image: 'htmlgraphic/apache:envoyer'
+    container_name: apache
     volumes:
       - "/Volumes/Case/SITES/docker:/data" # <- Change to preferred local working dir
      #- "/c/Users/southpark/docker:/data"

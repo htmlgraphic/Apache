@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     machine: true
-    working_directory: ~/apache
+    working_directory: ~/logs
 
     steps:
       - checkout
@@ -16,7 +16,7 @@ jobs:
       - run:
           name: Build Apache Docker image
           command: |
-            docker build -t htmlgraphic/apache:envoyer .
+            make build
 
 
 # DEV Build
@@ -31,22 +31,22 @@ jobs:
             docker ps -a
             sleep 10
 
-      - run: mkdir -p ~/apache/logs/container-build
+      - run: mkdir -p ~/logs/container-build
 
       - run:
           name: Container Logs
           command: |
-            docker logs apache_web_1 > ~/apache/logs/container-build/log_output-DEV.txt
+            docker logs apache > ~/logs/container-build/log_output-DEV.txt
 
       - run:
           name: Global Environment Vars
           command: |
-            docker exec apache_web_1 /bin/bash -c "export"
+            docker exec apache /bin/bash -c "export"
 
       - run:
           name: DEV Build Tests
           command: |
-            docker exec apache_web_1 /bin/bash /opt/tests/build_tests.sh
+            docker exec apache /bin/bash /opt/tests/build_tests.sh
 
 
       - run:
@@ -72,14 +72,14 @@ jobs:
       - run:
           name: Container Logs
           command: |
-            docker logs apache_hg-web_1 > ~/apache/logs/container-build/log_output-LIVE.txt
+            docker logs apache_hg-web_1 > ~/logs/container-build/log_output-LIVE.txt
 
 
 
       - store_artifacts:
-          path: ~/apache/logs/container-build
+          path: ~/logs/container-build
           destination: raw-test-output
 
       - store_test_results:
-          path: ~/apache/logs/container-build
+          path: ~/logs/container-build
 

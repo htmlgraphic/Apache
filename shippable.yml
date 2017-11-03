@@ -9,21 +9,18 @@ env:
 
 build:
   pre_ci:
-    - docker build --no-cache -t htmlgraphic/apache:$BRANCH .
-    #- sudo apt-get update && apt-get -y install python-pip
-    #- sudo pip install -U docker-compose
+    - make build
   pre_ci_boot:
     image_name: htmlgraphic/apache
     image_tag: $BRANCH
     pull: false
   ci:
     - "bash app/run.sh &"
-    - sleep 5
     - "/usr/sbin/postconf -n"
     - sleep 5
     - "bash tests/build_tests.sh"
   on_failure:
-    - docker logs apache_web_1
+    - docker logs apache
   # on_success:
   #   - docker push htmlgraphic/apache:$BRANCH
 
