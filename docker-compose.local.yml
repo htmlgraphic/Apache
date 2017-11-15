@@ -21,10 +21,7 @@ services:
       - "db-data:/var/lib/mysql"
     ports:
       - "3306:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=new_passwordac
-      - MYSQL_DATABASE=htmlgraphic
-      - MYSQL_USER=admin
-      - MYSQL_PASSWORD=new_password
+    env_file:
+      - .env
 volumes:
   db-data:

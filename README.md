@@ -12,8 +12,7 @@ This repo will give you a turn key Docker container build for use in production 
 If you found this repo you are probably looking into Docker or already have knowledge as to what Docker can help you with. In this repo you will find a number of complete Dockerfile builds used in **development** and **production** environments. Listed below is an explanation of each file. [Ask a question](https://github.com/htmlgraphic/Apache/issues/new)
 
 #### Dependencies
-- Docker
-- Docker Compose
+- Docker [Download](https://www.docker.com/community-edition#/download)
 - Git
 - Make ([Windows](https://stackoverflow.com/questions/32127524/how-to-install-and-use-make-in-windows-8-1))
 
@@ -45,16 +44,32 @@ Apache                       # → Root of Docker Build
 ```
 Docker Compose YML configuration guide [more info](https://docs.docker.com/docker-cloud/apps/deploy-to-cloud-btn/) 
 
+
 ## Quick Start
 
-Launch the **Apache** instance locally and setup a local MySQL database container for persistant database data, the goal is to create a easy to use development environment. Type `make` for more build options
+Launch the **Apache** instance locally and setup a local MySQL database container for persistant database data, the goal is to create a easy to use development environment. 
+
+>	Type `make` for more build options:
 
 ```bash
-	$ git clone https://github.com/htmlgraphic/Apache.git && cd Apache
+	$ git clone https://github.com/htmlgraphic/Apache.git ~/Docker/Apache && cd ~/Docker/Apache
 	$ make run 
+
 	OR (non Make Windows)
+
 	$ docker-compose -f docker-compose.local.yml up -d
 ```
+
+### Run phpMyAdmin
+
+Review MySQL access instructions upon `make run` command execution
+
+```bash
+	$ docker run --name myadmin -d --link apache_db_1:db --net apache_default -p 8080:80 phpmyadmin/phpmyadmin
+
+	Open http://localhost:8080 (username & password are set within .env file)
+```
+
 
 ---
 ## Deploy to Docker Cloud
