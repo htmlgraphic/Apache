@@ -28,9 +28,14 @@ help:
 
 
 env:
+	@[ ! -f .env ] && echo "	.env file does not exist, copy env template \n" && cp .env.example .env || echo "	env file exists \n"
+	@echo "The following environment varibles exist:"
 	@echo $(shell sed 's/=.*//' .env)
+	@echo "\n"
+
 
 build:
+	@make env
 	docker build \
 		--build-arg VCS_REF=`git rev-parse --short HEAD` \
 		--build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
@@ -41,18 +46,17 @@ push:
 	docker push $(IMAGE_NAME):$(VERSION)
 
 run:
-	@echo 'Checking... for initial folder structure:'
+	@echo 'Checking... initial run structure'
 	@if [ ! -d "/Volumes/Case" ]; then \
-		echo "		Creating project folders" && sudo mkdir -p /Volumes/Case && sudo mkdir -p /Volumes/Case/SITES && sudo mkdir -p /Volumes/Case/SITES/docker; fi
-	@[ ! -f .env ] && echo "		.env file does not exist, copy env template" && cp .env.example .env || echo "		env file exists"
-	@echo ""
+		echo "	Creating project folders" && sudo mkdir -p /Volumes/Case && sudo mkdir -p /Volumes/Case/SITES && sudo mkdir -p /Volumes/Case/SITES/docker; fi
+	@make env
 	@echo "Upon initial setup run the following on the MySQL system, this will setup a GLOBAL admin:"
 	@echo ""
-	@echo "		docker exec -it apache_db_1 /bin/bash \n \
-			mysql -p$(MYSQL_ROOT_PASSWORD) \n \
-			GRANT ALL PRIVILEGES ON * . * TO '$(MYSQL_USER)'@'%' with grant option; \n"
+	@echo "	docker exec -it apache_db_1 /bin/bash \n \
+		mysql -p$(MYSQL_ROOT_PASSWORD) \n \
+		GRANT ALL PRIVILEGES ON * . * TO '$(MYSQL_USER)'@'%' with grant option; \n"
 
-	@echo "		THE PASSWORD FOR $(MYSQL_USER) IS $(MYSQL_PASSWORD); \n"
+	@echo "	THE PASSWORD FOR $(MYSQL_USER) IS $(MYSQL_PASSWORD); \n"
 	docker-compose -f docker-compose.local.yml up -d
 
 start: run
