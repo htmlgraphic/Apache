@@ -16,6 +16,7 @@ jobs:
       - run:
           name: Build Apache Docker image
           command: |
+            cp .env.example .env
             make build
 
 
@@ -31,13 +32,6 @@ jobs:
             docker ps -a
             sleep 10
 
-      - run: mkdir -p ~/logs/container-build
-
-      - run:
-          name: Container Logs
-          command: |
-            docker logs apache > ~/logs/container-build/log_output-DEV.txt
-
       - run:
           name: Global Environment Vars
           command: |
@@ -48,6 +42,12 @@ jobs:
           command: |
             docker exec apache /bin/bash /opt/tests/build_tests.sh
 
+      - run:
+          name: Container Logs
+          command: |
+            mkdir -p ~/project/container-build
+            docker logs apache > ~/project/container-build/log_output-DEV_Apache.txt
+            docker logs apache_db > ~/project/container-build/log_output-DEV_MySQL.txt
 
       - run:
           name: Kill running containers
@@ -60,26 +60,28 @@ jobs:
       - run:
           name: Start LIVE Container
           command: |
-            docker-compose up -d
+            docker-compose --project-name apache up -d
             docker ps -a
             sleep 10
 
       - run:
           name: LIVE Build Tests
           command: |
-            docker exec apache /bin/bash /opt/tests/build_tests.sh
+            docker exec apache_hg-web_1 /bin/bash /opt/tests/build_tests.sh
 
       - run:
           name: Container Logs
           command: |
-            docker logs apache > ~/logs/container-build/log_output-LIVE.txt
+            mkdir -p ~/project/container-build
+            docker logs apache_hg-web_1 > ~/project/container-build/log_output-LIVE_Apache.txt
+            docker logs apache_hg-db_1 > ~/project/container-build/log_output-LIVE_MySQL.txt
 
 
 
       - store_artifacts:
-          path: ~/logs/container-build
+          path: ~/project/container-build
           destination: raw-test-output
 
       - store_test_results:
-          path: ~/logs/container-build
+          path: ~/project/container-build
 

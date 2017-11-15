@@ -69,9 +69,9 @@ restart:	stop start
 
 rm:
 	@echo "On remove, containers are specifally referenced, as to not destroy ANY persistent data"
-	@echo "Removing $(NAME) and $(NAME)_db_1"
+	@echo "Removing $(NAME) and $(NAME)_db"
 	docker rm -f $(NAME)
-	docker rm -f $(NAME)_db_1
+	docker rm -f $(NAME)_db
 
 state:
 	docker ps -a | grep $(NAME)

@@ -17,6 +17,7 @@ services:
       - .env
   db:
     image: 'htmlgraphic/mysql:5.7.18'
+    container_name: apache_db
     volumes:
       - "db-data:/var/lib/mysql"
     ports:

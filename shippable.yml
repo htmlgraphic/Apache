@@ -9,6 +9,7 @@ env:
 
 build:
   pre_ci:
+    - cp .env.example .env
     - make build
   pre_ci_boot:
     image_name: htmlgraphic/apache
