@@ -53,10 +53,12 @@ Launch the **Apache** instance locally and setup a local MySQL database containe
 
 ```bash
 	$ git clone https://github.com/htmlgraphic/Apache.git ~/Docker/Apache && cd ~/Docker/Apache
+	$ cp .env.example .env
 	$ make run 
 
 	OR (non Make Windows)
 
+	$ copy .env.example .env
 	$ docker-compose -f docker-compose.local.yml up -d
 ```
 

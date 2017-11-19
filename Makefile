@@ -6,7 +6,7 @@ NAME 		= apache
 IMAGE_REPO 	= htmlgraphic
 IMAGE_NAME 	= $(IMAGE_REPO)/$(NAME)
 DOMAIN 		= htmlgraphic.com
-include .env
+include .env # .env file needs to created for this to work properly
 
 
 all:: help
@@ -47,8 +47,8 @@ push:
 
 run:
 	@echo 'Checking... initial run structure'
-	@if [ ! -d "/Volumes/Case" ]; then \
-		echo "	Creating project folders" && sudo mkdir -p /Volumes/Case && sudo mkdir -p /Volumes/Case/SITES && sudo mkdir -p /Volumes/Case/SITES/docker; fi
+	@if [ ! -d "~/SITES/docker" ]; then \
+		echo "	Creating project folders" && sudo mkdir -p ~/SITES && sudo mkdir -p ~/SITES/docker; fi
 	@make env
 	@echo "Upon initial setup run the following on the MySQL system, this will setup a GLOBAL admin:"
 	@echo ""

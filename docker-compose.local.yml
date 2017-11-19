@@ -4,7 +4,7 @@ services:
     image: 'htmlgraphic/apache:envoyer'
     container_name: apache
     volumes:
-      - "/Volumes/Case/SITES/docker:/data" # <- Change to preferred local working dir
+      - "~/SITES/docker:/data" # <- Change to preferred local working dir
      #- "/c/Users/southpark/docker:/data"
     links:
       - "db:mysql"
