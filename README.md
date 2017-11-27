@@ -105,37 +105,37 @@ List all containers (including stopped containers):
 
 Read the log of a running container:
 
-`docker logs [container name or id]`
+`docker logs [CONTAINER ID OR NAME]`
 
 Follow the log of a running container:
 
-`docker logs -f [container name or id]`
+`docker logs -f [CONTAINER ID OR NAME]`
 
 Read the Apache log:
 
-`docker exec apache_web_1 cat ./data/apache2/logs/access_log`
+`docker exec [CONTAINER ID OR NAME] cat ./data/apache2/logs/access_log`
 
 Follow the Apache log:
 
-`docker exec apache_web_1 tail -f ./data/apache2/logs/access_log`
+`docker exec [CONTAINER ID OR NAME] tail -f ./data/apache2/logs/access_log`
 
 Follow the outgoing mail log:
 
-`docker exec apache_web_1 tail -f ./var/log/mail.log`
+`docker exec [CONTAINER ID OR NAME] tail -f ./var/log/mail.log`
 
 Gain terminal access to a running container:
 
-`docker exec -it [container name or id] /bin/bash`
+`docker exec -it [CONTAINER ID OR NAME] /bin/bash`
 
 Restart a running container:
 
-`docker restart [container name or id]`
+`docker restart [CONTAINER ID OR NAME]`
 
 Stop and start a container in separate operations:
 
-`docker stop [container name or id]`
+`docker stop [CONTAINER ID OR NAME]`
 
-`docker start [container name or id]`
+`docker start [CONTAINER ID OR NAME]`
 
 ## Teardown 
 #### (Stop all running containers started by Docker Compose):

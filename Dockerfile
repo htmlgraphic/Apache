@@ -49,6 +49,8 @@ RUN chmod -R 755 /opt/* && \
 
 # COMPOSER
 RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
+RUN composer global require "laravel/installer"
+RUN composer global require "vlucas/phpdotenv"
 
 # WP-CLI
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && chmod +x wp-cli.phar && mv wp-cli.phar /usr/local/bin/wp
@@ -56,9 +58,6 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 # wkhtmltox > HTML > PDF Conversation
 RUN tar xf /opt/app/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -C /opt && mv /opt/wkhtmltox/bin/wk* /usr/bin/
 RUN wkhtmltopdf --version
-
-# LARAVEL
-RUN composer global require "laravel/installer"
 
 # Enable Apache mods.
 RUN a2enmod userdir && a2enmod rewrite && a2enmod ssl && a2enmod expires
