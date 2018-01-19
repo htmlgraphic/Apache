@@ -1,10 +1,10 @@
 # Build a container via the command "make build"
 # By Jason Gegere <jason@htmlgraphic.com>
 
-VERSION 	= 1.8.0
-NAME 		= haproxy
+TAG 		= haproxy
+CONTAINER 	= apache
 IMAGE_REPO 	= htmlgraphic
-IMAGE_NAME 	= $(IMAGE_REPO)/$(NAME)
+IMAGE_NAME 	= $(IMAGE_REPO)/$(CONTAINER)
 DOMAIN 		= htmlgraphic.com
 include .env # .env file needs to created for this to work properly
 
@@ -14,17 +14,17 @@ all:: help
 
 help:
 	@echo ""
-	@echo "-- Help Menu"
+	@echo "-- Help Menu - $(IMAGE_NAME):$(TAG)"
 	@echo ""
-	@echo "     make build		- Build image $(IMAGE_NAME):$(VERSION)"
-	@echo "     make push		- Push $(IMAGE_NAME):$(VERSION) to public docker repo"
+	@echo "     make build		- Build image $(IMAGE_NAME):$(TAG)"
+	@echo "     make push		- Push $(IMAGE_NAME):$(TAG) to public docker repo"
 	@echo "     make run		- Run docker-compose and create local development environment"
-	@echo "     make start		- Start the EXISTING $(NAME) container"
+	@echo "     make start		- Start the EXISTING $(CONTAINER) container"
 	@echo "     make stop		- Stop local environment build"
-	@echo "     make restart	- Stop and start $(NAME) container"
-	@echo "     make rm		- Stop and remove $(NAME) container"
-	@echo "     make state		- View state $(NAME) container"
-	@echo "     make logs		- View logs in real time"
+	@echo "     make restart	- Stop and start $(CONTAINER) container"
+	@echo "     make rm		- Stop and remove $(CONTAINER) container"
+	@echo "     make state		- View state $(CONTAINER) container"
+	@echo "     make logs		- View logs"
 
 
 env:
@@ -39,11 +39,11 @@ build:
 	docker build \
 		--build-arg VCS_REF=`git rev-parse --short HEAD` \
 		--build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
-		--rm -t $(IMAGE_NAME):$(VERSION) -t $(IMAGE_NAME):$(NAME) .
+		--rm -t $(IMAGE_NAME):$(TAG) .
 
 push:
 	@echo "note: If the repository is set as an automatted build you will NOT be able to push"
-	docker push $(IMAGE_NAME):$(VERSION)
+	docker push $(IMAGE_NAME):$(TAG)
 
 run:
 	@echo 'Checking... initial run structure'
@@ -69,13 +69,13 @@ restart:	stop start
 
 rm:
 	@echo "On remove, containers are specifally referenced, as to not destroy ANY persistent data"
-	@echo "Removing $(NAME) and $(NAME)_db"
-	docker rm -f $(NAME)
-	docker rm -f $(NAME)_db
+	@echo "Removing $(CONTAINER) and $(CONTAINER)_db"
+	docker rm -f $(CONTAINER)
+	docker rm -f $(CONTAINER)_db
 
 state:
-	docker ps -a | grep $(NAME)
+	docker ps -a | grep $(CONTAINER)
 
 logs:
-	@echo "Build $(NAME)..."
-	docker logs -f $(NAME)
+	@echo "Build $(CONTAINER)..."
+	docker logs -f $(CONTAINER)
