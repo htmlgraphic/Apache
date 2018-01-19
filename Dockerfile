@@ -7,6 +7,9 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && apt-get install -yq --no-install-recommends python-software-properties software-properties-common \
 	apache2 \
 	php7.0 \
+	curl \
+	mailutils \
+	iputils-ping \
 	libapache2-mod-php7.0 \
 	mysql-client \
 	php-apcu \
@@ -25,9 +28,11 @@ RUN apt-get update && apt-get install -yq --no-install-recommends python-softwar
 	libgs-dev \
 	imagemagick \
 	libmagickwand-dev \
+	language-pack-en \
 	supervisor \
 	cron \
 	rsyslog \
+	wget \
 	postfix && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # POSTFIX
