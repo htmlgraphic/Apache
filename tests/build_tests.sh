@@ -74,7 +74,7 @@ testNODE_ENVIRONMENT()
 	node_env=0;
 
 	# Depending on the type of environment dev or production an
-	# environmental variable should be set
+	# environment variable should be set
 	if [[ ${NODE_ENVIRONMENT} == 'dev' ]] || [[ ${NODE_ENVIRONMENT} == 'production' ]]; then
 		node_env=1;
 	fi
@@ -87,11 +87,12 @@ testNODE_ENVIRONMENT_PHP()
 {
 	echo 'Test env NODE_ENVIRONMENT within Apache'
 	node_env=0;
+
 	dev=$(/usr/bin/wget -q -O- http://127.0.0.1 | grep -w "NODE_ENVIRONMENT=dev" | wc -l);
 	prod=$(/usr/bin/wget -q -O- http://127.0.0.1 | grep -w "NODE_ENVIRONMENT=production" | wc -l)
 
 	# Depending on the type of environment dev or production an
-	# environmental variable should be set
+	# environment variable should be set
 	if [[ $dev == 1 ]] || [[ $prod == 1 ]]; then
 		node_env=1;
 	fi

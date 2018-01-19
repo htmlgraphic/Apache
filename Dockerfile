@@ -64,6 +64,7 @@ RUN a2enmod userdir && a2enmod rewrite && a2enmod ssl && a2enmod expires
 
 # Environment variables contained within build container.
 ENV TERM=xterm \
+	LISTEN_PORT=80 \
 	APACHE_RUN_USER=www-data \
 	APACHE_RUN_GROUP=www-data \
 	APACHE_LOG_DIR=/var/log/apache2 \
@@ -92,8 +93,10 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.version=$VERSION \
       org.label-schema.schema-version="1.0"
 
-# Add VOLUMEs to allow backup of config and databases
-VOLUME  ["/data"]
+# Add VOLUMEs for persistant data or to allow various
+# backups of config and databases via --volumes-from
+# http://bit.ly/autobuild-and-autodeploy
+VOLUME  ["/backup"]
 
 # Note that EXPOSE only works for inter-container links. It doesn't make ports
 # accessible from the host. To expose port(s) to the host, at runtime, use the -p flag.

@@ -19,29 +19,29 @@ div img#logo {margin: 0 auto 40px auto; float: none;}
 	word-wrap: break-word;
 }
 .h {
-    background-color: #99c;
-    font-weight: bold;
+	background-color: #99c;
+	font-weight: bold;
 }
 .center table {
-    margin: 1em auto;
-    text-align: left;
+	margin: 1em auto;
+	text-align: left;
 }
 table {
-    border-collapse: collapse;
-    border: 0;
-    width: 934px;
+	border-collapse: collapse;
+	border: 0;
+	width: 934px;
 }
 td, th {
-    border: 1px solid #666;
-    vertical-align: baseline;
-    padding: 4px 5px;
+	border: 1px solid #666;
+	vertical-align: baseline;
+	padding: 4px 5px;
 }
 img {
-    float: right;
-    border: 0;
+	float: right;
+	border: 0;
 }
 .h h1 {
-    font-size: 150%;
+	font-size: 150%;
 }
 </style>
 
@@ -50,14 +50,7 @@ if (getenv('NODE_ENVIRONMENT')) {
 	$node_env = getenv('NODE_ENVIRONMENT');
 } else {
 	$node_env = 'NOT SET';
-}
-
-if (getenv('DOCKERCLOUD_SERVICE_FQDN')) {
-	$hostname = getenv('DOCKERCLOUD_SERVICE_FQDN');
-} else {
-	$hostname = getenv('HOSTNAME');
-}
-?>
+} ?>
 </head>
 <body>
 <?= "<!-- NODE_ENVIRONMENT=". getenv('NODE_ENVIRONMENT') ." -->"; ?>
@@ -74,7 +67,7 @@ if (getenv('DOCKERCLOUD_SERVICE_FQDN')) {
 		</tr>
 		<tr>
 			<td class="text-right">HOSTNAME</td>
-			<td class="text-left"><?= $hostname ?></td>
+			<td class="text-left"><?= getenv('HOSTNAME') ?></td>
 		</tr>
 	<?php if ($node_env == 'dev') { ?>
 		<?php if (getenv('MYSQL_PORT')) {?>
