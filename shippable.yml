@@ -11,6 +11,10 @@ build:
   pre_ci:
     - cp .env.example .env
     - make build
+  pre_ci_boot:
+    image_name: htmlgraphic/apache
+    image_tag: latest
+    pull: false
   ci:
     - "bash app/run.sh &"
     - "/usr/sbin/postconf -n"
