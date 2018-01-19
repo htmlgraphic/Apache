@@ -1,4 +1,4 @@
-FROM htmlgraphic/ssh:latest
+FROM ubuntu:16.04
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
 # Install packages then remove cache package list information
@@ -100,7 +100,7 @@ VOLUME  ["/backup"]
 
 # Note that EXPOSE only works for inter-container links. It doesn't make ports
 # accessible from the host. To expose port(s) to the host, at runtime, use the -p flag.
-EXPOSE 80 443
+EXPOSE 80
 
 
 #CMD ["/opt/app/run.sh", "env | grep _ >> /etc/environment && supervisord -n"]
