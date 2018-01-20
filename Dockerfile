@@ -5,6 +5,7 @@ MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && apt-get install -yq --no-install-recommends python-software-properties software-properties-common \
+	vim \
 	apache2 \
 	php7.0 \
 	curl \
