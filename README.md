@@ -1,8 +1,8 @@
 ## Apache Docker
 
-[![Run Status](https://api.shippable.com/projects/54cf015b5ab6cc13528a7b6a/badge?branch=envoyer)](https://app.shippable.com/projects/54cf015b5ab6cc13528a7b6a)
-[![Circle CI](https://circleci.com/gh/htmlgraphic/Apache/tree/envoyer.svg?style=svg)](https://circleci.com/gh/htmlgraphic/Apache/tree/envoyer) 
-[![](https://images.microbadger.com/badges/image/htmlgraphic/apache:envoyer.svg)](https://microbadger.com/images/htmlgraphic/apache:envoyer "Get your own image badge on microbadger.com")
+[![Run Status](https://api.shippable.com/projects/54cf015b5ab6cc13528a7b6a/badge?branch=master)](https://app.shippable.com/projects/54cf015b5ab6cc13528a7b6a)
+[![Circle CI](https://circleci.com/gh/htmlgraphic/Apache/tree/master.svg?style=svg)](https://circleci.com/gh/htmlgraphic/Apache/tree/master) 
+[![](https://images.microbadger.com/badges/image/htmlgraphic/apache:latest.svg)](https://microbadger.com/images/htmlgraphic/apache:latest "Get your own image badge on microbadger.com")
 [![Beerpay](https://beerpay.io/htmlgraphic/Apache/badge.svg?style=beer)](https://beerpay.io/htmlgraphic/Apache) [![Beerpay](https://beerpay.io/htmlgraphic/Apache/make-wish.svg?style=flat)](https://beerpay.io/htmlgraphic/Apache)
 
 
