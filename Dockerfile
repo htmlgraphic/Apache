@@ -1,4 +1,4 @@
-FROM htmlgraphic/ssh:latest
+FROM ubuntu:16.04
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
 # Install packages then remove cache package list information
@@ -7,6 +7,11 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && apt-get install -yq --no-install-recommends python-software-properties software-properties-common \
 	apache2 \
 	php7.0 \
+	cron \
+	curl \
+	ghostscript \
+	mailutils \
+	iputils-ping \
 	libapache2-mod-php7.0 \
 	mysql-client \
 	php-apcu \
@@ -21,13 +26,14 @@ RUN apt-get update && apt-get install -yq --no-install-recommends python-softwar
 	php7.0-mbstring \
 	php7.0-opcache \
 	php7.0-xml \
-	ghostscript \
 	libgs-dev \
 	imagemagick \
 	libmagickwand-dev \
+	language-pack-en \
 	supervisor \
-	cron \
 	rsyslog \
+	vim \
+	wget \
 	postfix && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # POSTFIX
