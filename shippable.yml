@@ -23,14 +23,12 @@ build:
   on_failure:
     - docker logs apache
   # on_success:
-  #   - docker push htmlgraphic/apache:$BRANCH
+  #   - make push
 
 integrations:
-  # using matrix builds multiple images so this is not ideal
-  # falling back to git repo build on docker hub
-  # hub:
-  #   - integrationName: "Docker Hub"
-  #     type: docker
+  hub:
+    - integrationName: DockerHub
+      type: dockerRegistryLogin
 
   notifications:
     - integrationName: email
