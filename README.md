@@ -39,7 +39,7 @@ Apache                       # → Root of Docker Build
 ├── Makefile                 # → Build command shortcuts
 ├── shippable.yml            # → Configuration for Shippable.com testing
 └── tests/
-		└── build_tests.sh       # → Build test processes
+	└── build_tests.sh       # → Build test processes
 ```
 Docker Compose YML configuration guide [more info](https://docs.docker.com/docker-cloud/apps/deploy-to-cloud-btn/) 
 
@@ -51,14 +51,13 @@ Launch the **Apache** instance locally and setup a local MySQL database containe
 >	Type `make` for more build options:
 
 ```bash
-	$ git clone https://github.com/htmlgraphic/Apache.git ~/Docker/Apache && cd ~/Docker/Apache
-	$ cp .env.example .env
-	$ make run 
-
+$ git clone https://github.com/htmlgraphic/Apache.git ~/Docker/Apache && cd ~/Docker/Apache
+$ cp .env.example .env
+$ make run 
 	OR (non Make Windows)
 
-	$ copy .env.example .env
-	$ docker-compose -f docker-compose.local.yml up -d
+$ copy .env.example .env
+$ docker-compose -f docker-compose.local.yml up -d
 ```
 
 ### Run phpMyAdmin
@@ -66,10 +65,10 @@ Launch the **Apache** instance locally and setup a local MySQL database containe
 Review MySQL access instructions upon `make run` command execution. Setup phpMyAdmin directly via command line.
 
 ```bash
-	$ docker run --name myadmin -d --link apache_db_1:db --net apache_default -p 8080:80 phpmyadmin/phpmyadmin
-
-	Open http://localhost:8080 (mysql user & password are set within .env file)
+$ docker run --name myadmin -d --link apache_db_1:db --net apache_default -p 8080:80 phpmyadmin/phpmyadmin
 ```
+Open http://localhost:8080 (MySQL user & password are set within .env file)
+
 
 For a secure connection to phpMyAdmin use the **marvambass/phpmyadmin** build, append the following within the `docker-compose*.yml`:
 
@@ -88,7 +87,7 @@ phpmyadmin:
 
 
 
----
+
 
 ## Test Driven Development
 These continuous integration services will fully test the creation of your container and can push the complete image to your private Docker repo if you desire.
@@ -108,43 +107,53 @@ List all running containers:
 
 `docker ps`
 
+
 List all containers (including stopped containers):
 
 `docker ps -a`
+
 
 Read the log of a running container:
 
 `docker logs [CONTAINER ID OR NAME]`
 
+
 Follow the log of a running container:
 
 `docker logs -f [CONTAINER ID OR NAME]`
+
 
 Read the Apache log:
 
 `docker exec [CONTAINER ID OR NAME] cat ./data/apache2/logs/access_log`
 
+
 Follow the Apache log:
 
 `docker exec [CONTAINER ID OR NAME] tail -f ./data/apache2/logs/access_log`
+
 
 Follow the outgoing mail log:
 
 `docker exec [CONTAINER ID OR NAME] tail -f ./var/log/mail.log`
 
+
 Gain terminal access to a running container:
 
 `docker exec -it [CONTAINER ID OR NAME] /bin/bash`
 
+
 Restart a running container:
 
 `docker restart [CONTAINER ID OR NAME]`
+
 
 Stop and start a container in separate operations:
 
 `docker stop [CONTAINER ID OR NAME]`
 
 `docker start [CONTAINER ID OR NAME]`
+
 
 ## Teardown 
 #### (Stop all running containers started by Docker Compose):
