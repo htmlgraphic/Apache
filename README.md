@@ -48,6 +48,8 @@ Docker Compose YML configuration guide [more info](https://docs.docker.com/docke
 
 Launch the **Apache** instance locally and setup a local MySQL database container for persistant database data, the goal is to create a easy to use development environment. 
 
+The **Apache** container the directory `/data` is shared to your locat system via **Line 7** within `docker-container.local.yml` file
+
 >	Type `make` for more build options:
 
 ```bash
@@ -65,7 +67,7 @@ $ docker-compose -f docker-compose.local.yml up -d
 Review MySQL access instructions upon `make run` command execution. Setup phpMyAdmin directly via command line.
 
 ```bash
-$ docker run --name myadmin -d --link apache_db_1:db --net apache_default -p 8080:80 phpmyadmin/phpmyadmin
+$ docker run --name myadmin -d --link apache_db:db --net apache_default -p 8080:80 phpmyadmin/phpmyadmin
 ```
 Open http://localhost:8080 (MySQL user & password are set within .env file)
 
@@ -78,7 +80,7 @@ phpmyadmin:
 	image: 'marvambass/phpmyadmin:latest'
 	restart: always
 	ports:
-		- '443:443'
+		- '8080:443'
 	volumes:
 		- /tmp
 	links:
@@ -161,5 +163,5 @@ Stop and start a container in separate operations:
 ```
 		$ make rm 
 		OR (non Make Windows)
-		$ docker rm -f apache_web_1 && docker rm -f apache_db_1
+		$ docker rm -f apache_web && docker rm -f apache_db
 ```

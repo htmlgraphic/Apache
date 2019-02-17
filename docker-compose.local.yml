@@ -1,16 +1,16 @@
-version: "3"
+version: '3'
 services:
   web:
     image: 'htmlgraphic/apache:latest'
     container_name: apache
     volumes:
-      - "~/SITES/docker:/data" # <- Change to preferred local working dir
-     #- "/c/Users/southpark/docker:/data"
+      - '~/SITES/docker:/data' # <- Change to preferred local working dir
+     #- '/c/Users/southpark/docker:/data'
     links:
-      - "db:mysql"
+      - 'db:mysql'
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     environment:
       - NODE_ENVIRONMENT=dev
     env_file:
@@ -19,10 +19,19 @@ services:
     image: 'htmlgraphic/mysql:5.7.18'
     container_name: apache_db
     volumes:
-      - "db-data:/var/lib/mysql"
+      - 'db-data:/var/lib/mysql'
     ports:
-      - "3306:3306"
+      - '3306:3306'
     env_file:
       - .env
+  phpmyadmin:
+    image: 'marvambass/phpmyadmin:latest'
+    restart: always
+    ports:
+      - '8080:443'
+    volumes:
+      - /tmp
+    links:
+      - 'db:mysql'
 volumes:
   db-data:
