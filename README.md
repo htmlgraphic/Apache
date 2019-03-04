@@ -6,7 +6,7 @@
 [![Beerpay](https://beerpay.io/htmlgraphic/Apache/badge.svg?style=beer)](https://beerpay.io/htmlgraphic/Apache) [![Beerpay](https://beerpay.io/htmlgraphic/Apache/make-wish.svg?style=flat)](https://beerpay.io/htmlgraphic/Apache)
 
 
-This repo will give you a turn key Docker container build for use in production OR local development. The setup includes an Apache web service, PHP 7.0, PHP Composer, linked MySQL instance and a data container volume.
+This repo will give you a turn key Docker container build for use in production OR local development. The setup includes an Apache web service, PHP 7.3, PHP Composer, linked MySQL instance and a data container volume.
 
 In this repo you will find a number of complete Dockerfile builds used in **development** and **production** environments. Listed below is an explanation of each file. [Ask a question!](https://github.com/htmlgraphic/Apache/issues/new)
 

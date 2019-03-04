@@ -1,7 +1,7 @@
 # Build a container via the command "make build"
 # By Jason Gegere <jason@htmlgraphic.com>
 
-TAG 		= 1.7.2
+TAG 		= 1.8.0
 CONTAINER 	= apache
 IMAGE_REPO 	= htmlgraphic
 IMAGE_NAME 	= $(IMAGE_REPO)/$(CONTAINER)

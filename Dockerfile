@@ -1,40 +1,42 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
-# Install packages then remove cache package list information
-ENV DEBIAN_FRONTEND noninteractive
+ENV OS_LOCALE="en_US.UTF-8"
+RUN apt-get update && apt-get install -y locales && locale-gen ${OS_LOCALE}
+ENV LANG=${OS_LOCALE} \
+    LANGUAGE=${OS_LOCALE} \
+    LC_ALL=${OS_LOCALE} \
+    DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -yq --no-install-recommends python-software-properties software-properties-common \
-	apache2 \
-	php7.0 \
-	cron \
-	curl \
-	ghostscript \
-	mailutils \
-	iputils-ping \
-	libapache2-mod-php7.0 \
-	mysql-client \
-	php-apcu \
-	php-imagick \
-	php7.0-fpm \
-	php7.0-zip \
-	php7.0-mysql \
-	php7.0-curl \
-	php7.0-gd \
-	php7.0-json \
-	php7.0-mcrypt \
-	php7.0-mbstring \
-	php7.0-opcache \
-	php7.0-xml \
-	libgs-dev \
-	imagemagick \
-	libmagickwand-dev \
-	language-pack-en \
-	supervisor \
-	rsyslog \
-	vim \
-	wget \
-	postfix && apt-get clean && rm -rf /var/lib/apt/lists/*
+# Install packages then remove cache package list information
+RUN	\
+		BUILD_DEPS='software-properties-common' \
+    && dpkg-reconfigure locales \
+		&& apt-get install --no-install-recommends -y $BUILD_DEPS \
+		&& add-apt-repository -y ppa:ondrej/php \
+		&& add-apt-repository -y ppa:ondrej/apache2 \
+		&& apt-get update \
+	 	&& apt-get install -y curl apache2 libapache2-mod-php7.3 php7.3-cli php7.3-readline php7.3-mbstring php7.3-zip php7.3-intl php7.3-xml php7.3-json php7.3-curl php7.3-gd php7.3-pgsql php7.3-mysql php-pear \
+	&& apt-get update && apt-get install -yq --no-install-recommends \
+		git \
+		cron \
+		ghostscript \
+		mailutils \
+		iputils-ping \
+		mysql-client \
+		libgs-dev \
+		imagemagick \
+		libmagickwand-dev \
+		language-pack-en \
+		supervisor \
+		rsyslog \
+		vim \
+		wget \
+		postfix \
+		# Cleaning
+	&& apt-get purge -y --auto-remove $BUILD_DEPS \
+	&& apt-get autoremove -y \
+	&& rm -rf /var/lib/apt/lists/*
 
 # POSTFIX
 RUN update-locale LANG=en_US.UTF-8
@@ -66,7 +68,7 @@ RUN tar xf /opt/app/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -C /opt && mv /o
 RUN wkhtmltopdf --version
 
 # Enable Apache mods.
-RUN a2enmod userdir && a2enmod rewrite && a2enmod ssl && a2enmod expires
+RUN a2enmod userdir rewrite ssl
 
 # Environment variables contained within build container.
 ENV TERM=xterm \
