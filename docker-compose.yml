@@ -10,7 +10,7 @@ hg-web:
   links:
     - "hg-db:mysql"
 hg-db:
-  image: 'htmlgraphic/mysql:5.7.18'
+  image: 'mysql:5.7.25'
   environment:
     - MYSQL_DATABASE=htmlgraphic
     - MYSQL_PASSWORD=new_password

@@ -68,6 +68,7 @@ rm:
 	@echo "Removing $(CONTAINER) and $(CONTAINER)_db"
 	docker rm -f $(CONTAINER)
 	docker rm -f $(CONTAINER)_db
+	docker rm -f $(CONTAINER)_phpmyadmin
 
 state:
 	docker ps -a | grep $(CONTAINER)
