@@ -1,5 +1,5 @@
 hg-web:
-  image: 'htmlgraphic/apache:envoyer'
+  image: 'htmlgraphic/apache:envoyer' # PHP v7.3.2-3+ubuntu18.04.1+deb.sury.org+1
   ports:
     - "80:80"
     - "443:443"
