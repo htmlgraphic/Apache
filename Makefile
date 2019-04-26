@@ -64,7 +64,7 @@ stop:
 	docker-compose stop
 
 rm:
-	@echo "On remove, containers are specifally referenced, as to not destroy ANY persistent data"
+	@echo "make rm - containers are specifically referenced, as to not destroy ANY persistent data"
 	@echo "Removing $(CONTAINER) and $(CONTAINER)_db"
 	docker rm -f $(CONTAINER)
 	docker rm -f $(CONTAINER)_db
