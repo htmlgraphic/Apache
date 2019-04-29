@@ -68,24 +68,15 @@ Review MySQL access instructions upon `make run` command execution. Setup phpMyA
 ```bash
 $ docker run --name myadmin -d --link apache_db:db --net apache_default -p 8080:80 phpmyadmin/phpmyadmin
 ```
-Open http://localhost:8080 (MySQL user & password are set within .env file)
 
+LOCAL: https://localhost:8080 
 
-For a secure connection to phpMyAdmin use the **marvambass/phpmyadmin** build, append the following within the `docker-compose*.yml`:
+Login using the following creditial stored within the .env file: 
 
-```bash
-phpmyadmin:
-	autoredeploy: true
-	image: 'marvambass/phpmyadmin:latest'
-	restart: always
-	ports:
-		- '8080:443'
-	volumes:
-		- /tmp
-	links:
-		- mysql.DB:db
-```
-
+|username  |password  |
+|--|--|
+|root | $new_passwordac
+|$MYSQL_PASSWORD  |$MYSQL_PASSWORD  |
 
 
 
