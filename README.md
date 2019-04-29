@@ -6,7 +6,7 @@
 [![Beerpay](https://beerpay.io/htmlgraphic/Apache/badge.svg?style=beer)](https://beerpay.io/htmlgraphic/Apache) [![Beerpay](https://beerpay.io/htmlgraphic/Apache/make-wish.svg?style=flat)](https://beerpay.io/htmlgraphic/Apache)
 
 
-This repo will give you a turn key Docker container build for use in production OR local development. The setup includes an Apache web service, PHP 7.3, PHP Composer, linked MySQL instance and a data container volume.
+This repo will give you a turn key Docker container build for use in production OR local development. The setup includes an Apache web service, PHP 7.3, PHP Composer, linked [MySQL 5.7.26](https://hub.docker.com/_/mysql) instance and a data container volume.
 
 In this repo you will find a number of complete Dockerfile builds used in **development** and **production** environments. Listed below is an explanation of each file. [Ask a question!](https://github.com/htmlgraphic/Apache/issues/new)
 
@@ -22,8 +22,8 @@ In this repo you will find a number of complete Dockerfile builds used in **deve
 ```shell
 Apache                       # → Root of Docker Build
 ├── app/                     # → App conf to manage application on container
-│   ├── apache-config.conf   # → Default Apache configuration
-│   ├── index.php            # → Default web page, enter the IP address `docker-machine ls` to load this page.
+│   ├── apache-config.conf   # → Default Apache config
+│   ├── index.php            # → Default web page, enter the IP `docker-machine ls` to load this page.
 │   ├── mac-permissions.sh   # → Run manually on container to match uid / gid permissions of local docker container to Mac OS X
 │   ├── postfix.sh           # → Used by *supervisord.conf* to start Postfix
 │   ├── run.sh               # → Setup apache, conf files, and start process on container
@@ -31,8 +31,7 @@ Apache                       # → Root of Docker Build
 │   └── supervisord          # → Supervisor is a client / server system which monitors and controls a number of processes on UNIX-like operating systems
 ├── .env.example             # → Rename file to `.env` for local environment variables used within build
 ├── .circleci/               # → CircleCI 2.0
-│   └── config.yml           # → CircleCI Configuration
-├── docker-cloud.yml         # → Used to lauch a container directly to Docker Cloud
+│   └── config.yml           # → CircleCI Config
 ├── docker-compose.local.yml # → Local build 
 ├── docker-compose.yml       # → Production build
 ├── Dockerfile               # → Uses a basefile build to help speed up the docker container build process
@@ -48,7 +47,7 @@ Docker Compose YML configuration guide [more info](https://docs.docker.com/docke
 
 Launch the **Apache** instance locally and setup a local MySQL database container for persistant database data, the goal is to create a easy to use development environment. 
 
-The **Apache** container the directory `/data` is shared to your locat system via **Line 7** within `docker-container.local.yml` file
+The **Apache** container the directory `/data` is shared to your local system via **Line 7** within `docker-container.local.yml` file
 
 >	Type `make` for more build options:
 
