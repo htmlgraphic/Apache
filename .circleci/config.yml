@@ -10,9 +10,7 @@ jobs:
           name: Install Docker Compose
           command: |
             set -x
-            curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-            chmod +x ~/docker-compose
-            sudo mv ~/docker-compose /usr/local/bin/docker-compose
+            sudo curl -L https://github.com/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
       - run:
           name: Build Apache Docker image
           command: |
@@ -45,9 +43,9 @@ jobs:
       - run:
           name: Container Logs
           command: |
-            mkdir -p ~/project/container-build
-            docker logs apache > ~/project/container-build/log_output-DEV_Apache.txt
-            docker logs apache_db > ~/project/container-build/log_output-DEV_MySQL.txt
+            mkdir -p /tmp/container-build
+            docker logs apache > /tmp/container-build/log_output-DEV_Apache.txt
+            docker logs apache_db > /tmp/container-build/log_output-DEV_MySQL.txt
 
       - run:
           name: Kill running containers
@@ -72,16 +70,16 @@ jobs:
       - run:
           name: Container Logs
           command: |
-            mkdir -p ~/project/container-build
-            docker logs apache_hg-web_1 > ~/project/container-build/log_output-LIVE_Apache.txt
-            docker logs apache_hg-db_1 > ~/project/container-build/log_output-LIVE_MySQL.txt
+            mkdir -p /tmp/container-build
+            docker logs apache_hg-web_1 > /tmp/container-build/log_output-LIVE_Apache.txt
+            docker logs apache_hg-db_1 > /tmp/container-build/log_output-LIVE_MySQL.txt
 
 
 
       - store_artifacts:
-          path: ~/project/container-build
+          path: /tmp/container-build
           destination: raw-test-output
 
       - store_test_results:
-          path: ~/project/container-build
+          path: /tmp/container-build
 
