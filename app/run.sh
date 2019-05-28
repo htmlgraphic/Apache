@@ -139,18 +139,19 @@ if [ "${AUTHORIZED_KEYS}" != "**None**" ]; then
 	done
 fi
 
-# Postfix uses remote testing mail server which holds email(s) from being released into the REAL Internet
-postconf -e "myhostname = dev-build.htmlgraphic.com"
+# Postfix uses a DEV test mail server which holds email(s) from being released into the REAL Internet
+postconf -e "compatibility_level=2"
+postconf -e "myhostname=dev-build.htmlgraphic.com"
 postconf -e 'mail_spool_directory="/var/spool/mail/"'
 postconf -e 'mydestination="localhost.localdomain localhost"'
 postconf -e "mydomain=htmlgraphic.com"
-postconf -e "relayhost = [${SMTP_HOST}]:587"
+postconf -e "relayhost=[${SMTP_HOST}]:587"
 postconf -e "smtp_sasl_auth_enable=yes"
-postconf -e "smtp_sasl_password_maps = static:${SASL_USER}:${SASL_PASS}"
+postconf -e "smtp_sasl_password_maps=static:${SASL_USER}:${SASL_PASS}"
 postconf -e "smtp_sasl_security_options=noanonymous"
 postconf -e "smtp_tls_security_level=encrypt"
 postconf -e "header_size_limit=4096000"
-postconf -e "inet_protocols = ipv4"
+postconf -e "inet_protocols=ipv4"
 
 # Postfix is not using /etc/resolv.conf is because it is running inside a chroot jail, needs its own copy.
 cp /etc/resolv.conf /var/spool/postfix/etc/resolv.conf
