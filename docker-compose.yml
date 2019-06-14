@@ -1,3 +1,4 @@
+version: '3'
 hg-web:
   image: 'htmlgraphic/apache:envoyer' # PHP v7.3.2-3+ubuntu18.04.1+deb.sury.org+1
   ports:

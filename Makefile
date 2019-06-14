@@ -50,7 +50,7 @@ run:
 	@make env
 	@echo "Upon initial setup run the following on the MySQL system, this will setup a GLOBAL admin:"
 	@echo ""
-	@echo "	docker exec -it apache_db_1 /bin/bash \n \
+	@echo "	docker exec -it apache_db /bin/bash \n \
 		mysql -p$(MYSQL_ROOT_PASSWORD) \n \
 		GRANT ALL PRIVILEGES ON * . * TO '$(MYSQL_USER)'@'%' with grant option; \n"
 
