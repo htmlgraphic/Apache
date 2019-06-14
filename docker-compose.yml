@@ -1,27 +1,26 @@
-version: '3'
-hg-web:
-  image: 'htmlgraphic/apache:envoyer' # PHP v7.3.2-3+ubuntu18.04.1+deb.sury.org+1
-  ports:
-    - "80:80"
-    - "443:443"
-  environment:
-    - NODE_ENVIRONMENT=production
-  env_file:
-    - .env
-  links:
-    - "hg-db:mysql"
-hg-db:
-  image: 'mysql:5.7.25'
-  environment:
-    - MYSQL_DATABASE=htmlgraphic
-    - MYSQL_PASSWORD=new_password
-    - MYSQL_ROOT_PASSWORD=new_passwordac
-    - MYSQL_USER=admin
-  expose:
-    - "3306"
-  volumes_from:
-    - db-data
-db-data:
-  image: 'busybox:latest'
-  volumes:
-    - "/var/lib/mysql"
+version: '3.3'
+services:
+  hg-web:
+    image: 'htmlgraphic/apache:envoyer' # PHP v7.3.2-3+ubuntu18.04.1+deb.sury.org+1
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - NODE_ENVIRONMENT=production
+    env_file:
+      - .env
+    links:
+      - "hg-db:mysql"
+  hg-db:
+    image: 'mysql:5.7.25'
+    environment:
+      - MYSQL_DATABASE=htmlgraphic
+      - MYSQL_PASSWORD=new_password
+      - MYSQL_ROOT_PASSWORD=new_passwordac
+      - MYSQL_USER=admin
+    expose:
+      - "3306"
+    volumes:
+      - 'db-data:/var/lib/mysql'
+volumes:
+  db-data:
