@@ -6,9 +6,9 @@
 [![Beerpay](https://beerpay.io/htmlgraphic/Apache/badge.svg?style=beer)](https://beerpay.io/htmlgraphic/Apache) [![Beerpay](https://beerpay.io/htmlgraphic/Apache/make-wish.svg?style=flat)](https://beerpay.io/htmlgraphic/Apache)
 
 
-This repo will give you a turn key Docker container build for use in production OR local development. The setup includes an Apache web service, PHP 7.3, PHP Composer, linked [MySQL 5.7.26](https://hub.docker.com/_/mysql) instance and a data container volume.
+This repo will give you a turn key Docker container build for use in **production** OR **dev**. The setup includes an Apache web service, PHP 7.3, PHP Composer, linked [MySQL 5.7.26](https://hub.docker.com/_/mysql) instance and a data container volume.
 
-In this repo you will find a number of complete Dockerfile builds used in **development** and **production** environments. Listed below is an explanation of each file. [Ask a question!](https://github.com/htmlgraphic/Apache/issues/new)
+In this repo you will find a number of complete Dockerfile builds used in **dev** or **production** environments. Listed below is an explanation of each file. [Ask a question!](https://github.com/htmlgraphic/Apache/issues/new)
 
 #### Dependencies
 - Docker [Download](https://hub.docker.com/search/?type=edition&offering=community)
@@ -32,7 +32,7 @@ Apache                       # → Root of Docker Build
 ├── .env.example             # → Rename file to `.env` for local environment variables used within build
 ├── .circleci/               # → CircleCI 2.0
 │   └── config.yml           # → CircleCI Config
-├── docker-compose.local.yml # → Local build 
+├── docker-compose.local.yml # → Dev build 
 ├── docker-compose.yml       # → Production build
 ├── Dockerfile               # → Uses a basefile build to help speed up the docker container build process
 ├── Makefile                 # → Build command shortcuts

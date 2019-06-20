@@ -5,10 +5,11 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    environment:
-      - NODE_ENVIRONMENT=production
     env_file:
       - .env
+    volumes:
+      - '/var/data:/data'
+      - '/etc/letsencrypt:/etc/letsencrypt'
     links:
       - "hg-db:mysql"
   hg-db:
