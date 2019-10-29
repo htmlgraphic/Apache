@@ -1,6 +1,6 @@
 version: '3.3'
 services:
-  hg-web:
+  web:
     image: 'htmlgraphic/apache:envoyer' # PHP v7.3.2-3+ubuntu18.04.1+deb.sury.org+1
     ports:
       - "80:80"
@@ -11,14 +11,14 @@ services:
       - '/var/data:/data'
       - '/etc/letsencrypt:/etc/letsencrypt'
     links:
-      - "hg-db:mysql"
+      - "db:mysql"
     logging:
       driver: "json-file"
       options:
         max-size: "200k"
         max-file: "10"
-  hg-db:
-    image: 'mysql:5.7.25'
+  db:
+    image: 'mysql:5.7.28'
     environment:
       - MYSQL_DATABASE=htmlgraphic
       - MYSQL_PASSWORD=new_password

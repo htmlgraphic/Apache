@@ -71,8 +71,8 @@ jobs:
           name: Container Logs
           command: |
             mkdir -p /tmp/container-build
-            docker logs apache_hg-web_1 > /tmp/container-build/log_output-LIVE_Apache.txt
-            docker logs apache_hg-db_1 > /tmp/container-build/log_output-LIVE_MySQL.txt
+            docker logs apache_web_1 > /tmp/container-build/log_output-LIVE_Apache.txt
+            docker logs apache_db_1 > /tmp/container-build/log_output-LIVE_MySQL.txt
 
 
 
