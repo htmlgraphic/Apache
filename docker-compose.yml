@@ -12,6 +12,11 @@ services:
       - '/etc/letsencrypt:/etc/letsencrypt'
     links:
       - "hg-db:mysql"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
   hg-db:
     image: 'mysql:5.7.25'
     environment:
