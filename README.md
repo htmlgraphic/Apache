@@ -33,8 +33,8 @@ Apache                       # → Root of Docker Build
 │   ├── sample.conf          # → located within `/data/apache2/sites-enabled` duplicate / modify to host others domains
 │   └── supervisord          # → Supervisor is a client / server system which monitors and controls a number of processes on UNIX-like operating systems
 ├── .env.example             # → Rename file to `.env` for local environment variables used within build
-├── .circleci/               # → CircleCI 2.0
-│   └── config.yml           # → CircleCI Config
+├── .circleci/
+│   └── config.yml           # → CircleCI 2.0 Config
 ├── docker-compose.local.yml # → Dev build 
 ├── docker-compose.yml       # → Production build
 ├── Dockerfile               # → Uses a basefile build to help speed up the docker container build process
