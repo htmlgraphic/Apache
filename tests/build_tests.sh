@@ -17,7 +17,6 @@ testPostfixUsername()
 	echo -e '\n'
 }
 
-
 testPostfixPassword()
 {
 	echo 'Testing Postfix password, currently set to "'${SASL_PASS}'"'
@@ -30,7 +29,6 @@ testPostfixPassword()
 	echo -e '\n'
 }
 
-
 testPostfixRelay()
 {
 	echo 'Relay through SendGrid'
@@ -38,7 +36,6 @@ testPostfixRelay()
 	assertEquals 1 $test
 	echo -e '\n'
 }
-
 
 testHTTP()
 {
@@ -48,17 +45,24 @@ testHTTP()
 	echo -e '\n'
 }
 
-
 testHTTPS()
 {
 	echo 'Test Apache HTTPS'
-	test=$(/usr/bin/wget -q -O- --no-check-certificate https://127.0.0.1 | grep -w "Hello World\\!" | wc -l)
+	test=$(/usr/bin/wget -qO- --no-check-certificate https://127.0.0.1 | grep -w "Hello World\\!" | wc -l)
 	assertEquals 1 $test
 	echo -e '\n'
 }
 
+testCLI_max_execution_time()
+{
+	max_execution_time=$(php -i | grep 'max_execution_time')
+	echo 'Test max_execution_time, currently set to "'$max_execution_time'"'
+	test=$(echo $max_execution_time | grep 'max_execution_time => 0 => 0' | wc -l)
+	assertEquals 1 $test
+	echo -e '\n'
+}
 
-testNODE_MemoryLimit()
+testCLI_MemoryLimit()
 {
 	memory_limit=$(php -i | grep 'memory_limit')
 	echo 'Test memory_limit, currently set to "'$memory_limit'"'
@@ -67,6 +71,77 @@ testNODE_MemoryLimit()
 	echo -e '\n'
 }
 
+testCLI_upload_max_filesize()
+{
+	upload_max_filesize=$(php -i | grep 'upload_max_filesize')
+	echo 'Test upload_max_filesize, currently set to "'$upload_max_filesize'"'
+	test=$(echo $upload_max_filesize | grep 'upload_max_filesize => 1000M => 1000M' | wc -l)
+	assertEquals 1 $test
+	echo -e '\n'
+}
+
+testCLI_post_max_size()
+{
+	post_max_size=$(php -i | grep 'post_max_size')
+	echo 'Test post_max_size, currently set to "'$post_max_size'"'
+	test=$(echo $post_max_size | grep 'post_max_size => 1000M => 1000M' | wc -l)
+	assertEquals 1 $test
+	echo -e '\n'
+}
+
+testCLI_max_input_time()
+{
+	max_input_time=$(php -i | grep 'max_input_time')
+	echo 'Test max_input_time, currently set to "'$max_input_time'"'
+	test=$(echo $max_input_time | grep 'max_input_time => -1 => -1' | wc -l)
+	assertEquals 1 $test
+	echo -e '\n'
+}
+
+testApache_max_execution_time()
+{
+	max_execution_time=$(cat /etc/php/7.3/apache2/php.ini | grep 'max_execution_time')
+	echo 'Test max_execution_time, currently set to "'$max_execution_time'"'
+	test=$(echo $max_execution_time | grep 'max_execution_time = 300' | wc -l)
+	assertEquals 1 $test
+	echo -e '\n'
+}
+
+testApache_MemoryLimit()
+{
+	memory_limit=$(cat /etc/php/7.3/apache2/php.ini | grep 'memory_limit')
+	echo 'Test memory_limit, currently set to "'$memory_limit'"'
+	test=$(echo $memory_limit | grep 'memory_limit = -1' | wc -l)
+	assertEquals 1 $test
+	echo -e '\n'
+}
+
+testApache_upload_max_filesize()
+{
+	upload_max_filesize=$(cat /etc/php/7.3/apache2/php.ini | grep 'upload_max_filesize')
+	echo 'Test upload_max_filesize, currently set to "'$upload_max_filesize'"'
+	test=$(echo $upload_max_filesize | grep 'upload_max_filesize = 1000M' | wc -l)
+	assertEquals 1 $test
+	echo -e '\n'
+}
+
+testApache_post_max_size()
+{
+	post_max_size=$(cat /etc/php/7.3/apache2/php.ini | grep 'post_max_size')
+	echo 'Test post_max_size, currently set to "'$post_max_size'"'
+	test=$(echo $post_max_size | grep 'post_max_size = 1000M' | wc -l)
+	assertEquals 1 $test
+	echo -e '\n'
+}
+
+testApache_max_input_time()
+{
+	max_input_time=$(cat /etc/php/7.3/apache2/php.ini | grep 'max_input_time')
+	echo 'Test max_input_time, currently set to "'$max_input_time'"'
+	test=$(echo $max_input_time | grep 'max_input_time = 300' | wc -l)
+	assertEquals 1 $test
+	echo -e '\n'
+}
 
 testNODE_ENVIRONMENT()
 {
@@ -100,4 +175,4 @@ testNODE_ENVIRONMENT_PHP()
 	echo -e '\n'
 }
 
-. /opt/tests/shunit2-2.1.6/src/shunit2
+. /opt/tests/shunit2-2.1.7/shunit2

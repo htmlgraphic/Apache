@@ -46,7 +46,7 @@ COPY ./app /opt/app
 COPY ./tests /opt/tests
 
 # Unit tests run via build_tests.sh
-RUN tar xf /opt/tests/2.1.6.tar.gz -C /opt/tests/
+RUN tar xf /opt/tests/shunit2-2.1.7.tar.gz -C /opt/tests/
 
 # SUPERVISOR
 RUN chmod -R 755 /opt/* \
