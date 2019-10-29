@@ -5,8 +5,17 @@
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <style>
-body {font-family: 'Open Sans', sans-serif; font-weight: 300; font-size: 14px; text-align: center; padding: 50px; }
-div img#logo {margin: 0 auto 40px auto; float: none;}
+body {
+	font-family: 'Open Sans', sans-serif; 
+	font-weight: 300; 
+	font-size: 14px; 
+	text-align: center; 
+	padding: 50px; 
+}
+div img#logo {
+	margin: 0 auto 40px auto; 
+	float: none;
+}
 .e {
 	background-color: #ccf;
 	width: 300px;
@@ -84,6 +93,26 @@ if (getenv('NODE_ENVIRONMENT')) {
 		<tr>
 			<td class="text-right">SMTP_HOST</td>
 			<td class="text-left"><?= getenv('SMTP_HOST'); ?></td>
+		</tr>
+		<tr>
+			<td class="text-right">max_execution_time</td>
+			<td class="text-left"><?= ini_get('max_execution_time'); ?></td>
+		</tr>
+		<tr>
+			<td class="text-right">memory_limit</td>
+			<td class="text-left"><?= ini_get('memory_limit'); ?></td>
+		</tr>
+		<tr>
+			<td class="text-right">upload_max_filesize</td>
+			<td class="text-left"><?= ini_get('upload_max_filesize'); ?></td>
+		</tr>
+		<tr>
+			<td class="text-right">post_max_size</td>
+			<td class="text-left"><?= ini_get('post_max_size'); ?></td>
+		</tr>
+		<tr>
+			<td class="text-right">max_input_time</td>
+			<td class="text-left"><?= ini_get('max_input_time'); ?></td>
 		</tr>
 		</tbody>
 		</table>
