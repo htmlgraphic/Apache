@@ -77,7 +77,7 @@ if [ ! -f /etc/php/7.3/apache2/build ]; then
 
 	# Tweak Apache build
 	sed -i 's|;include_path = ".:/usr/share/php"|include_path = ".:/usr/share/php:/data/pear"|g' /etc/php/7.3/apache2/php.ini
-	sed -i 's/variables_order.*/variables_order = \"EGPCS\"/g'
+	sed -i 's/variables_order.*/variables_order = \"EGPCS\"/g' /etc/php/7.3/apache2/php.ini
 	sed -i 's/IncludeOptional sites-enabled\/\*.conf/IncludeOptional \/data\/apache2\/sites-enabled\/*.conf/' /etc/apache2/apache2.conf
 	sed -i 's|;error_log = php_errors.log|error_log = /data/apache2/logs/error_log|g' /etc/php/7.3/apache2/php.ini
 	echo "extension=mcrypt.so" > /etc/php/7.3/apache2/conf.d/mcrypt.ini
