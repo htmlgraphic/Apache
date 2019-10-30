@@ -7,7 +7,7 @@ SHELL = /bin/sh
 
 include .env # .env file needs to created for this to work properly
 
-TAG 		= 1.8.1
+TAG 		= 1.8.2
 CONTAINER 	= apache
 IMAGE_REPO 	= htmlgraphic
 IMAGE_NAME 	= $(IMAGE_REPO)/$(CONTAINER)
