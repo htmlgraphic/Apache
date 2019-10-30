@@ -23,15 +23,16 @@ Listed below is an explanation of each file. [Ask a question!](https://github.co
 ## Build Breakdown
 
 ```shell
-Apache                       # → Root of Docker Build
+Apache
 ├── app/                     # → App conf to manage application on container
-│   ├── apache-config.conf   # → Default Apache config
+│   ├── apache-config.conf   # → Apache config
 │   ├── index.php            # → Default web page, enter the IP `docker-machine ls` to load this page.
+│   ├── php_extensions.php   # → PHP extensions checklist
 │   ├── mac-permissions.sh   # → Run manually on container to match uid / gid permissions of local docker container to Mac OS X
 │   ├── postfix.sh           # → Used by *supervisord.conf* to start Postfix
 │   ├── run.sh               # → Setup apache, conf files, and start process on container
-│   ├── sample.conf          # → located within `/data/apache2/sites-enabled` duplicate / modify to host others domains
-│   └── supervisord          # → Supervisor is a client / server system which monitors and controls a number of processes on UNIX-like operating systems
+│   ├── sample.conf          # → Located within `/data/apache2/sites-enabled` duplicate / modify to add domains
+│   └── supervisord          # → Supervisor is a system which monitors and controls a number of processes
 ├── .env.example             # → Rename file to `.env` for local environment variables used within build
 ├── .circleci/
 │   └── config.yml           # → CircleCI 2.0 Config
@@ -41,9 +42,10 @@ Apache                       # → Root of Docker Build
 ├── Makefile                 # → Build command shortcuts
 ├── shippable.yml            # → Configuration for Shippable.com testing
 └── tests/
-	└── build_tests.sh       # → Build test processes
+    ├── build_tests.sh       # → Build test processes
+    └── shunit2-2.1.7.tar.gz # → sh unit teesting
 ```
-Docker Compose YML configuration guide [more info](https://docs.docker.com/docker-cloud/apps/deploy-to-cloud-btn/) 
+Docker Compose YML configuration [more info](https://docs.docker.com/docker-cloud/apps/deploy-to-cloud-btn/) 
 
 
 ## Quick Start

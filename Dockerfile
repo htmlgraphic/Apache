@@ -15,7 +15,7 @@ RUN BUILD_DEPS='software-properties-common' \
         && add-apt-repository -y ppa:ondrej/php \
         && add-apt-repository -y ppa:ondrej/apache2 \
         && apt-get update \
-        && apt-get install -y curl apache2 libsasl2-modules libapache2-mod-php7.3 php7.3-cli php7.3-readline php7.3-mbstring php7.3-zip php7.3-intl php7.3-xml php7.3-json php7.3-curl php7.3-gd php7.3-pgsql php7.3-mysql php-pear \
+        && apt-get install -y curl apache2 libsasl2-modules libapache2-mod-php7.3 libmcrypt-dev php7.3-cli php7.3-readline php7.3-mbstring php7.3-zip php7.3-intl php7.3-xml php7.3-json php7.3-curl php7.3-gd php7.3-pgsql php7.3-mysql php-pear php-dev \
     && apt-get update && apt-get install -yq --no-install-recommends \
         git \
         cron \
@@ -34,7 +34,9 @@ RUN BUILD_DEPS='software-properties-common' \
         postfix \
     && apt-get purge -y --auto-remove $BUILD_DEPS \
     && apt-get autoremove -y \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && pecl channel-update pecl.php.net \
+    && pecl install mcrypt-1.0.3 -y
 
 # POSTFIX
 RUN update-locale LANG=en_US.UTF-8

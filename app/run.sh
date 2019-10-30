@@ -77,9 +77,10 @@ if [ ! -f /etc/php/7.3/apache2/build ]; then
 
 	# Tweak Apache build
 	sed -i 's|;include_path = ".:/usr/share/php"|include_path = ".:/usr/share/php:/data/pear"|g' /etc/php/7.3/apache2/php.ini
-	sed -i 's/variables_order.*/variables_order = \"EGPCS\"/g' /etc/php/7.3/apache2/php.ini
+	sed -i 's/variables_order.*/variables_order = \"EGPCS\"/g'
 	sed -i 's/IncludeOptional sites-enabled\/\*.conf/IncludeOptional \/data\/apache2\/sites-enabled\/*.conf/' /etc/apache2/apache2.conf
 	sed -i 's|;error_log = php_errors.log|error_log = /data/apache2/logs/error_log|g' /etc/php/7.3/apache2/php.ini
+	echo "extension=mcrypt.so" > /etc/php/7.3/apache2/conf.d/mcrypt.ini
 
 	# Update the PHP.ini file, enable <? ?> tags and quiet logging.
 	sed -i 's|short_open_tag = Off|short_open_tag = On|g' /etc/php/7.3/apache2/php.ini
@@ -94,7 +95,7 @@ if [ ! -f /etc/php/7.3/apache2/build ]; then
 	sed -i 's|upload_max_filesize = 2M|upload_max_filesize = 1000M|g' /etc/php/7.3/apache2/php.ini
 	sed -i 's|post_max_size = 8M|post_max_size = 1000M|g' /etc/php/7.3/apache2/php.ini
 	sed -i 's|max_input_time = 60|max_input_time = 300|g' /etc/php/7.3/apache2/php.ini
-	
+
 	# Update CLI Config
 	sed -i 's|memory_limit = 128M|memory_limit = -1|g' /etc/php/7.3/cli/php.ini
 	sed -i 's|upload_max_filesize = 2M|upload_max_filesize = 1000M|g' /etc/php/7.3/cli/php.ini
@@ -110,7 +111,7 @@ if [ ! -f /etc/php/7.3/apache2/build ]; then
 	else
 		if [ "$NODE_ENVIRONMENT" == 'dev' ]; then
 			# Tweak Apache build
-			sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=0 \nIS_DEV=0 \nNODE_ENVIRONMENT=dev \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php/7.3/apache2/php.ini
+			sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=0 \nIS_DEV=1 \nNODE_ENVIRONMENT=dev \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php/7.3/apache2/php.ini
 			# Update the PHP.ini file, enable <? ?> tags and quiet logging.
 			sed -i "s/error_reporting = .*$/error_reporting = E_ALL/" /etc/php/7.3/apache2/php.ini
 		fi
