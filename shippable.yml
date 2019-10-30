@@ -21,7 +21,7 @@ build:
     - sleep 5
     - "bash tests/build_tests.sh"
   on_failure:
-    - docker logs apache
+    - docker ps -a
   # on_success:
   #   - make push
 

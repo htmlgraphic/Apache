@@ -29,6 +29,3 @@ stderr_logfile=/var/log/supervisor/%(program_name)s-stderr.log
 command=/opt/app/postfix.sh
 autostart=true
 autorestart=true
-
-[program:sshd]
-command=/usr/sbin/sshd -D

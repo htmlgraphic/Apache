@@ -67,7 +67,7 @@ fi
 
 #####
 #
-#  Edit files on the instance for improved preformance
+#  Edit files on the container, improving preformance
 #  Modify php.ini for each build
 #  Check for proper environment
 #  Route mail to SMTP queuing servers
@@ -88,11 +88,18 @@ if [ ! -f /etc/php/7.3/apache2/build ]; then
 	sed -i 's|;session.save_path = "/var/lib/php5"|session.save_path = "/tmp"|g' /etc/php/7.3/apache2/php.ini
 	sed -i 's|session.gc_probability = 0|session.gc_probability = 1|g' /etc/php/7.3/apache2/php.ini
 
-	# Increase memory & upload limitations
+	# Update Apache / PHP Config
 	sed -i 's|max_execution_time = 30|max_execution_time = 300|g' /etc/php/7.3/apache2/php.ini
 	sed -i 's|memory_limit = 128M|memory_limit = -1|g' /etc/php/7.3/apache2/php.ini
 	sed -i 's|upload_max_filesize = 2M|upload_max_filesize = 1000M|g' /etc/php/7.3/apache2/php.ini
 	sed -i 's|post_max_size = 8M|post_max_size = 1000M|g' /etc/php/7.3/apache2/php.ini
+	sed -i 's|max_input_time = 60|max_input_time = 300|g' /etc/php/7.3/apache2/php.ini
+	
+	# Update CLI Config
+	sed -i 's|memory_limit = 128M|memory_limit = -1|g' /etc/php/7.3/cli/php.ini
+	sed -i 's|upload_max_filesize = 2M|upload_max_filesize = 1000M|g' /etc/php/7.3/cli/php.ini
+	sed -i 's|post_max_size = 8M|post_max_size = 1000M|g' /etc/php/7.3/cli/php.ini
+
 
 	# Add build file to remove duplicate script execution
 	echo 1 > /etc/php/7.3/apache2/build

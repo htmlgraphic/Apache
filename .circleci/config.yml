@@ -65,14 +65,14 @@ jobs:
       - run:
           name: LIVE Build Tests
           command: |
-            docker exec apache_hg-web_1 /bin/bash /opt/tests/build_tests.sh
+            docker exec apache_web_1 /bin/bash /opt/tests/build_tests.sh
 
       - run:
           name: Container Logs
           command: |
             mkdir -p /tmp/container-build
-            docker logs apache_hg-web_1 > /tmp/container-build/log_output-LIVE_Apache.txt
-            docker logs apache_hg-db_1 > /tmp/container-build/log_output-LIVE_MySQL.txt
+            docker logs apache_web_1 > /tmp/container-build/log_output-LIVE_Apache.txt
+            docker logs apache_db_1 > /tmp/container-build/log_output-LIVE_MySQL.txt
 
 
 

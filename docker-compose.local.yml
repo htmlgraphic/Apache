@@ -1,4 +1,4 @@
-version: '3'
+version: '3.3'
 services:
   web:
     image: 'htmlgraphic/apache:latest' # PHP v7.3.2-3+ubuntu18.04.1+deb.sury.org+1
@@ -13,8 +13,13 @@ services:
       - '443:443'
     env_file:
       - .env
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
   db:
-    image: 'mysql:5.7.25'
+    image: 'mysql:5.7.28'
     container_name: apache_db
     volumes:
       - 'db-data:/var/lib/mysql'
