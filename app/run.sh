@@ -64,7 +64,6 @@ if [ ! -d /data/apache2 ]; then
 fi
 
 
-
 #####
 #
 #  Edit files on the container, improving preformance
@@ -126,26 +125,6 @@ if [ ! -f /etc/php/7.3/apache2/build ]; then
 	fi
 fi
 
-
-# SSH - Add public key for root access
-if [ "${AUTHORIZED_KEYS}" != "**None**" ]; then
-	echo "=> Found authorized keys"
-	mkdir -p /root/.ssh
-	chmod 700 /root/.ssh
-	touch /root/.ssh/authorized_keys
-	chmod 600 /root/.ssh/authorized_keys
-	IFS=$'\n'
-	arr=$(echo ${AUTHORIZED_KEYS} | tr "," "\n")
-	for x in $arr
-	do
-		x=$(echo $x |sed -e 's/^ *//' -e 's/ *$//')
-		cat /root/.ssh/authorized_keys | grep "$x" >/dev/null 2>&1
-		if [ $? -ne 0 ]; then
-			echo "=> Adding public key to /root/.ssh/authorized_keys: $x"
-			echo "$x" >> /root/.ssh/authorized_keys
-		fi
-	done
-fi
 
 # Postfix uses a DEV test mail server which holds email(s) from being released into the REAL Internet
 postconf -e "compatibility_level=2"

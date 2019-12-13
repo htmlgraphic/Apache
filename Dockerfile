@@ -78,14 +78,10 @@ ENV TERM=xterm \
     APACHE_LOG_DIR=/var/log/apache2 \
     APACHE_LOCK_DIR=/var/lock/apache2 \
     APACHE_PID_FILE=/var/run/apache2.pid \
-    AUTHORIZED_KEYS=$AUTHORIZED_KEYS \
     DOCKERCLOUD_SERVICE_FQDN=$DOCKERCLOUD_SERVICE_FQDN \
     LOG_TOKEN=$LOG_TOKEN \
     NODE_ENVIRONMENT=$NODE_ENVIRONMENT \
     PATH="~/.composer/vendor/bin:$PATH" \
-    SMTP_HOST=$SMTP_HOST \
-    SASL_USER=$SASL_USER \
-    SASL_PASS=$SASL_PASS
 
 # Build-time metadata as defined at http://label-schema.org
 ARG BUILD_DATE
