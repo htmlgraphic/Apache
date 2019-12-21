@@ -48,11 +48,32 @@ Apache
 Docker Compose YML configuration [more info](https://docs.docker.com/docker-cloud/apps/deploy-to-cloud-btn/) 
 
 
+---
+
 ## Quick Start
 
 Launch the **Apache** instance locally and setup a local MySQL database container for persistant database data, the goal is to create a easy to use development environment. 
 
 The **Apache** container the directory `/data` is shared to your local system via **Line 7** within `docker-container.local.yml` file
+
+
+---
+
+## Google Cloud
+
+Use the following command with Google Compute. This will create a [virtual machine instance](https://cloud.google.com/sdk/gcloud/reference/beta/compute/instances/create-with-container) running [COS](https://cloud.google.com/container-optimized-os/) (Container Operating System).
+
+```bash
+gcloud compute instances create-with-container www0 --zone us-central1-b --machine-type f1-micro --container-env-file .env.LIVE --container-image=docker.io/htmlgraphic/apache:latest
+```
+
+```bash
+gcloud compute instances update-container www0 --zone us-central1-b --container-env-file .env.LIVE
+```
+
+
+---
+
 
 ### Mac OS X / Linux
 
