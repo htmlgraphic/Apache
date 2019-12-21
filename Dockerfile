@@ -38,9 +38,6 @@ RUN BUILD_DEPS='software-properties-common' \
     && pecl channel-update pecl.php.net \
     && pecl install mcrypt-1.0.3 -y
 
-sudo apt-get install
-s
-
 
 # POSTFIX
 RUN update-locale LANG=en_US.UTF-8
