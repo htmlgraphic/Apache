@@ -26,6 +26,7 @@ services:
       - MYSQL_USER=admin
     expose:
       - "3306"
+    command: mysqld --sql_mode="ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
     volumes:
       - 'db-data:/var/lib/mysql'
 volumes:
