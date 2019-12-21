@@ -3,12 +3,15 @@
 header('Content-Type: text/plain; charset=utf-8');
 
 // The following modules, should exist in the build
-$mods_check = explode(',', 'apache2handler,apcu,calendar,ctype,curl,date,dom,exif,fileinfo,filter,ftp,gd,gettext,hash,iconv,imagick,json,libxml,mbstring,mcrypt,mysqli,mysqlnd,openssl,pcre,pdo,pdo_mysql,phar,posix,readline,reflection,session,shmop,simplexml,sockets,spl,standard,sysvmsg,sysvsem,sysvshm,tokenizer,wddx,xml,xmlreader,xmlwriter,xsl,zend opcache,zip,zlib');
+$modules = 'apache2handler,apcu,calendar,ctype,curl,date,dom,exif,fileinfo,filter,ftp,gd,gettext,hash,iconv,imagick,json,libxml,mbstring,mcrypt,mysqli,mysqlnd,openssl,pcre,pdo,pdo_mysql,phar,posix,readline,reflection,session,shmop,simplexml,sockets,spl,standard,sysvmsg,sysvsem,sysvshm,tokenizer,wddx,xml,xmlreader,xmlwriter,xsl,zend opcache,zip,zlib, mod_deflate, mod_filter';
+
+$mods_check = array_map('trim', explode(",",$modules));
 
 // Sort alphabetically.
 sort($mods_check);
 
 // Get regular (non-Zend) extensions.
+$apache_modules = apache_get_modules();
 $mods = get_loaded_extensions();
 
 // 'zend_extensions' param only introduced in PHP 5.2.4,
@@ -17,19 +20,29 @@ $zend_mods = get_loaded_extensions(true);
 if ($zend_mods) {
     $mods = array_merge($mods, $zend_mods);
 }
+
+
+if ($apache_modules) {
+    $mods = array_merge($mods, $apache_modules);
+}
+
+
 $mods = array_map('strtolower', $mods);
+
+
 // Remove duplicates.
 $mods = array_unique($mods);
+print 'Enabled Module / Extensions: (✓ indicates required)' ."\n\n";
 
-print 'Extensions:    ' ."\n\n";
 
 #
 # Output modules table.
 #
-foreach($mods_check as $mod) {
+foreach($mods as $mod) {
     # Search for Apache module, does it exist
-    printf('%-16s ', $mod);
-    if(in_array($mod, $mods)) {
+    printf('%-18s', $mod);
+
+    if(in_array($mod, $mods_check)) {
         echo '|    ✓    ';
     } else {
         echo '|         ';
