@@ -94,11 +94,13 @@ gcloud compute instances update-container www0 --zone us-central1-b --container-
 
 ## phpMyAdmin
 
-Review MySQL access instructions upon `make run` command execution. Setup phpMyAdmin directly via command line. https://localhost:8080 
+Review MySQL access instructions upon `make run` command execution. Setup phpMyAdmin directly via command line. 
 
 ```bash
-> docker run --name myadmin -d --link apache_db:db --net apache_default -p 8080:80 phpmyadmin/phpmyadmin
+> docker run --name myadmin -d --link db:mysql --net apache_default -p 8080:443 marvambass/phpmyadmin
 ```
+
+https://localhost:8080 
 
 Login using the following creditial stored within the .env file: 
 

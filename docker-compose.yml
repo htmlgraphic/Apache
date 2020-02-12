@@ -19,11 +19,8 @@ services:
         max-file: "10"
   db:
     image: 'mysql:5.7.28'
-    environment:
-      - MYSQL_DATABASE=htmlgraphic
-      - MYSQL_PASSWORD=new_password
-      - MYSQL_ROOT_PASSWORD=new_passwordac
-      - MYSQL_USER=admin
+    env_file:
+      - .env
     expose:
       - "3306"
     command: mysqld --sql_mode="ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"

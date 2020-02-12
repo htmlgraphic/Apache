@@ -131,7 +131,6 @@ postconf -e "compatibility_level=2"
 postconf -e "myhostname=dev-build.htmlgraphic.com"
 postconf -e 'mail_spool_directory="/var/spool/mail/"'
 postconf -e 'mydestination="localhost.localdomain localhost"'
-postconf -e "mydomain=htmlgraphic.com"
 postconf -e "relayhost=[${SMTP_HOST}]:587"
 postconf -e "smtp_sasl_auth_enable=yes"
 postconf -e "smtp_sasl_password_maps=static:${SASL_USER}:${SASL_PASS}"
