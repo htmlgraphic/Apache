@@ -18,6 +18,7 @@ Listed below is an explanation of each file. [Ask a question!](https://github.co
 - Git
 - Make ([Windows](https://stackoverflow.com/questions/32127524/how-to-install-and-use-make-in-windows-8-1))
 
+
 ---
 
 ## Build Breakdown
@@ -54,7 +55,7 @@ Docker Compose YML configuration [more info](https://docs.docker.com/docker-clou
 
 Launch the **Apache** instance locally and setup a local MySQL database container for persistant database data, the goal is to create a easy to use development environment. 
 
-The **Apache** container the directory `/data` is shared to your local system via **Line 7** within `docker-container.local.yml` file
+The **Apache** container the directory `/data` is shared to your local system via **Line 7** within `docker-compose.local.yml` file
 
 
 ---
@@ -63,17 +64,18 @@ The **Apache** container the directory `/data` is shared to your local system vi
 
 Use the following command with Google Compute. This will create a [virtual machine instance](https://cloud.google.com/sdk/gcloud/reference/beta/compute/instances/create-with-container) running [COS](https://cloud.google.com/container-optimized-os/) (Container Operating System).
 
+`.env.LIVE` will need to exist within the directory you execute the following command from:
 ```bash
-gcloud compute instances create-with-container www0 --zone us-central1-b --machine-type f1-micro --container-env-file .env.LIVE --container-image=docker.io/htmlgraphic/apache:latest
+gcloud compute instances create-with-container www0 --zone us-central1-b --tags=https-server,http-server --machine-type f1-micro --container-env-file .env.LIVE --container-image=docker.io/htmlgraphic/apache:latest
 ```
 
+Make any changes to the `.env` file, be sure to update the container
 ```bash
 gcloud compute instances update-container www0 --zone us-central1-b --container-env-file .env.LIVE
 ```
 
 
 ---
-
 
 ### Mac OS X / Linux
 
@@ -85,11 +87,25 @@ gcloud compute instances update-container www0 --zone us-central1-b --container-
 > make run 
 ```
 
-### (non Make Windows)
+### Windows
+
 ```bash
+> git clone https://github.com/htmlgraphic/Apache.git ~/Docker/Apache; cd ~/Docker/Apache
 > copy .env.example .env
 > docker-compose -f docker-compose.local.yml up -d
 ```
+
+>	Optional, are you having problems on Windows? Disable Firewall
+
+```bash
+> netsh advfirewall show currentprofile
+> netsh advfirewall set allprofiles state off
+```
+
+
+#### 
+
+
 
 
 ## phpMyAdmin
