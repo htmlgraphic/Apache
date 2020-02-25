@@ -12,10 +12,9 @@ ENV LANG=${OS_LOCALE} \
 RUN BUILD_DEPS='software-properties-common' \
     && dpkg-reconfigure locales \
         && apt-get install -y $BUILD_DEPS \
-        && add-apt-repository -y ppa:ondrej/php \
-        && add-apt-repository -y ppa:ondrej/apache2 \
-        && apt-get update \
-        && apt-get install -y curl apache2 libsasl2-modules libapache2-mod-php7.4 libmcrypt-dev php7.4-cli php7.4-dev php7.4-readline php7.4-mbstring php7.4-zip php7.4-intl php-xml php7.4-xml php7.4-xmlrpc php7.4-json php7.4-curl php7.4-gd php7.4-pgsql php7.4-mysql php-pear \
+        && add-apt-repository -y ppa:ondrej/php
+
+RUN apt-get update && apt-get install -y curl apache2 libsasl2-modules libapache2-mod-php7.4 libmcrypt-dev php7.4-cli php7.4-dev php7.4-readline php7.4-mbstring php7.4-zip php7.4-intl php7.4-xml php7.4-xmlrpc php7.4-json php7.4-curl php7.4-gd php7.4-pgsql php7.4-mysql php-pear \
     && apt-get update && apt-get install -yq --no-install-recommends \
         git \
         cron \
