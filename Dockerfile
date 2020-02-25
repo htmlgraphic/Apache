@@ -71,6 +71,9 @@ RUN wkhtmltopdf --version
 # Enable Apache mods.
 RUN a2enmod userdir rewrite ssl
 
+# Install Let’s Encrypt Client
+RUN wget https://dl.eff.org/certbot-auto -O /usr/sbin/certbot-auto && chmod a+x /usr/sbin/certbot-auto
+
 # Environment variables contained within build container.
 ENV TERM=xterm \
     LISTEN_PORT=80 \
