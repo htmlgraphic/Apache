@@ -7,7 +7,7 @@
 [![Beerpay](https://beerpay.io/htmlgraphic/Apache/badge.svg?style=beer)](https://beerpay.io/htmlgraphic/Apache) [![Beerpay](https://beerpay.io/htmlgraphic/Apache/make-wish.svg?style=flat)](https://beerpay.io/htmlgraphic/Apache)
 
 
-This repo will give you a turn key Docker container build for use in **production** OR **dev**. The setup includes an Apache web service, PHP 7.3, PHP Composer, linked [MySQL 5.7.28](https://hub.docker.com/_/mysql) instance and a data container volume.
+This repo will give you a turn key Docker container build for use in **production** OR **dev**. The setup includes an Apache web service, PHP Version 7.4.3, PHP Composer, linked [MySQL 5.7.28](https://hub.docker.com/_/mysql) instance and a data container volume.
 
 Using containers offer a huge advantage when developing locally or in prodcution. Use this containers for development and deployment. Changing `NODE_ENVIRONMENT` within to `.env` to `dev` or `production` will offer a dynamic environment.
 
