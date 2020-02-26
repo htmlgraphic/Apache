@@ -28,14 +28,20 @@ services:
     env_file:
       - .env
     command: mysqld --sql_mode="ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
-  phpmyadmin:
-    image: 'marvambass/phpmyadmin:latest'
-    container_name: apache_phpmyadmin
-    ports:
-      - '8080:443'
-    volumes:
-      - /tmp
-    links:
-      - 'db:mysql'
+  # phpmyadmin:
+  #   image: 'marvambass/phpmyadmin:latest'
+  #   container_name: apache_phpmyadmin
+  #   ports:
+  #     - '8080:443'
+  #   volumes:
+  #     - /tmp
+  #   links:
+  #     - 'db:mysql'
+  # redis:
+  #   image: redis
+  #   container_name: redis
+  #   restart: always
+  #   # ports:
+  #   #     - "6379:6379"
 volumes:
   db-data:
