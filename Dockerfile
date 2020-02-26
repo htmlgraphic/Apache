@@ -102,7 +102,10 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 # Add VOLUMEs for persistant data or to allow various
 # backups of config and databases via --volumes-from
 # http://bit.ly/autobuild-and-autodeploy
-VOLUME  ["/backup"]
+VOLUME ["/backup"]
+VOLUME ["/data"]
+VOLUME ["/etc/letsencrypt"]
+
 
 # Note that EXPOSE only works for inter-container links. It doesn't make ports
 # accessible from the host. To expose port(s) to the host, at runtime, use the -p flag.

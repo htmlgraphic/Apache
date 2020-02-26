@@ -66,7 +66,7 @@ Use the following command with Google Compute. This will create a [virtual machi
 
 `.env.LIVE` will need to exist within the directory you execute the following command from:
 ```bash
-gcloud compute instances create-with-container www0 --zone us-central1-b --tags=https-server,http-server --machine-type f1-micro --container-env-file .env.LIVE --container-image=docker.io/htmlgraphic/apache:latest
+gcloud compute instances create-with-container www0 --zone us-central1-b --tags=https-server,http-server --machine-type f1-micro --container-env-file .env.LIVE --container-image=docker.io/htmlgraphic/apache:envoyer
 ```
 
 Make any changes to the `.env` file, be sure to update the container
