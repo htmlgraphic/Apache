@@ -71,7 +71,7 @@ run:
 		GRANT ALL PRIVILEGES ON * . * TO '$(MYSQL_USER)'@'%' with grant option; \n"
 
 	@echo "	THE PASSWORD FOR $(MYSQL_USER) IS $(MYSQL_PASSWORD); \n"
-	docker-compose -f $(COMPOSE_FILE) up -d
+	docker-compose -f $(COMPOSE_FILE) up -d --remove-orphans
 
 
 start: run
@@ -79,7 +79,7 @@ start: run
 stop:
 	@echo "make rm - containers are specifically referenced, as to not destroy ANY persistent data"
 	@echo "Removing $(CONTAINER) and $(CONTAINER)_db"
-	docker-compose down
+	docker-compose down --remove-orphans
 
 state:
 	docker ps -a | grep $(CONTAINER)

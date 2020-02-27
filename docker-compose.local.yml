@@ -21,7 +21,7 @@ services:
         max-size: "200k"
         max-file: "10"
   db:
-    image: 'mysql:5.7.28'
+    image: 'mysql:5.7.29'
     container_name: apache_db
     volumes:
       - 'db-data:/var/lib/mysql'
@@ -39,11 +39,11 @@ services:
   #     - /tmp
   #   links:
   #     - 'db:mysql'
-  # redis:
-  #   image: redis
-  #   container_name: redis
-  #   restart: always
-  #   # ports:
-  #   #     - "6379:6379"
+  redis:
+    image: redis
+    container_name: redis
+    restart: always
+    # ports:
+    #     - "6379:6379"
 volumes:
   db-data:
