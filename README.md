@@ -11,12 +11,7 @@ This repo will give you a turn key Docker container build for use in **productio
 
 Using containers offer a huge advantage when developing locally or in prodcution. Use this containers for development and deployment. Changing `NODE_ENVIRONMENT` within to `.env` to `dev` or `production` will offer a dynamic environment.
 
-Listed below is an explanation of each file. [Ask a question!](https://github.com/htmlgraphic/Apache/issues/new)
-
-#### Dependencies
-- Docker [Download](https://hub.docker.com/search/?type=edition&offering=community)
-- Git
-- Make ([Windows](https://stackoverflow.com/questions/32127524/how-to-install-and-use-make-in-windows-8-1))
+[Ask a question!](https://github.com/htmlgraphic/Apache/issues/new)
 
 
 ---
@@ -46,8 +41,12 @@ Apache
     ├── build_tests.sh       # → Build test processes
     └── shunit2-2.1.7.tar.gz # → sh unit teesting
 ```
-Docker Compose YML configuration [more info](https://docs.docker.com/docker-cloud/apps/deploy-to-cloud-btn/) 
 
+
+## Dependencies
+- Docker [Download](https://hub.docker.com/search/?type=edition&offering=community)
+- Git
+- Make ([Windows](https://stackoverflow.com/questions/32127524/how-to-install-and-use-make-in-windows-8-1))
 
 ---
 
@@ -57,10 +56,11 @@ Launch the **Apache** instance locally and setup a local MySQL database containe
 
 The **Apache** container the directory `/data` is shared to your local system via **Line 7** within `docker-compose.local.yml` file
 
+Docker Compose f reference [more info](https://docs.docker.com/compose/compose-file/) 
 
 ---
 
-## Google Cloud
+### Google Cloud
 
 Use the following command with Google Compute. This will create a [virtual machine instance](https://cloud.google.com/sdk/gcloud/reference/beta/compute/instances/create-with-container) running [COS](https://cloud.google.com/container-optimized-os/) (Container Operating System).
 
@@ -199,7 +199,7 @@ Stop and start a container in separate operations:
 
 ### Mac OS X / Linux
 ```bash
-> make rm 
+> docker-compose down
 ```
 
 ### (non Make Windows)

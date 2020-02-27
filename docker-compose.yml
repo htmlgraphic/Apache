@@ -1,31 +1,28 @@
 version: '3.3'
 services:
-  web:
+  hg-web:
     image: 'htmlgraphic/apache:envoyer'
     ports:
       - "80:80"
       - "443:443"
     env_file:
       - .env
+    # extra_hosts:
+    #   - "mysql:10.13.32.113"
     volumes:
       - '/var/data:/data'
       - '/etc/letsencrypt:/etc/letsencrypt'
     links:
       - "db:mysql"
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "200k"
-        max-file: "10"
   db:
     image: 'mysql:5.7.28'
-    env_file:
-      - .env
-    expose:
-      - "3306"
-    command: mysqld --sql_mode="ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
     volumes:
       - 'db-data:/var/lib/mysql'
+    ports:
+      - '3306'
+    env_file:
+      - .env
+    command: mysqld --sql_mode="ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
   # redis:
   #   image: redis
   #   container_name: redis

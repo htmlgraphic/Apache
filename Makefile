@@ -77,15 +77,9 @@ run:
 start: run
 
 stop:
-	@echo "Stopping local environment setup"
-	docker-compose stop
-
-rm:
 	@echo "make rm - containers are specifically referenced, as to not destroy ANY persistent data"
 	@echo "Removing $(CONTAINER) and $(CONTAINER)_db"
-	docker rm -f $(CONTAINER)
-	docker rm -f $(CONTAINER)_db
-	docker rm -f $(CONTAINER)_phpmyadmin
+	docker-compose down
 
 state:
 	docker ps -a | grep $(CONTAINER)

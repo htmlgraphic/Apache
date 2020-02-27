@@ -50,7 +50,7 @@ jobs:
       - run:
           name: Kill running containers
           command: |
-            make stop && make rm
+            make stop
 
 
 # LIVE Build

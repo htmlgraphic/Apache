@@ -13,6 +13,8 @@ services:
       - '443:443'
     env_file:
       - .env
+    # extra_hosts:
+    #   - "mysql:10.13.32.113"
     logging:
       driver: "json-file"
       options:
