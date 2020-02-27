@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y curl apache2 libsasl2-modules libapache
         mysql-client \
         libgs-dev \
         imagemagick \
+        php-imagick \
         libmagickwand-dev \
         language-pack-en \
         supervisor \
