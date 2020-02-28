@@ -77,8 +77,7 @@ run:
 start: run
 
 stop:
-	@echo "make rm - containers are specifically referenced, as to not destroy ANY persistent data"
-	@echo "Removing $(CONTAINER) and $(CONTAINER)_db"
+	@echo "Removing $(CONTAINER) related containers ...
 	docker-compose down --remove-orphans
 
 state:
