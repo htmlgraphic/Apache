@@ -33,7 +33,6 @@ help:
 	@echo "     make run		- Run docker-compose and create local development environment"
 	@echo "     make start		- Start the EXISTING $(CONTAINER) container"
 	@echo "     make stop		- Stop running containers"
-	@echo "     make rm		- Stop and remove $(CONTAINER) container"
 	@echo "     make state		- View state $(CONTAINER) container"
 	@echo "     make logs		- View logs"
 
@@ -77,7 +76,7 @@ run:
 start: run
 
 stop:
-	@echo "Removing $(CONTAINER) related containers ...
+	@echo "containers are specifically referenced, as to not destroy ANY persistent data"
 	docker-compose down --remove-orphans
 
 state:
