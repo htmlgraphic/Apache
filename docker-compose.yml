@@ -2,6 +2,7 @@ version: '3.3'
 services:
   hg-web:
     image: 'htmlgraphic/apache:envoyer'
+    restart: always
     ports:
       - "80:80"
       - "443:443"
@@ -16,6 +17,7 @@ services:
       - "db:mysql"
   db:
     image: 'mysql:5.7.29'
+    restart: always
     volumes:
       - 'db-data:/var/lib/mysql'
     ports:
