@@ -1,9 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
 # Build a container via the command "make build"
 # By Jason Gegere <jason@htmlgraphic.com>
 
-SHELL = /bin/sh
+bold=\033[1m
+normal=\033[00m
 
 include .env # .env file needs to created for this to work properly
 
@@ -56,20 +57,20 @@ push:
 	docker push $(IMAGE_NAME):$(TAG)
 
 run:
-	@echo 'Setting environment varibles...'
+	@echo "Setting environment varibles...\n"
 	@make env
 	@echo "Checking... initial directory structure \n"
 	@if [ $(NODE_ENV) == 'dev' ]; then \
 		if [ ! -d "~/SITES/docker" ]; then \
 			echo "	Creating project folders \n" && sudo mkdir -p ~/SITES && sudo mkdir -p ~/SITES/docker; fi \
 	fi
-	@echo 'Run the following on the MySQL system, this will setup a GLOBAL admin:'
+	@echo "${bold}Run the following on the MySQL container, to setup a GLOBAL admin:${normal}\n"
+	@echo "	THE PASSWORD FOR ${bold}$(MYSQL_USER)${normal} IS ${bold}$(MYSQL_PASSWORD)${normal};"
 	@echo ''
 	@echo "	docker exec -it apache_db /bin/bash \n \
-		mysql -p$(MYSQL_ROOT_PASSWORD) \n \
+		mysql -p \n \
 		GRANT ALL PRIVILEGES ON * . * TO '$(MYSQL_USER)'@'%' with grant option; \n"
 
-	@echo "	THE PASSWORD FOR $(MYSQL_USER) IS $(MYSQL_PASSWORD); \n"
 	docker-compose -f $(COMPOSE_FILE) up -d --remove-orphans
 
 
