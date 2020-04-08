@@ -31,5 +31,21 @@ services:
   #   restart: always
   #   # ports:
   #   #     - "6379:6379"
+  phpmyadmin:
+    image: 'osixia/phpmyadmin:4.9.2'
+    container_name: apache_phpmyadmin
+    ports:
+      - '8080:443'
+    volumes:
+      - /tmp
+      - '/etc/letsencrypt:/etc/letsencrypt'
+      - '/var/data/www/user:/container/service/phpmyadmin/assets/apache2/certs'
+    links:
+      - 'db:mysql'
+    environment:
+      - PHPMYADMIN_DB_HOSTS=mysql
+      - PHPMYADMIN_HTTPS_CRT_FILENAME=cert.pem
+      - PHPMYADMIN_HTTPS_KEY_FILENAME=privkey.pem
+      - PHPMYADMIN_HTTPS_CA_CRT_FILENAME=fullchain.pem
 volumes:
   db-data:
