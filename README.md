@@ -4,8 +4,6 @@
 [![Run Status](https://api.shippable.com/projects/54cf015b5ab6cc13528a7b6a/badge?branch=master)](https://app.shippable.com/projects/54cf015b5ab6cc13528a7b6a)
 [![Circle CI](https://circleci.com/gh/htmlgraphic/Apache/tree/master.svg?style=svg)](https://circleci.com/gh/htmlgraphic/Apache/tree/master) 
 [![](https://images.microbadger.com/badges/image/htmlgraphic/apache:latest.svg)](https://microbadger.com/images/htmlgraphic/apache:latest "Get your own image badge on microbadger.com")
-[![Beerpay](https://beerpay.io/htmlgraphic/Apache/badge.svg?style=beer)](https://beerpay.io/htmlgraphic/Apache) [![Beerpay](https://beerpay.io/htmlgraphic/Apache/make-wish.svg?style=flat)](https://beerpay.io/htmlgraphic/Apache)
-
 
 This repo will give you a turn key Docker container build for use in **production** OR **dev**. The setup includes an Apache/2.4.29 web service, PHP Version 7.4.3, PHP Composer, linked [MySQL 5.7.29](https://hub.docker.com/_/mysql) instance and a data container volume.
 
@@ -110,20 +108,24 @@ gcloud compute instances update-container www0 --zone us-central1-b --container-
 
 ## phpMyAdmin
 
-Review MySQL access instructions upon `make run` command execution. Setup phpMyAdmin directly via command line. 
+Review MySQL access instructions upon `make run` command execution. Login using the following creditials stored within the .env file: 
+
+|User  | Pass  |
+|:--|--|
+|root | `$MYSQL_ROOT_PASSWORD`
+|`$MYSQL_USER`  |`$MYSQL_PASSWORD`  |
+
+
+Setup phpMyAdmin directly via command line, access using port `8080`
 
 ```bash
-> docker run --name myadmin -d --link db:mysql --net apache_default -p 8080:443 marvambass/phpmyadmin
+> docker run --name myadmin -d --link db:mysql --net apache_default -p 8080:443 osixia/phpmyadmin:4.9.2
 ```
 
-https://localhost:8080 
 
-Login using the following creditial stored within the .env file: 
+Using the configuration set within the `docker-compose.local.yml` PHPMyAdmin can be hosted using a valid certificate, the same certificate you might be using within the parent domain.
 
-|username  |password  |
-|--|--|
-|root | `$MYSQL_ROOT_PASSWORD`
-|`$MYSQL_PASSWORD`  |`$MYSQL_PASSWORD`  |
+Under `volumes` there is a sharing of files between `host` and `container` this will allow PHPMyAdmin to use a valid certificate. Match up the following files: `cert.pem` `privkey.pem` `fullchain.pem`
 
 
 
