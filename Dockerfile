@@ -2,7 +2,7 @@ FROM ubuntu:18.04
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
 ENV OS_LOCALE="en_US.UTF-8"
-RUN apt-get update && apt-get install -y locales && locale-gen ${OS_LOCALE}
+RUN apt update && apt install -y locales && locale-gen ${OS_LOCALE}
 ENV LANG=${OS_LOCALE} \
     LANGUAGE=${OS_LOCALE} \
     LC_ALL=${OS_LOCALE} \
@@ -11,11 +11,12 @@ ENV LANG=${OS_LOCALE} \
 # Install packages then remove cache package list information
 RUN BUILD_DEPS='software-properties-common' \
     && dpkg-reconfigure locales \
-        && apt-get install -y $BUILD_DEPS \
-        && add-apt-repository -y ppa:ondrej/php
+        && apt install -y $BUILD_DEPS \
+        && add-apt-repository -y ppa:ondrej/php \
+        && add-apt-repository -y ppa:deadsnakes/ppa
 
-RUN apt-get update && apt-get install -y python-pip curl apache2 libsasl2-modules libapache2-mod-php7.4 libmcrypt-dev php7.4-cli php7.4-dev php7.4-readline php7.4-mbstring php7.4-zip php7.4-intl php7.4-xml php7.4-xmlrpc php7.4-json php7.4-curl php7.4-gd php7.4-pgsql php7.4-mysql php-pear \
-    && apt-get update && apt-get install -yq --no-install-recommends \
+RUN apt update && apt install -y python3.7 python3-pip curl apache2 libsasl2-modules libapache2-mod-php7.4 libmcrypt-dev php7.4-cli php7.4-dev php7.4-readline php7.4-mbstring php7.4-zip php7.4-intl php7.4-xml php7.4-xmlrpc php7.4-json php7.4-curl php7.4-gd php7.4-pgsql php7.4-mysql php-pear \
+    && apt update && apt install -yq --no-install-recommends \
         git \
         cron \
         ghostscript \
@@ -32,13 +33,13 @@ RUN apt-get update && apt-get install -y python-pip curl apache2 libsasl2-module
         vim \
         wget \
         postfix \
-    && apt-get purge -y --auto-remove $BUILD_DEPS \
-    && apt-get autoremove -y \
+    && apt purge -y --auto-remove $BUILD_DEPS \
+    && apt autoremove -y \
     && rm -rf /var/lib/apt/lists/* \
-    && pip install --upgrade pip \
     && pecl channel-update pecl.php.net \
     && pecl install mcrypt-1.0.3 -y
 
+RUN python3 -m pip install certbot-dns-cloudflare
 
 # POSTFIX
 RUN update-locale LANG=en_US.UTF-8
