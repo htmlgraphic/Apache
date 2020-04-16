@@ -15,7 +15,7 @@ RUN BUILD_DEPS='software-properties-common' \
         && add-apt-repository -y ppa:ondrej/php \
         && add-apt-repository -y ppa:deadsnakes/ppa
 
-RUN apt update && apt install -y python3.7 python3-pip curl apache2 libsasl2-modules libapache2-mod-php7.4 libmcrypt-dev php7.4-cli php7.4-dev php7.4-readline php7.4-mbstring php7.4-zip php7.4-intl php7.4-xml php7.4-xmlrpc php7.4-json php7.4-curl php7.4-gd php7.4-pgsql php7.4-mysql php-pear \
+RUN apt update && apt install -y python3.7 python3-pip curl apache2 libsasl2-modules libapache2-mod-php7.4 libmcrypt-dev php7.4-cli php7.4-dev php7.4-readline php7.4-mbstring php7.4-zip php7.4-intl php7.4-xml php7.4-bcmath php7.4-xmlrpc php7.4-json php7.4-curl php7.4-gd php7.4-pgsql php7.4-mysql php-pear \
     && apt update && apt install -yq --no-install-recommends \
         git \
         cron \
