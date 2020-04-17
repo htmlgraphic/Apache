@@ -45,6 +45,41 @@ testHTTP()
 	echo -e '\n'
 }
 
+testPHPModules()
+{
+	echo 'Test PHP Modules'
+
+
+	file="php_modules"
+	while IFS= read -r line; do
+		if [ ! -z "$line" ]; then
+	        # display $line or do somthing with $line
+	        printf '%s\n' "checking PHP module $line"
+	        test=$(/usr/bin/wget -q -O- http://127.0.0.1/php_extensions.php | grep -w "$line" | wc -l)
+			assertEquals 1 $test
+		fi
+	done <"$file"
+	echo -e '\n'
+}
+
+testPHPModulesCLI()
+{
+	echo 'Test CLI PHP Modules'
+
+
+	file="cli_php_modules"
+	while IFS= read -r line; do
+		if [ ! -z "$line" ]; then
+	        # display $line or do somthing with $line
+	        module=$(php -i | grep "$line")
+	        printf '%s\n' "checking CLI PHP module $line"
+	        test=$(echo $module | grep "$line" | wc -l)
+			assertEquals 1 $test
+		fi
+	done <"$file"
+	echo -e '\n'
+}
+
 testHTTPS()
 {
 	echo 'Test Apache HTTPS'
