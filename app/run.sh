@@ -17,8 +17,6 @@ OutputLog ()
 
 
 
-
-
 # output logs to logentries.com
 cat <<EOF > /etc/rsyslog.d/logentries.conf
 \$template Logentries,"${LOG_TOKEN} %HOSTNAME% %syslogtag%%msg%\n"
@@ -29,12 +27,15 @@ EOF
 
 if [ ! -d /data/www/public_html ]; then
 
-	# Move default coming soon page...
+	# Create default web directory
 	mkdir -p /data/www/public_html
-	mv /opt/app/*.php /data/www/public_html/
 	mv /opt/app/*.png /data/www/public_html/
-
 fi
+
+# Move default coming soon page... at the start of every instance run
+mv /opt/app/*.php /data/www/public_html/
+
+
 
 
 if [ ! -d /data/apache2 ]; then

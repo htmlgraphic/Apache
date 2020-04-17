@@ -1,19 +1,20 @@
+<!-- DO NOT MODIFY THIS FILE IT IS CREATED EACH TIME THE INSTANCE IS STARTED -->
 <!DOCTYPE html>
 <html>
 <head>
 	<title>Coming soon!</title>
 	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <style>
 body {
-	font-family: 'Open Sans', sans-serif; 
-	font-weight: 300; 
-	font-size: 14px; 
-	text-align: center; 
-	padding: 50px; 
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 300;
+	font-size: 14px;
+	text-align: center;
+	padding: 50px;
 }
 div img#logo {
-	margin: 0 auto 40px auto; 
+	margin: 0 auto 40px auto;
 	float: none;
 }
 .e {
@@ -38,7 +39,8 @@ div img#logo {
 table {
 	border-collapse: collapse;
 	border: 0;
-	width: 934px;
+	width: 80% !important;
+	margin: auto;
 }
 td, th {
 	border: 1px solid #666;
@@ -67,8 +69,8 @@ if (getenv('NODE_ENVIRONMENT')) {
 		<img id="logo" src="logo.png" width="200" />
 		<h1><?= "Hello ".((getenv("NAME"))? $name:"World")."!"; ?></h1>
 
-<div class="row center">
-	<div class="col-xs-8 col-xs-offset-2">
+<div class="row">
+	<div class="mx-auto w-100 p-3 text-white text-center">
 		<table class="table table-bordered table-striped">
 		<tbody>
 		<tr>
@@ -128,6 +130,8 @@ if (getenv('NODE_ENVIRONMENT')) {
 		$pinfo = preg_replace( '%^.*<body>(.*)</body>.*$%ms','$1', ob_get_contents());
 		ob_end_clean();
 		echo $pinfo;
+	} else {
+		echo '<a href="https://github.com/htmlgraphic/Apache">GitHub</a>';
 	}
 ?>
 </div>
