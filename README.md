@@ -54,13 +54,15 @@ Launch the **Apache** instance locally and setup a local MySQL database containe
 
 The **Apache** container the directory `/data` is shared to your local system via **Line 7** within `docker-compose.local.yml` file
 
-Docker Compose f reference [more info](https://docs.docker.com/compose/compose-file/) 
+Docker Compose File Reference [more info](https://docs.docker.com/compose/compose-file/) 
+
 
 ---
 
 ### Google Cloud
 
 Use the following command with Google Compute. This will create a [virtual machine instance](https://cloud.google.com/sdk/gcloud/reference/beta/compute/instances/create-with-container) running [COS](https://cloud.google.com/container-optimized-os/) (Container Operating System).
+
 
 `.env.LIVE` will need to exist within the directory you execute the following command from:
 ```bash
@@ -70,6 +72,19 @@ gcloud compute instances create-with-container www0 --zone us-central1-b --tags=
 Make any changes to the `.env` file, be sure to update the container
 ```bash
 gcloud compute instances update-container www0 --zone us-central1-b --container-env-file .env.LIVE
+```
+
+
+Recommended `cron` enters to have running on the host system. Edit `crontab -e` as `root` for best support. 
+
+LetsEncrypt Cert Renewal process:
+```bash
+52 0,12 * * * root docker exec -it apache_hg-web_1 certbot-auto renew --quiet
+```
+
+When host system is restarted, start Docker instance on boot:
+```bash
+@reboot (sleep 10s ; cd /root/Docker/Apache ; /usr/local/bin/docker-compose up -d )&
 ```
 
 
