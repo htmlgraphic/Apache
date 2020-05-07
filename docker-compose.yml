@@ -38,7 +38,7 @@ services:
       - '8080:443'
     volumes:
       - /tmp
-      - '/etc/letsencrypt:/etc/letsencrypt'
+      - '/var/data/letsencrypt:/etc/letsencrypt'
       - '/var/data/www/user:/container/service/phpmyadmin/assets/apache2/certs'
     links:
       - 'db:mysql'
