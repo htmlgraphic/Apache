@@ -74,7 +74,7 @@ if (getenv('NODE_ENVIRONMENT')) {
 		<table class="table table-bordered table-striped">
 		<tbody>
 		<tr>
-			<th colspan="2">SYSTEM VARIABLES</th>
+			<th colspan="2" class="text-left">SYSTEM VARIABLES</th>
 		</tr>
 		<tr>
 			<td class="text-right">HOSTNAME</td>
