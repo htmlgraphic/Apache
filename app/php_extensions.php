@@ -6,7 +6,7 @@ if (getenv("NODE_ENVIRONMENT") == 'dev') {
 	header('Content-Type: text/plain; charset=utf-8');
 
 	// The following modules, should exist in the build
-	$modules = 'apache2handler,calendar,ctype,curl,date,dom,exif,fileinfo,filter,ftp,gd,gettext,hash,iconv,imagick,json,libxml,mbstring,mcrypt,mysqli,mysqlnd,openssl,pcre,pdo,pdo_mysql,phar,posix,readline,reflection,session,shmop,simplexml,sockets,spl,standard,sysvmsg,sysvsem,sysvshm,tokenizer,xml,xmlreader,xmlwriter,xsl,opcache.enable,zip,zlib, mod_deflate, mod_filter';
+	$modules = 'apache2handler,calendar,ctype,curl,date,dom,exif,fileinfo,filter,ftp,gd,gettext,hash,iconv,imagick,json,libxml,mbstring,mcrypt,mysqli,mysqlnd,openssl,pcre,pdo,pdo_mysql,phar,posix,readline,reflection,redis,session,shmop,simplexml,sockets,spl,standard,sysvmsg,sysvsem,sysvshm,tokenizer,xml,xmlreader,xmlwriter,xsl,opcache.enable,zip,zlib,mod_deflate,mod_filter';
 
 	$mods_check = array_map('trim', explode(",",$modules));
 

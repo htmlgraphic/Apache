@@ -2,6 +2,7 @@ version: '3.3'
 services:
   web:
     image: 'htmlgraphic/apache:latest'
+    restart: unless-stopped
     container_name: apache
     volumes:
       - '~/SITES/docker:/data' # <- Change to preferred local working dir

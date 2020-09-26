@@ -15,7 +15,7 @@ RUN BUILD_DEPS='software-properties-common' \
         && add-apt-repository -y ppa:ondrej/php \
         && add-apt-repository -y ppa:deadsnakes/ppa
 
-RUN apt update && apt install -y python3.7 python3-pip curl apache2 libsasl2-modules libapache2-mod-php7.4 libmcrypt-dev php7.4-cli php7.4-dev php7.4-readline php7.4-mbstring php7.4-zip php7.4-intl php7.4-xml php7.4-bcmath php7.4-xmlrpc php7.4-json php7.4-curl php7.4-gd php7.4-pgsql php7.4-mysql php-pear \
+RUN apt update && apt install -y python3.7 curl apache2 libsasl2-modules libapache2-mod-php7.4 libmcrypt-dev php7.4-cli php7.4-dev php7.4-readline php7.4-mbstring php7.4-zip php7.4-intl php7.4-xml php7.4-bcmath php7.4-xmlrpc php7.4-json php7.4-curl php7.4-gd php7.4-pgsql php7.4-mysql php-pear \
     && apt update && apt install -yq --no-install-recommends \
         git \
         cron \
@@ -37,9 +37,8 @@ RUN apt update && apt install -y python3.7 python3-pip curl apache2 libsasl2-mod
     && apt autoremove -y \
     && rm -rf /var/lib/apt/lists/* \
     && pecl channel-update pecl.php.net \
-    && pecl install mcrypt-1.0.3 -y
-
-RUN python3 -m pip install certbot-dns-cloudflare
+    && pecl install mcrypt-1.0.3 \
+    && pecl install redis -y
 
 # POSTFIX
 RUN update-locale LANG=en_US.UTF-8
@@ -59,7 +58,7 @@ RUN chmod -R 755 /opt/* \
     && cp /opt/app/supervisord /etc/supervisor/conf.d/supervisord.conf
 
 # COMPOSER
-RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 RUN composer global require "laravel/installer"
 RUN composer global require "vlucas/phpdotenv"
 

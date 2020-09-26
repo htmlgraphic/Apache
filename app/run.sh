@@ -75,14 +75,19 @@ fi
 #####
 if [ ! -f /etc/php/7.4/apache2/build ]; then
 
-	# Tweak Apache build
+	# Tweak Apache Build
 	sed -i 's|;include_path = ".:/usr/share/php"|include_path = ".:/usr/share/php:/data/pear"|g' /etc/php/7.4/apache2/php.ini
 	sed -i 's/variables_order.*/variables_order = \"EGPCS\"/g' /etc/php/7.4/apache2/php.ini
 	sed -i 's/IncludeOptional sites-enabled\/\*.conf/IncludeOptional \/data\/apache2\/sites-enabled\/*.conf/' /etc/apache2/apache2.conf
 	sed -i 's|;error_log = php_errors.log|error_log = /data/apache2/logs/error_log|g' /etc/php/7.4/apache2/php.ini
 	echo "extension=mcrypt.so" > /etc/php/7.4/apache2/conf.d/mcrypt.ini
 
-	# Update the PHP.ini file, enable <? ?> tags and quiet logging.
+	# Setup Redis
+	echo "extension=redis.so" > /etc/php/7.4/mods-available/redis.ini
+	ln -sf /etc/php/7.4/mods-available/redis.ini /etc/php/7.4/cli/conf.d/20-redis.ini
+	ln -sf /etc/php/7.4/mods-available/redis.ini /etc/php/7.4/apache2/conf.d/20-redis.ini
+
+	# Update the PHP.ini file, enable <? ?> tags
 	sed -i 's|short_open_tag = Off|short_open_tag = On|g' /etc/php/7.4/apache2/php.ini
 
 	# Sessions & garbage collection
@@ -112,15 +117,17 @@ if [ ! -f /etc/php/7.4/apache2/build ]; then
 		if [ "$NODE_ENVIRONMENT" == 'dev' ]; then
 			# Tweak Apache build
 			sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=0 \nIS_DEV=1 \nNODE_ENVIRONMENT=dev \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php/7.4/apache2/php.ini
-			# Update the PHP.ini file, enable <? ?> tags and quiet logging.
-			sed -i "s/error_reporting = .*$/error_reporting = E_ALL/" /etc/php/7.4/apache2/php.ini
+			# Log errors into log files
+			sed -i 's/error_reporting = .*$/error_reporting = E_ALL/' /etc/php/7.4/apache2/php.ini
+			# Default is 1024 and 0 allows to not apply any maximum length at all
+			sed -i 's|log_errors_max_len = 1024|log_errors_max_len = 0|g' /etc/php/7.4/apache2/php.ini
 		fi
 
 		if [ "$NODE_ENVIRONMENT" == 'production' ]; then
 			# Tweak Apache build
 			sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=1 \nIS_DEV=0 \nNODE_ENVIRONMENT=production \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php/7.4/apache2/php.ini
-			# Update the PHP.ini file, enable <? ?> tags and quiet logging.
-			sed -i "s/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/" /etc/php/7.4/apache2/php.ini
+			# Log errors into log files
+			sed -i 's/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/' /etc/php/7.4/apache2/php.ini
 		fi
 
 	fi
