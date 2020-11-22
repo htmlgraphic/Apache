@@ -2,7 +2,7 @@ version: '3.3'
 services:
   hg-web:
     image: 'htmlgraphic/apache:envoyer'
-    restart: always
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
@@ -17,7 +17,7 @@ services:
       - "db:mysql"
   db:
     image: 'mysql:5.7.29'
-    restart: always
+    restart: unless-stopped
     volumes:
       - 'db-data:/var/lib/mysql'
     ports:
@@ -28,9 +28,9 @@ services:
   # redis:
   #   image: redis
   #   container_name: redis
-  #   restart: always
+  #   restart: unless-stopped
   #   # ports:
-  #   #     - "6379:6379"
+  #   #     - '6379:6379'
   phpmyadmin:
     image: 'osixia/phpmyadmin:4.9.2'
     container_name: apache_phpmyadmin

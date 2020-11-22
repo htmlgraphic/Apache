@@ -46,10 +46,10 @@ services:
 #     - PHPMYADMIN_HTTPS_CRT_FILENAME=cert.pem
 #     - PHPMYADMIN_HTTPS_KEY_FILENAME=privkey.pem
 #     - PHPMYADMIN_HTTPS_CA_CRT_FILENAME=fullchain.pem
-  redis:
-    image: redis
-    container_name: redis
-    # ports:
-    #     - "6379:6379"
+  # redis:
+  #   image: redis
+  #   container_name: redis
+  #   ports:
+  #       - '6379:6379'
 volumes:
   db-data:
