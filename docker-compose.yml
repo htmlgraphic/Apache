@@ -12,7 +12,7 @@ services:
     #   - "mysql:10.13.32.113"
     volumes:
       - '/var/data:/data'
-      - '/etc/letsencrypt:/etc/letsencrypt'
+      - '/var/data/letsencrypt:/etc/letsencrypt'
     links:
       - "db:mysql"
   db:
