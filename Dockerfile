@@ -57,8 +57,9 @@ RUN chmod -R 755 /opt/* \
     && mkdir -p /var/log/supervisor \
     && cp /opt/app/supervisord /etc/supervisor/conf.d/supervisord.conf
 
-# COMPOSER
+# COMPOSER v2
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+RUN composer self-update --2
 RUN composer global require "laravel/installer"
 RUN composer global require "vlucas/phpdotenv"
 

@@ -37,8 +37,8 @@ services:
 #   ports:
 #     - '8080:443'
 #   volumes:
-#     - '/etc/letsencrypt:/etc/letsencrypt'
-#     - '/var/data/certs:/container/service/phpmyadmin/assets/apache2/certs'
+#     - '/var/data/letsencrypt:/etc/letsencrypt'
+#     - '/var/data/letsencrypt:/container/service/phpmyadmin/assets/apache2/certs'
 #   links:
 #     - 'db:mysql'
 #   environment:

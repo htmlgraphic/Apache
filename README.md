@@ -69,17 +69,20 @@ Use the following command with Google Compute. This will create a [virtual machi
 gcloud compute instances create-with-container www0 --zone us-central1-b --tags=https-server,http-server --machine-type f1-micro --container-env-file .env.LIVE --container-image=docker.io/htmlgraphic/apache:envoyer
 ```
 
-Make any changes to the `.env` file, be sure to update the container
+Need to update the container config? Use the following command, the `.env` will be redeploy with the updated configuration.
 ```bash
 gcloud compute instances update-container www0 --zone us-central1-b --container-env-file .env.LIVE
 ```
 
 
-Recommended `cron` enters to have running on the host system. Edit `crontab -e` as `root` for best support. 
+Recommended `cron` entries to have running on the host system. Edit `crontab -e` as `root` remove `--quiet`, there is a limitof certificates minted per ip address per period of time.
 
 LetsEncrypt Cert Renewal process:
 ```bash
-52 0,12 * * * root docker exec -it apache_hg-web_1 certbot-auto renew --quiet
+52 0,12 * * * root docker run -it --rm --name certbot \
+            -v "/var/data/letsencrypt:/etc/letsencrypt" \
+            -v "/var/data:/data" \
+            certbot/certbot renew --dry-run --quiet
 ```
 
 When host system is restarted, start Docker instance on boot:
