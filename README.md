@@ -75,14 +75,20 @@ gcloud compute instances update-container www0 --zone us-central1-b --container-
 ```
 
 
-Recommended `cron` entries to have running on the host system. Edit `crontab -e` as `root` remove `--quiet`, there is a limitof certificates minted per ip address per period of time.
+Renew each domain manually to verify the certificate will be created succesfully. Each certificate will be valid for 90 days, there is a limit of certificates minted per ip address.
 
-LetsEncrypt Cert Renewal process:
+
+**LetsEncrypt Cert Renewal process:**
 ```bash
-52 0,12 * * * root docker run -it --rm --name certbot \
-            -v "/var/data/letsencrypt:/etc/letsencrypt" \
-            -v "/var/data:/data" \
-            certbot/certbot renew --dry-run --quiet
+docker run --rm --name temp_certbot \
+    -v /var/data/letsencrypt:/etc/letsencrypt \
+    -v /var/lib/letsencrypt:/var/lib/letsencrypt \
+    -v /var/data:/data \
+    certbot/certbot:v1.15.0 \
+    certonly --webroot --agree-tos --renew-by-default \
+    --server https://acme-v02.api.letsencrypt.org/directory \
+    --text --email hosting@htmlgraphic.com \
+    -w /data/www/XYZ/public_html -d example.com -d www.example.com
 ```
 
 When host system is restarted, start Docker instance on boot:
