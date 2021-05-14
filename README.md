@@ -1,7 +1,6 @@
 
 ## Apache Docker
 
-[![Run Status](https://api.shippable.com/projects/54cf015b5ab6cc13528a7b6a/badge?branch=master)](https://app.shippable.com/projects/54cf015b5ab6cc13528a7b6a)
 [![Circle CI](https://circleci.com/gh/htmlgraphic/Apache/tree/master.svg?style=svg)](https://circleci.com/gh/htmlgraphic/Apache/tree/master) 
 [![](https://images.microbadger.com/badges/image/htmlgraphic/apache:latest.svg)](https://microbadger.com/images/htmlgraphic/apache:latest "Get your own image badge on microbadger.com")
 
@@ -34,7 +33,6 @@ Apache
 ├── docker-compose.yml       # → Production build
 ├── Dockerfile               # → Uses a basefile build to help speed up the docker container build process
 ├── Makefile                 # → Build command shortcuts
-├── shippable.yml            # → Configuration for Shippable.com testing
 └── tests/
     ├── build_tests.sh       # → Build test processes
     └── shunit2-2.1.7.tar.gz # → sh unit teesting
@@ -162,8 +160,6 @@ These continuous integration services will fully test the creation of your conta
 
 
 ---
-
-**[Shippable](https://shippable.com)** - Test **production** and **dev** Docker builds, can the container be built the without error? The ```/tests/build_tests.sh``` file ensures the can run with parameters defined. Shippable allows the use of [matrix environment variables](http://docs.shippable.com/ci_configure/#using-environment-variables) reducing build time and offer a more robust tests. If any test(s) fail the system should be reviewed closer.
 
 
 ## Interacting with Containers:
