@@ -34,8 +34,8 @@ Apache
 ├── Dockerfile               # → Uses a basefile build to help speed up the docker container build process
 ├── Makefile                 # → Build command shortcuts
 └── tests/
-    ├── build_tests.sh       # → Build test processes
-    └── shunit2-2.1.7.tar.gz # → sh unit teesting
+	├── build_tests.sh       # → Build test processes
+	└── shunit2-2.1.7.tar.gz # → sh unit teesting
 ```
 
 
@@ -76,21 +76,23 @@ gcloud compute instances update-container www0 --zone us-central1-b --container-
 Renew each domain manually to verify the certificate will be created succesfully. Each certificate will be valid for 90 days, there is a limit of certificates minted per ip address.
 
 
-**LetsEncrypt Cert Renewal process:**
+**LetsEncrypt Cert Renewal Process:**
 ```bash
 docker run --rm --name temp_certbot \
-    -v /var/data/letsencrypt:/etc/letsencrypt \
-    -v /var/lib/letsencrypt:/var/lib/letsencrypt \
-    -v /var/data:/data \
-    certbot/certbot:v1.15.0 \
-    certonly --webroot --agree-tos --renew-by-default \
-    --server https://acme-v02.api.letsencrypt.org/directory \
-    --text --email hosting@htmlgraphic.com \
-    -w /data/www/XYZ/public_html -d example.com -d www.example.com
+	-v /var/data/letsencrypt:/etc/letsencrypt \
+	-v /var/lib/letsencrypt:/var/lib/letsencrypt \
+	-v /var/data:/data \
+	certbot/certbot:v1.15.0 \
+	certonly --webroot --agree-tos --renew-by-default \
+	--server https://acme-v02.api.letsencrypt.org/directory \
+	--text --email hosting@htmlgraphic.com \
+	-w /data/www/XYZ/public_html -d example.com -d www.example.com
 ```
 
 When host system is restarted, start Docker instance on boot:
 ```bash
+sudo su
+crontab -e
 @reboot (sleep 10s ; cd /root/Docker/Apache ; /usr/local/bin/docker-compose up -d )&
 ```
 
