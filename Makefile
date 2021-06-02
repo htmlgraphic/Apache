@@ -8,7 +8,7 @@ normal=\033[00m
 
 include .env # .env file needs to created for this to work properly
 
-TAG 		= 1.8.6
+TAG 		= 1.8.7
 CONTAINER 	= apache
 IMAGE_REPO 	= htmlgraphic
 IMAGE_NAME 	= $(IMAGE_REPO)/$(CONTAINER)
