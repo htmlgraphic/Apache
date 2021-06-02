@@ -156,7 +156,6 @@ cat <<EOT >> /etc/apache2/mods-available/pagespeed.conf
     Allow from 127.0.0.1
     Allow from 35.232.187.229
     Allow from 65.31.226.148
-    Allow from 45.55.149.38
     SetHandler pagespeed_admin
 </Location>
 
@@ -166,7 +165,6 @@ cat <<EOT >> /etc/apache2/mods-available/pagespeed.conf
     Allow from 127.0.0.1
     Allow from 35.232.187.229
     Allow from 65.31.226.148
-    Allow from 45.55.149.38
     SetHandler pagespeed_global_admin
 </Location>
 EOT
