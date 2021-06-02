@@ -148,6 +148,25 @@ cat <<EOT >> /etc/apache2/apache2.conf
 </IfModule>
 EOT
 
+cat <<EOT >> /etc/apache2/mods-available/pagespeed.conf
+# https://www.howtoforge.com/how-to-install-and-configure-mod-pagespeed-module-with-apache-on-ubuntu-1804/
+<Location /pagespeed_admin>
+    Order allow,deny
+    Allow from localhost
+    Allow from 127.0.0.1
+    Allow from all
+    SetHandler pagespeed_admin
+</Location>
+
+<Location /pagespeed_global_admin>
+    Order allow,deny
+    Allow from localhost
+    Allow from 127.0.0.1
+    Allow from all
+    SetHandler pagespeed_global_admin
+</Location>
+EOT
+
 
 
 
