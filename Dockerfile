@@ -75,6 +75,8 @@ RUN a2enmod userdir rewrite ssl
 
 # Install Mod_pagespeed Module
 RUN curl -O https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb && dpkg -i mod-pagespeed-stable_current_amd64.deb
+RUN chown nobody:www-data /var/cache/mod_pagespeed && chown nobody:www-data /var/log/pagespeed/
+
 
 # Environment variables contained within build container.
 ENV TERM=xterm \
