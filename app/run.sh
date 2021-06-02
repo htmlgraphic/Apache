@@ -134,6 +134,23 @@ if [ ! -f /etc/php/7.4/apache2/build ]; then
 fi
 
 
+
+cat <<EOT >> /etc/apache2/apache2.conf
+# https://www.tecmint.com/apache-performance-tuning/
+<IfModule mpm_event_module>
+    StartServers 3
+    MinSpareThreads  		25
+    MaxSpareThreads 		75
+    ThreadLimit				64
+    ThreadsPerChild			25
+    MaxRequestWorkers    	30
+    MaxConnectionsPerChild	1000
+</IfModule>
+EOT
+
+
+
+
 # Postfix uses a DEV test mail server which holds email(s) from being released into the REAL Internet
 postconf -e "compatibility_level=2"
 postconf -e "myhostname=dev-build.htmlgraphic.com"
