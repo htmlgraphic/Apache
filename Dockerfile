@@ -80,15 +80,8 @@ RUN chown nobody:www-data /var/cache/mod_pagespeed && chown nobody:www-data /var
 
 # Environment variables contained within build container.
 ENV TERM=xterm \
-    LISTEN_PORT=80 \
-    APACHE_RUN_USER=www-data \
-    APACHE_RUN_GROUP=www-data \
-    APACHE_LOG_DIR=/var/log/apache2 \
-    APACHE_LOCK_DIR=/var/lock/apache2 \
-    APACHE_PID_FILE=/var/run/apache2.pid \
-    DOCKERCLOUD_SERVICE_FQDN=$DOCKERCLOUD_SERVICE_FQDN \
     LOG_TOKEN=$LOG_TOKEN \
-    PATH="~/.composer/vendor/bin:$PATH"
+    PATH="$PATH"
 
 # Build-time metadata as defined at http://label-schema.org
 ARG BUILD_DATE
@@ -117,5 +110,4 @@ VOLUME ["/etc/letsencrypt"]
 EXPOSE 80 443
 
 
-#CMD ["/opt/app/run.sh", "env | grep _ >> /etc/environment && supervisord -n"]
 CMD ["/opt/app/run.sh"]
