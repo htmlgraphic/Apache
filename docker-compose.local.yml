@@ -1,11 +1,11 @@
-version: '3.3'
+version: '3.9'
 services:
   web:
     image: 'htmlgraphic/apache:latest'
     restart: unless-stopped
     container_name: apache
     volumes:
-      - '~/SITES/docker:/data' # <- Change to preferred local working dir
+      - '~/SITES/docker:/data' # Preferred local working dir
      #- '/c/Users/southpark/docker:/data'
     links:
       - 'db:mysql'
@@ -22,7 +22,7 @@ services:
         max-size: "200k"
         max-file: "10"
   db:
-    image: 'mysql:5.7.29'
+    image: 'mysql:8.0.30-oracle'
     container_name: apache_db
     volumes:
       - 'db-data:/var/lib/mysql'
