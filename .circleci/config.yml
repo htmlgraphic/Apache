@@ -7,6 +7,8 @@ jobs:
       - image: cimg/base:2021.04
     steps:
       - checkout
+      - setup_remote_docker:
+          version: 20.10.14
       - run:
           name: Build Apache Docker Image
           command: | 
