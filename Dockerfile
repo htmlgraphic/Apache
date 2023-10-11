@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 MAINTAINER Jason Gegere <jason@htmlgraphic.com>
 
 ENV OS_LOCALE="en_US.UTF-8"

@@ -16,7 +16,7 @@ services:
     links:
       - "db:mysql"
   db:
-    image: 'mysql:5.7.29'
+    image: 'mysql:8.1'
     restart: unless-stopped
     volumes:
       - 'db-data:/var/lib/mysql'
