@@ -68,7 +68,7 @@ Docker Compose File Reference [more info](https://docs.docker.com/compose/compos
 ### Windows
 
 ```bash
-> git clone https://github.com/htmlgraphic/Apache.git ~/Docker/Apache; cd ~/Docker/Apache
+> git clone git@github.com:htmlgraphic/Apache.git ~/Docker/Apache; cd ~/Docker/Apache
 > copy .env.example .env
 > docker-compose -f docker-compose.local.yml up -d
 ```
