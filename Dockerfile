@@ -78,6 +78,10 @@ RUN pecl channel-update pecl.php.net \
 # Enable Apache mods.
 RUN a2enmod userdir rewrite ssl
 
+# Copy files to build app, initial web configs, coming soon page ...
+COPY ./app /opt/app
+COPY ./tests /opt/tests
+
 # Install Mod_pagespeed Module
 RUN curl -O https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb \
     && dpkg -i mod-pagespeed-stable_current_amd64.deb \
@@ -103,10 +107,6 @@ RUN tar xf /opt/app/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -C /opt \
 # Supervisor setup
 RUN mkdir -p /var/log/supervisor \
     && cp /opt/app/supervisord /etc/supervisor/conf.d/supervisord.conf
-
-# Copy files to build app
-COPY ./app /opt/app
-COPY ./tests /opt/tests
 
 # Unit tests run via build_tests.sh
 RUN tar xf /opt/tests/shunit2-2.1.7.tar.gz -C /opt/tests/
