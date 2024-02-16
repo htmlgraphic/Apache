@@ -13,6 +13,7 @@ jobs:
       - image: cimg/base:2022.09
     steps:
       - checkout
+      - setup_remote_docker
       - run:
           name: Build Apache Docker Image
           command: |
