@@ -9,7 +9,7 @@ jobs:
       DOCKER_VERSION: default
       BUILD_PATH: /tmp/container-build
       CONTAINER_NAME_DEV: apache
-      CONTAINER_NAME_LIVE: web
+      CONTAINER_NAME_LIVE: apache-web-1
     steps:
       - checkout
       - setup_remote_docker
