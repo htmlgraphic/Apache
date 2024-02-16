@@ -48,7 +48,7 @@ jobs:
             docker logs db > ${BUILD_PATH}/log_output-DEV_MySQL.txt
 
       - run:
-          name: Kill running ${CONTAINER_NAME} containers
+          name: Kill running DEV Containers
           command: |
             make stop
 
@@ -74,15 +74,6 @@ jobs:
             docker logs ${CONTAINER_NAME}-db-1 > ${BUILD_PATH}/log_output-LIVE_MySQL.txt
 
       - run:
-          name: Kill running ${CONTAINER_NAME} containers
+          name: Kill running LIVE Containers
           command: |
             make stop
-
-# Build Artifacts
-
-      - store_artifacts:
-          path: ${BUILD_PATH}
-          destination: raw-test-output
-
-      - store_test_results:
-          path: ${BUILD_PATH}
