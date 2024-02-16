@@ -68,8 +68,7 @@ RUN apt-get install -y \
 # Install additional packages from PPA
 RUN add-apt-repository -y ppa:ondrej/php \
     && add-apt-repository -y ppa:deadsnakes/ppa \
-    && apt-get update && apt-get install -y \
-        # Additional packages from PPA
+    && apt-get update && apt-get install -y
 
 # Install and configure pecl extensions
 RUN pecl channel-update pecl.php.net \
