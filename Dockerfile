@@ -96,8 +96,7 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
     && mv wp-cli.phar /usr/local/bin/wp
 
 # Install wkhtmltox for HTML to PDF conversion
-RUN curl -O https://example.com/path/to/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz \
-    && tar xf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -C /opt \
+RUN tar xf /opt/app/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -C /opt \
     && mv /opt/wkhtmltox/bin/wk* /usr/bin/ \
     && wkhtmltopdf --version
 
