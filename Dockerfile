@@ -1,4 +1,3 @@
-# Use a more recent base image
 FROM ubuntu:20.04
 
 # Metadata as defined at http://label-schema.org
@@ -88,10 +87,9 @@ RUN chmod -R 755 /opt/* \
     && cp /opt/app/supervisord /etc/supervisor/conf.d/supervisord.conf
 
 # Install Mod_pagespeed Module
-RUN curl -O https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb \
-    && dpkg -i mod-pagespeed-stable_current_amd64.deb \
+RUN dpkg -i /opt/app/mod-pagespeed-stable_current_amd64.deb \
     && chown nobody:www-data /var/cache/mod_pagespeed \
-    && chown nobody:www-data /var/log/pagespeed/
+    && chown nobody:www-data /var/log/pagespeed
 
 # Composer v2 installation
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
