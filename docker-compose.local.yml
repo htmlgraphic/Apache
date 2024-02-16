@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     container_name: apache
     volumes:
-      - '~/SITES/docker:/data' # Preferred local working dir
+      - '~/SITES/docker:/data' # <- Change to preferred local working dir
      #- '/c/Users/southpark/docker:/data'
     links:
       - 'db:mysql'

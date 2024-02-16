@@ -1,4 +1,3 @@
-# Use a more recent base image
 FROM ubuntu:20.04
 
 # Metadata as defined at http://label-schema.org

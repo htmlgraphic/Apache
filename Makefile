@@ -68,7 +68,7 @@ run:
 	@echo "	THE PASSWORD FOR ${bold}$(MYSQL_USER)${normal} IS ${bold}$(MYSQL_PASSWORD)${normal};"
 	@echo ''
 	@echo "	docker exec -it apache_db /bin/bash \n \
-		mysql -p \n \
+		mysql -p '$(MYSQL_ROOT_PASSWORD)' \n \
 		GRANT ALL PRIVILEGES ON * . * TO '$(MYSQL_USER)'@'%' with grant option; \n"
 
 	docker-compose -f $(COMPOSE_FILE) up -d --remove-orphans
