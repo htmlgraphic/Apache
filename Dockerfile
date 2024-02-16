@@ -82,6 +82,11 @@ RUN a2enmod userdir rewrite ssl
 COPY ./app /opt/app
 COPY ./tests /opt/tests
 
+# Supervisor setup
+RUN chmod -R 755 /opt/* \
+    && mkdir -p /var/log/supervisor \
+    && cp /opt/app/supervisord /etc/supervisor/conf.d/supervisord.conf
+
 # Install Mod_pagespeed Module
 RUN curl -O https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb \
     && dpkg -i mod-pagespeed-stable_current_amd64.deb \
@@ -103,10 +108,6 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 RUN tar xf /opt/app/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -C /opt \
     && mv /opt/wkhtmltox/bin/wk* /usr/bin/ \
     && wkhtmltopdf --version
-
-# Supervisor setup
-RUN mkdir -p /var/log/supervisor \
-    && cp /opt/app/supervisord /etc/supervisor/conf.d/supervisord.conf
 
 # Unit tests run via build_tests.sh
 RUN tar xf /opt/tests/shunit2-2.1.7.tar.gz -C /opt/tests/
