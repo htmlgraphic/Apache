@@ -64,7 +64,7 @@ jobs:
       - run:
           name: LIVE Build Tests
           command: |
-            docker exec ${CONTAINER_NAME} /bin/bash /opt/tests/build_tests.sh
+            docker exec ${CONTAINER_NAME}-web-1 /bin/bash /opt/tests/build_tests.sh
 
       - run:
           name: Container Logs
