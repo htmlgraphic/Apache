@@ -1,6 +1,6 @@
-version: '3.3'
+version: '3.9'
 services:
-  hg-web:
+  web:
     image: 'htmlgraphic/apache:envoyer'
     restart: unless-stopped
     ports:
@@ -8,15 +8,13 @@ services:
       - "443:443"
     env_file:
       - .env
-    # extra_hosts:
-    #   - "mysql:10.13.32.113"
     volumes:
       - '/var/data:/data'
       - '/var/data/letsencrypt:/etc/letsencrypt'
     links:
       - "db:mysql"
   db:
-    image: 'mysql:5.7.37'
+    image: 'mysql:8.3.0'
     restart: unless-stopped
     volumes:
       - 'db-data:/var/lib/mysql'

@@ -1,5 +1,5 @@
 # Use a more recent base image
-FROM ubuntu:20.04
+FROM php:8.2-apache
 
 # Metadata as defined at http://label-schema.org
 LABEL org.label-schema.name="Apache Docker" \
@@ -29,22 +29,8 @@ RUN apt-get install -y \
         p7zip-full \
         apache2 \
         libsasl2-modules \
-        libapache2-mod-php7.4 \
+        libapache2-mod-php8.2 \
         libmcrypt-dev \
-        php7.4-cli \
-        php7.4-dev \
-        php7.4-readline \
-        php7.4-mbstring \
-        php7.4-zip \
-        php7.4-intl \
-        php7.4-xml \
-        php7.4-bcmath \
-        php7.4-xmlrpc \
-        php7.4-json \
-        php7.4-curl \
-        php7.4-gd \
-        php7.4-pgsql \
-        php7.4-mysql \
         git \
         cron \
         ghostscript \
