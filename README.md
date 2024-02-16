@@ -4,7 +4,7 @@
 [![Circle CI](https://circleci.com/gh/htmlgraphic/Apache/tree/master.svg?style=svg)](https://circleci.com/gh/htmlgraphic/Apache/tree/master) 
 [![](https://images.microbadger.com/badges/image/htmlgraphic/apache:latest.svg)](https://microbadger.com/images/htmlgraphic/apache:latest "Get your own image badge on microbadger.com")
 
-This repo will give you a turn key Docker container build for use in **production** OR **dev**. The setup includes an Apache/2.4.29 web service, PHP Version 7.4+, PHP Composer, linked [MySQL 5.7.29](https://hub.docker.com/_/mysql) instance and a data container volume.
+This repo will give you a turn key Docker container build for use in **production** OR **dev**. The setup includes Apache/2.4.29 build, PHP 7.4+, PHP Composer, [MySQL 8.3.0](https://hub.docker.com/_/mysql) instance and a data container volume.
 
 Using containers offer a huge advantage when developing locally or in prodcution. Use this containers for development and deployment. Changing `NODE_ENVIRONMENT` within to `.env` to `dev` or `production` will offer a dynamic environment.
 
