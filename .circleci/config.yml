@@ -10,11 +10,9 @@ jobs:
   build:
     working_directory: ~/logs
     docker:
-      - image: cimg/base:2021.04
+      - image: cimg/base:2022.09
     steps:
       - checkout
-      - setup_remote_docker:
-          version: ${DOCKER_VERSION}
       - run:
           name: Build Apache Docker Image
           command: |
