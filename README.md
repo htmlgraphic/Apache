@@ -4,7 +4,7 @@
 [![Circle CI](https://circleci.com/gh/htmlgraphic/Apache/tree/master.svg?style=svg)](https://circleci.com/gh/htmlgraphic/Apache/tree/master) 
 [![](https://images.microbadger.com/badges/image/htmlgraphic/apache:latest.svg)](https://microbadger.com/images/htmlgraphic/apache:latest "Get your own image badge on microbadger.com")
 
-This repo will give you a turn key Docker container build for use in **production** OR **dev**. The setup includes an Apache/2.4.29 web service, PHP Version 7.4+, PHP Composer, linked [MySQL 5.7.29](https://hub.docker.com/_/mysql) instance and a data container volume.
+This repo will give you a turn key Docker container build for use in **production** OR **dev**. The setup includes Apache/2.4.29 build, PHP 7.4+, PHP Composer, [MySQL 8.3.0](https://hub.docker.com/_/mysql) instance and a data container volume.
 
 Using containers offer a huge advantage when developing locally or in prodcution. Use this containers for development and deployment. Changing `NODE_ENVIRONMENT` within to `.env` to `dev` or `production` will offer a dynamic environment.
 
@@ -54,30 +54,32 @@ The **Apache** container the directory `/data` is shared to your local system vi
 
 Docker Compose File Reference [more info](https://docs.docker.com/compose/compose-file/) 
 
+Open `docker-compose.local.yml` and review [this line](https://github.com/htmlgraphic/Apache/blob/master/docker-compose.local.yml#L8). This path will link files from your local dev env to the Docker Instance with the `/data` directory. Upon the intial `make run` execution, the same path needs to be listed for proper permissions within the Docker Instance to write files to the linked OS.
+
 
 ### Mac OS X / Linux
 
 >	Type `make` for more build options:
 
 ```bash
-> git clone https://github.com/htmlgraphic/Apache.git ~/Docker/Apache && cd ~/Docker/Apache
-> cp .env.example .env
-> make run 
+~ git clone https://github.com/htmlgraphic/Apache.git ~/Docker/Apache && cd ~/Docker/Apache
+~ cp .env.example .env
+~ make run 
 ```
 
 ### Windows
 
 ```bash
-> git clone https://github.com/htmlgraphic/Apache.git ~/Docker/Apache; cd ~/Docker/Apache
-> copy .env.example .env
-> docker-compose -f docker-compose.local.yml up -d
+~ git clone https://github.com/htmlgraphic/Apache.git ~/Docker/Apache; cd ~/Docker/Apache
+~ copy .env.example .env
+~ docker-compose -f docker-compose.local.yml up -d
 ```
 
 >	Optional, are you having problems on Windows? Disable Firewall
 
 ```bash
-> netsh advfirewall show currentprofile
-> netsh advfirewall set allprofiles state off
+~ netsh advfirewall show currentprofile
+~ netsh advfirewall set allprofiles state off
 ```
 
 

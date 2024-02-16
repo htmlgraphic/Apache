@@ -1,11 +1,11 @@
-version: '3.3'
+version: '3.9'
 services:
   web:
     image: 'htmlgraphic/apache:latest'
     restart: unless-stopped
     container_name: apache
     volumes:
-      - '~/SITES/docker:/data' # <- Change to preferred local working dir
+      - '~/SITES/docker:/data' # Preferred local working dir
      #- '/c/Users/southpark/docker:/data'
     links:
       - 'db:mysql'
@@ -14,16 +14,15 @@ services:
       - '443:443'
     env_file:
       - .env
-    # extra_hosts:
-    #   - "mysql:10.13.32.113"
     logging:
       driver: "json-file"
       options:
         max-size: "200k"
         max-file: "10"
   db:
-    image: 'mysql:5.7.29'
-    container_name: apache_db
+    image: 'mysql:8.3.0'
+    restart: unless-stopped
+    container_name: db
     volumes:
       - 'db-data:/var/lib/mysql'
     ports:

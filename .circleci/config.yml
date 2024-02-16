@@ -1,22 +1,22 @@
-version: 2
+version: 2.1
+
 jobs:
   build:
-    machine: true
     working_directory: ~/logs
-
+    docker:
+      - image: cimg/base:2022.09
+    environment:
+      DOCKER_VERSION: default
+      BUILD_PATH: /tmp/container-build
+      CONTAINER_NAME: apache
     steps:
       - checkout
+      - setup_remote_docker
       - run:
-          name: Install Docker Compose
-          command: |
-            set -x
-            sudo curl -L https://github.com/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
-      - run:
-          name: Build Apache Docker image
+          name: Build Apache Docker Image
           command: |
             cp .env.example .env
             make build
-
 
 # DEV Build
 
@@ -33,29 +33,28 @@ jobs:
       - run:
           name: Global Environment Vars
           command: |
-            docker exec apache /bin/bash -c "export"
+            docker exec ${CONTAINER_NAME} /bin/bash -c "export"
 
       - run:
           name: DEV Build Tests
           command: |
-            docker exec apache /bin/bash /opt/tests/build_tests.sh
+            docker exec ${CONTAINER_NAME} /bin/bash /opt/tests/build_tests.sh
 
       - run:
           name: Container Logs
           command: |
-            mkdir -p /tmp/container-build
-            docker logs apache > /tmp/container-build/log_output-DEV_Apache.txt
-            docker logs apache_db > /tmp/container-build/log_output-DEV_MySQL.txt
+            mkdir -p ${BUILD_PATH}
+            docker logs ${CONTAINER_NAME} > ${BUILD_PATH}/log_output-DEV_Apache.txt
+            docker logs db > ${BUILD_PATH}/log_output-DEV_MySQL.txt
 
       - run:
-          name: Kill running containers
+          name: Kill running ${CONTAINER_NAME} containers
           command: |
             make stop
 
-
 # LIVE Build
 
-      - run:
+      - run: 
           name: Start LIVE Container
           command: |
             docker-compose --project-name apache up -d
@@ -65,21 +64,25 @@ jobs:
       - run:
           name: LIVE Build Tests
           command: |
-            docker exec apache_hg-web_1 /bin/bash /opt/tests/build_tests.sh
+            docker exec ${CONTAINER_NAME}-web-1 /bin/bash /opt/tests/build_tests.sh
 
       - run:
           name: Container Logs
           command: |
-            mkdir -p /tmp/container-build
-            docker logs apache_hg-web_1 > /tmp/container-build/log_output-LIVE_Apache.txt
-            docker logs apache_db_1 > /tmp/container-build/log_output-LIVE_MySQL.txt
+            mkdir -p ${BUILD_PATH}
+            docker logs ${CONTAINER_NAME}-web-1 > ${BUILD_PATH}/log_output-LIVE_Apache.txt
+            docker logs ${CONTAINER_NAME}-db-1 > ${BUILD_PATH}/log_output-LIVE_MySQL.txt
 
+      - run:
+          name: Kill running ${CONTAINER_NAME} containers
+          command: |
+            make stop
 
+# Build Artifacts
 
       - store_artifacts:
-          path: /tmp/container-build
+          path: ${BUILD_PATH}
           destination: raw-test-output
 
       - store_test_results:
-          path: /tmp/container-build
-
+          path: ${BUILD_PATH}

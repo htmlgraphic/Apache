@@ -62,7 +62,7 @@ run:
 	@echo "Checking... initial directory structure \n"
 	@if [ $(NODE_ENV) == 'dev' ]; then \
 		if [ ! -d "~/SITES/docker" ]; then \
-			echo "	Creating project folders \n" && sudo mkdir -p ~/SITES && sudo mkdir -p ~/SITES/docker; fi \
+			echo "	Creating project folders \n" && sudo mkdir -p ~/SITES/docker && sudo chmod 777 ~/SITES/docker ; fi \
 	fi
 	@echo "${bold}Run the following on the MySQL container, to setup a GLOBAL admin:${normal}\n"
 	@echo "	THE PASSWORD FOR ${bold}$(MYSQL_USER)${normal} IS ${bold}$(MYSQL_PASSWORD)${normal};"
