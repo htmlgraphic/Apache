@@ -1,16 +1,15 @@
 version: 2.1
 
-variables:
-  DOCKER_VERSION: default
-  BUILD_PATH: /tmp/container-build
-  CONTAINER_NAME_DEV: apache
-  CONTAINER_NAME_LIVE: apache_hg-web_1
-
 jobs:
   build:
     working_directory: ~/logs
     docker:
       - image: cimg/base:2022.09
+    environment:
+      DOCKER_VERSION: default
+      BUILD_PATH: /tmp/container-build
+      CONTAINER_NAME_DEV: apache
+      CONTAINER_NAME_LIVE: apache_hg-web_1
     steps:
       - checkout
       - setup_remote_docker
