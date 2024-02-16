@@ -71,8 +71,8 @@ jobs:
           name: Container Logs
           command: |
             mkdir -p ${BUILD_PATH}
-            docker logs ${CONTAINER_NAME_LIVE} > ${BUILD_PATH}/log_output-LIVE_Apache.txt
-            docker logs db > ${BUILD_PATH}/log_output-LIVE_MySQL.txt
+            docker logs ${CONTAINER_NAME_LIVE}-web-1 > ${BUILD_PATH}/log_output-LIVE_Apache.txt
+            docker logs ${CONTAINER_NAME_LIVE}-db-1 > ${BUILD_PATH}/log_output-LIVE_MySQL.txt
 
       - run: start_container_live
 
