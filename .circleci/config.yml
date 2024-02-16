@@ -8,8 +8,7 @@ jobs:
     environment:
       DOCKER_VERSION: default
       BUILD_PATH: /tmp/container-build
-      CONTAINER_NAME_DEV: apache
-      CONTAINER_NAME_LIVE: apache-web-1
+      CONTAINER_NAME: apache
     steps:
       - checkout
       - setup_remote_docker
@@ -34,18 +33,18 @@ jobs:
       - run:
           name: Global Environment Vars
           command: |
-            docker exec ${CONTAINER_NAME_DEV} /bin/bash -c "export"
+            docker exec ${CONTAINER_NAME} /bin/bash -c "export"
 
       - run:
           name: DEV Build Tests
           command: |
-            docker exec ${CONTAINER_NAME_DEV} /bin/bash /opt/tests/build_tests.sh
+            docker exec ${CONTAINER_NAME} /bin/bash /opt/tests/build_tests.sh
 
       - run:
           name: Container Logs
           command: |
             mkdir -p ${BUILD_PATH}
-            docker logs ${CONTAINER_NAME_DEV} > ${BUILD_PATH}/log_output-DEV_Apache.txt
+            docker logs ${CONTAINER_NAME} > ${BUILD_PATH}/log_output-DEV_Apache.txt
             docker logs db > ${BUILD_PATH}/log_output-DEV_MySQL.txt
 
       - run:
@@ -65,14 +64,14 @@ jobs:
       - run:
           name: LIVE Build Tests
           command: |
-            docker exec ${CONTAINER_NAME_LIVE} /bin/bash /opt/tests/build_tests.sh
+            docker exec ${CONTAINER_NAME} /bin/bash /opt/tests/build_tests.sh
 
       - run:
           name: Container Logs
           command: |
             mkdir -p ${BUILD_PATH}
-            docker logs ${CONTAINER_NAME_LIVE}-web-1 > ${BUILD_PATH}/log_output-LIVE_Apache.txt
-            docker logs ${CONTAINER_NAME_LIVE}-db-1 > ${BUILD_PATH}/log_output-LIVE_MySQL.txt
+            docker logs ${CONTAINER_NAME}-web-1 > ${BUILD_PATH}/log_output-LIVE_Apache.txt
+            docker logs ${CONTAINER_NAME}-db-1 > ${BUILD_PATH}/log_output-LIVE_MySQL.txt
 
       - run: start_container_live
 
