@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 # Metadata as defined at http://label-schema.org
 LABEL org.label-schema.name="Apache Docker" \
@@ -21,29 +21,31 @@ RUN apt-get update && apt-get install -y locales && locale-gen ${OS_LOCALE}
 
 # Install required packages
 RUN apt-get install -y \
-        software-properties-common \
-        python3.7 \
+        software-properties-common
+
+# Install additional packages from PPA
+RUN add-apt-repository -y ppa:ondrej/php \
+    && add-apt-repository -y ppa:deadsnakes/ppa \
+    && apt-get update && apt-get install -y
+
+RUN apt-get install -y \
+        python3.8 \
         curl \
         unzip \
         p7zip-full \
         apache2 \
         libsasl2-modules \
-        libapache2-mod-php7.4 \
         libmcrypt-dev \
-        php7.4-cli \
-        php7.4-dev \
-        php7.4-readline \
-        php7.4-mbstring \
-        php7.4-zip \
-        php7.4-intl \
-        php7.4-xml \
-        php7.4-bcmath \
-        php7.4-xmlrpc \
-        php7.4-json \
-        php7.4-curl \
-        php7.4-gd \
-        php7.4-pgsql \
-        php7.4-mysql \
+        libapache2-mod-php8.3 \
+        php-pear \
+        php8.3 \
+        php8.3-cli \
+        php8.3-bz2 \
+        php8.3-curl \
+        php8.3-mbstring \
+        php8.3-intl \
+        php8.3-fpm \
+        php-dev \
         git \
         cron \
         ghostscript \
@@ -64,14 +66,9 @@ RUN apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install additional packages from PPA
-RUN add-apt-repository -y ppa:ondrej/php \
-    && add-apt-repository -y ppa:deadsnakes/ppa \
-    && apt-get update && apt-get install -y
-
 # Install and configure pecl extensions
 RUN pecl channel-update pecl.php.net \
-    && pecl install mcrypt-1.0.3 \
+    && pecl install mcrypt-1.0.7 \
     && pecl install redis -y
 
 # Enable Apache mods.
@@ -87,10 +84,9 @@ RUN chmod -R 755 /opt/* \
     && cp /opt/app/supervisord /etc/supervisor/conf.d/supervisord.conf
 
 # Install Mod_pagespeed Module
-RUN curl -O https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb \
-    && dpkg -i mod-pagespeed-stable_current_amd64.deb \
+RUN dpkg -i /opt/app/mod-pagespeed-stable_current_amd64.deb \
     && chown nobody:www-data /var/cache/mod_pagespeed \
-    && chown nobody:www-data /var/log/pagespeed/
+    && chown nobody:www-data /var/log/pagespeed
 
 # Composer v2 installation
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer

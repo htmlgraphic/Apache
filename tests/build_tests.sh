@@ -135,7 +135,7 @@ testCLI_max_input_time()
 
 testApache_max_execution_time()
 {
-	max_execution_time=$(cat /etc/php/7.4/apache2/php.ini | grep 'max_execution_time')
+	max_execution_time=$(cat /etc/php/8.3/apache2/php.ini | grep 'max_execution_time')
 	echo 'Test max_execution_time, currently set to "'$max_execution_time'"'
 	test=$(echo $max_execution_time | grep 'max_execution_time = 300' | wc -l)
 	assertEquals 1 $test
@@ -144,7 +144,7 @@ testApache_max_execution_time()
 
 testApache_MemoryLimit()
 {
-	memory_limit=$(cat /etc/php/7.4/apache2/php.ini | grep 'memory_limit')
+	memory_limit=$(cat /etc/php/8.3/apache2/php.ini | grep 'memory_limit')
 	echo 'Test memory_limit, currently set to "'$memory_limit'"'
 	test=$(echo $memory_limit | grep 'memory_limit = -1' | wc -l)
 	assertEquals 1 $test
@@ -153,7 +153,7 @@ testApache_MemoryLimit()
 
 testApache_upload_max_filesize()
 {
-	upload_max_filesize=$(cat /etc/php/7.4/apache2/php.ini | grep 'upload_max_filesize')
+	upload_max_filesize=$(cat /etc/php/8.3/apache2/php.ini | grep 'upload_max_filesize')
 	echo 'Test upload_max_filesize, currently set to "'$upload_max_filesize'"'
 	test=$(echo $upload_max_filesize | grep 'upload_max_filesize = 1000M' | wc -l)
 	assertEquals 1 $test
@@ -162,7 +162,7 @@ testApache_upload_max_filesize()
 
 testApache_post_max_size()
 {
-	post_max_size=$(cat /etc/php/7.4/apache2/php.ini | grep 'post_max_size')
+	post_max_size=$(cat /etc/php/8.3/apache2/php.ini | grep 'post_max_size')
 	echo 'Test post_max_size, currently set to "'$post_max_size'"'
 	test=$(echo $post_max_size | grep 'post_max_size = 1000M' | wc -l)
 	assertEquals 1 $test
@@ -171,7 +171,7 @@ testApache_post_max_size()
 
 testApache_max_input_time()
 {
-	max_input_time=$(cat /etc/php/7.4/apache2/php.ini | grep 'max_input_time')
+	max_input_time=$(cat /etc/php/8.3/apache2/php.ini | grep 'max_input_time')
 	echo 'Test max_input_time, currently set to "'$max_input_time'"'
 	test=$(echo $max_input_time | grep 'max_input_time = 300' | wc -l)
 	assertEquals 1 $test
