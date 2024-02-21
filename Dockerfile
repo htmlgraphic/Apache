@@ -2,7 +2,7 @@ FROM ubuntu:22.04
 
 # Metadata as defined at http://label-schema.org
 LABEL org.label-schema.name="Apache Docker" \
-      org.label-schema.description="Docker container running Apache on Ubuntu with Composer, Laravel, TDD via Shippable & CircleCI" \
+      org.label-schema.description="Docker container running Apache on Ubuntu with Composer, Laravel, TDD via CircleCI" \
       org.label-schema.url="https://htmlgraphic.com" \
       org.label-schema.vcs-url="https://github.com/htmlgraphic/Apache" \
       org.label-schema.vendor="HTMLgraphic, LLC" \
