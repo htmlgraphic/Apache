@@ -73,42 +73,42 @@ fi
 #  Route mail to SMTP queuing servers
 #
 #####
-if [ ! -f /etc/php/7.4/apache2/build ]; then
+if [ ! -f /etc/php/8.3/apache2/build ]; then
 
 	# Tweak Apache Build
-	sed -i 's|;include_path = ".:/usr/share/php"|include_path = ".:/usr/share/php:/data/pear"|g' /etc/php/7.4/apache2/php.ini
-	sed -i 's/variables_order.*/variables_order = \"EGPCS\"/g' /etc/php/7.4/apache2/php.ini
+	sed -i 's|;include_path = ".:/usr/share/php"|include_path = ".:/usr/share/php:/data/pear"|g' /etc/php/8.3/apache2/php.ini
+	sed -i 's/variables_order.*/variables_order = \"EGPCS\"/g' /etc/php/8.3/apache2/php.ini
 	sed -i 's/IncludeOptional sites-enabled\/\*.conf/IncludeOptional \/data\/apache2\/sites-enabled\/*.conf/' /etc/apache2/apache2.conf
-	sed -i 's|;error_log = php_errors.log|error_log = /data/apache2/logs/error_log|g' /etc/php/7.4/apache2/php.ini
-	echo "extension=mcrypt.so" > /etc/php/7.4/apache2/conf.d/mcrypt.ini
+	sed -i 's|;error_log = php_errors.log|error_log = /data/apache2/logs/error_log|g' /etc/php/8.3/apache2/php.ini
+	echo "extension=mcrypt.so" > /etc/php/8.3/apache2/conf.d/mcrypt.ini
 
 	# Setup Redis
-	echo "extension=redis.so" > /etc/php/7.4/mods-available/redis.ini
-	ln -sf /etc/php/7.4/mods-available/redis.ini /etc/php/7.4/cli/conf.d/20-redis.ini
-	ln -sf /etc/php/7.4/mods-available/redis.ini /etc/php/7.4/apache2/conf.d/20-redis.ini
+	echo "extension=redis.so" > /etc/php/8.3/mods-available/redis.ini
+	ln -sf /etc/php/8.3/mods-available/redis.ini /etc/php/8.3/cli/conf.d/20-redis.ini
+	ln -sf /etc/php/8.3/mods-available/redis.ini /etc/php/8.3/apache2/conf.d/20-redis.ini
 
 	# Update the PHP.ini file, enable <? ?> tags
-	sed -i 's|short_open_tag = Off|short_open_tag = On|g' /etc/php/7.4/apache2/php.ini
+	sed -i 's|short_open_tag = Off|short_open_tag = On|g' /etc/php/8.3/apache2/php.ini
 
 	# Sessions & garbage collection
-	sed -i 's|;session.save_path = "/var/lib/php5"|session.save_path = "/tmp"|g' /etc/php/7.4/apache2/php.ini
-	sed -i 's|session.gc_probability = 0|session.gc_probability = 1|g' /etc/php/7.4/apache2/php.ini
+	sed -i 's|;session.save_path = "/var/lib/php5"|session.save_path = "/tmp"|g' /etc/php/8.3/apache2/php.ini
+	sed -i 's|session.gc_probability = 0|session.gc_probability = 1|g' /etc/php/8.3/apache2/php.ini
 
 	# Update Apache / PHP Config
-	sed -i 's|max_execution_time = 30|max_execution_time = 300|g' /etc/php/7.4/apache2/php.ini
-	sed -i 's|memory_limit = 128M|memory_limit = -1|g' /etc/php/7.4/apache2/php.ini
-	sed -i 's|upload_max_filesize = 2M|upload_max_filesize = 1000M|g' /etc/php/7.4/apache2/php.ini
-	sed -i 's|post_max_size = 8M|post_max_size = 1000M|g' /etc/php/7.4/apache2/php.ini
-	sed -i 's|max_input_time = 60|max_input_time = 300|g' /etc/php/7.4/apache2/php.ini
+	sed -i 's|max_execution_time = 30|max_execution_time = 300|g' /etc/php/8.3/apache2/php.ini
+	sed -i 's|memory_limit = 128M|memory_limit = -1|g' /etc/php/8.3/apache2/php.ini
+	sed -i 's|upload_max_filesize = 2M|upload_max_filesize = 1000M|g' /etc/php/8.3/apache2/php.ini
+	sed -i 's|post_max_size = 8M|post_max_size = 1000M|g' /etc/php/8.3/apache2/php.ini
+	sed -i 's|max_input_time = 60|max_input_time = 300|g' /etc/php/8.3/apache2/php.ini
 
 	# Update CLI Config
-	sed -i 's|memory_limit = 128M|memory_limit = -1|g' /etc/php/7.4/cli/php.ini
-	sed -i 's|upload_max_filesize = 2M|upload_max_filesize = 1000M|g' /etc/php/7.4/cli/php.ini
-	sed -i 's|post_max_size = 8M|post_max_size = 1000M|g' /etc/php/7.4/cli/php.ini
+	sed -i 's|memory_limit = 128M|memory_limit = -1|g' /etc/php/8.3/cli/php.ini
+	sed -i 's|upload_max_filesize = 2M|upload_max_filesize = 1000M|g' /etc/php/8.3/cli/php.ini
+	sed -i 's|post_max_size = 8M|post_max_size = 1000M|g' /etc/php/8.3/cli/php.ini
 
 
 	# Add build file to remove duplicate script execution
-	echo 1 > /etc/php/7.4/apache2/build
+	echo 1 > /etc/php/8.3/apache2/build
 
 	if [[ -z "${NODE_ENVIRONMENT}" ]]; then
 			# $NODE_ENVIRONMENT is set on container creation
@@ -116,18 +116,18 @@ if [ ! -f /etc/php/7.4/apache2/build ]; then
 	else
 		if [ "$NODE_ENVIRONMENT" == 'dev' ]; then
 			# Tweak Apache build
-			sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=0 \nIS_DEV=1 \nNODE_ENVIRONMENT=dev \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php/7.4/apache2/php.ini
+			sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=0 \nIS_DEV=1 \nNODE_ENVIRONMENT=dev \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php/8.3/apache2/php.ini
 			# Log errors into log files
-			sed -i 's/error_reporting = .*$/error_reporting = E_ALL/' /etc/php/7.4/apache2/php.ini
+			sed -i 's/error_reporting = .*$/error_reporting = E_ALL/' /etc/php/8.3/apache2/php.ini
 			# Default is 1024 and 0 allows to not apply any maximum length at all
-			sed -i 's|log_errors_max_len = 1024|log_errors_max_len = 0|g' /etc/php/7.4/apache2/php.ini
+			sed -i 's|log_errors_max_len = 1024|log_errors_max_len = 0|g' /etc/php/8.3/apache2/php.ini
 		fi
 
 		if [ "$NODE_ENVIRONMENT" == 'production' ]; then
 			# Tweak Apache build
-			sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=1 \nIS_DEV=0 \nNODE_ENVIRONMENT=production \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php/7.4/apache2/php.ini
+			sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=1 \nIS_DEV=0 \nNODE_ENVIRONMENT=production \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php/8.3/apache2/php.ini
 			# Log errors into log files
-			sed -i 's/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/' /etc/php/7.4/apache2/php.ini
+			sed -i 's/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/' /etc/php/8.3/apache2/php.ini
 		fi
 
 	fi
