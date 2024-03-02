@@ -19,16 +19,14 @@ ENV DEBIAN_FRONTEND=noninteractive \
 # Update and install locales
 RUN apt-get update && apt-get install -y locales && locale-gen ${OS_LOCALE}
 
-# Install required packages
+# Install required packages and add repositories
 RUN apt-get install -y \
-        software-properties-common
-
-# Install additional packages from PPA
-RUN add-apt-repository -y ppa:ondrej/php \
+        software-properties-common \
+    && add-apt-repository -y ppa:ondrej/php \
     && add-apt-repository -y ppa:deadsnakes/ppa \
-    && apt-get update && apt-get install -y
-
-RUN apt-get install -y \
+    && apt-get update && apt-get install -y \
+        xfonts-75dpi \
+        xfonts-base \
         python3.8 \
         curl \
         unzip \
@@ -83,11 +81,6 @@ RUN chmod -R 755 /opt/* \
     && mkdir -p /var/log/supervisor \
     && cp /opt/app/supervisord /etc/supervisor/conf.d/supervisord.conf
 
-# Install Mod_pagespeed Module
-RUN dpkg -i /opt/app/mod-pagespeed-stable_current_amd64.deb \
-    && chown nobody:www-data /var/cache/mod_pagespeed \
-    && chown nobody:www-data /var/log/pagespeed
-
 # Composer v2 installation
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 RUN composer self-update --2 \
@@ -100,8 +93,8 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
     && mv wp-cli.phar /usr/local/bin/wp
 
 # Install wkhtmltox for HTML to PDF conversion
-RUN tar xf /opt/app/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -C /opt \
-    && mv /opt/wkhtmltox/bin/wk* /usr/bin/ \
+RUN dpkg -i /opt/app/wkhtmltox_0.12.6.1-2.jammy_arm64.deb \
+    && apt-get install -f \
     && wkhtmltopdf --version
 
 # Unit tests run via build_tests.sh

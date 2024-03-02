@@ -148,28 +148,6 @@ cat <<EOT >> /etc/apache2/apache2.conf
 </IfModule>
 EOT
 
-cat <<EOT >> /etc/apache2/mods-available/pagespeed.conf
-# https://www.howtoforge.com/how-to-install-and-configure-mod-pagespeed-module-with-apache-on-ubuntu-1804/
-<Location /pagespeed_admin>
-    Order allow,deny
-    Allow from localhost
-    Allow from 127.0.0.1
-    Allow from 35.232.187.229
-    Allow from 65.31.226.148
-    SetHandler pagespeed_admin
-</Location>
-
-<Location /pagespeed_global_admin>
-    Order allow,deny
-    Allow from localhost
-    Allow from 127.0.0.1
-    Allow from 35.232.187.229
-    Allow from 65.31.226.148
-    SetHandler pagespeed_global_admin
-</Location>
-EOT
-
-
 
 
 # Postfix uses a DEV test mail server which holds email(s) from being released into the REAL Internet
