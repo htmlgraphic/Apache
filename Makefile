@@ -71,14 +71,14 @@ run:
 		mysql -p \n \
 		GRANT ALL PRIVILEGES ON * . * TO '$(MYSQL_USER)'@'%' with grant option; \n"
 
-	docker-compose -f $(COMPOSE_FILE) up -d --remove-orphans
+	docker compose -f $(COMPOSE_FILE) up -d --remove-orphans
 
 
 start: run
 
 stop:
 	@echo "containers are specifically referenced, as to not destroy ANY persistent data"
-	docker-compose down --remove-orphans
+	docker compose down --remove-orphans
 
 state:
 	docker ps -a | grep $(CONTAINER)
