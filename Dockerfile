@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 
-# Metadata as defined at http://label-schema.org
+# Metadata
 LABEL org.label-schema.name="Apache Docker" \
       org.label-schema.description="Docker container running Apache on Ubuntu with Composer, Laravel, TDD via CircleCI" \
       org.label-schema.url="https://htmlgraphic.com" \
@@ -8,71 +8,74 @@ LABEL org.label-schema.name="Apache Docker" \
       org.label-schema.vendor="HTMLgraphic, LLC" \
       org.label-schema.schema-version="1.0"
 
-# Set non-interactive environment variables
+# Environment settings
 ENV DEBIAN_FRONTEND=noninteractive \
     TERM=xterm \
-    OS_LOCALE="en_US.UTF-8" \
-    LANG=${OS_LOCALE} \
-    LANGUAGE=${OS_LOCALE} \
-    LC_ALL=${OS_LOCALE}
+    LANG=en_US.UTF-8 \
+    LANGUAGE=en_US.UTF-8 \
+    LC_ALL=en_US.UTF-8
 
-# Update and install locales
-RUN apt-get update && apt-get install -y locales && locale-gen ${OS_LOCALE}
+# Locales
+RUN apt-get update && apt-get install -y locales && locale-gen en_US.UTF-8
 
-# Install required packages and add repositories
+# Install required packages
 RUN apt-get install -y \
         software-properties-common \
     && add-apt-repository -y ppa:ondrej/php \
-    && add-apt-repository -y ppa:deadsnakes/ppa \
     && apt-get update && apt-get install -y \
-        xfonts-75dpi \
-        xfonts-base \
-        python3.8 \
-        curl \
-        unzip \
-        p7zip-full \
-        apache2 \
-        libsasl2-modules \
-        libmcrypt-dev \
-        libapache2-mod-php8.3 \
-        php-pear \
-        php8.3 \
-        php8.3-cli \
-        php8.3-bz2 \
-        php8.3-curl \
-        php8.3-mbstring \
-        php8.3-intl \
-        php8.3-fpm \
-        php-dev \
-        git \
-        cron \
-        ghostscript \
-        mailutils \
-        iputils-ping \
-        mysql-client \
-        libgs-dev \
-        imagemagick \
-        php-imagick \
-        libmagickwand-dev \
-        language-pack-en \
-        supervisor \
-        rsyslog \
-        vim \
-        wget \
-        postfix \
+    apache2 \
+    cron \
+    curl \
+    ghostscript \
+    git \
+    iputils-ping \
+    language-pack-en \
+    libapache2-mod-php8.2 \
+    libbson-1.0 \
+    libgs-dev \
+    libmcrypt-dev \
+    libsasl2-modules \
+    libmongoc-1.0-0 \
+    mailutils \
+    mysql-client \
+    pkg-config \
+    php8.2 \
+    php8.2-bz2 \
+    php8.2-cli \
+    php8.2-curl \
+    php8.2-fpm \
+    php8.2-intl \
+    php8.2-mbstring \
+    php8.2-xml \
+    php8.2-dev \
+    php-pear \
+    postfix \
+    p7zip-full \
+    rsyslog \
+    supervisor \
+    unzip \
+    vim \
+    wget \
+    xfonts-75dpi \
+    xfonts-base \
     && apt-get autoremove -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install and configure pecl extensions
-RUN pecl channel-update pecl.php.net \
-    && pecl install mcrypt-1.0.7 \
-    && pecl install redis -y
+# Set PHP CLI default version to 8.2
+RUN update-alternatives --install /usr/bin/php php /usr/bin/php8.2 100 \
+    && update-alternatives --install /usr/bin/php-config php-config /usr/bin/php-config8.2 100 \
+    && update-alternatives --install /usr/bin/phpize phpize /usr/bin/phpize8.2 100
 
-# Enable Apache mods.
+# Install and configure PECL extensions
+RUN timeout 30 pecl channel-update pecl.php.net || true
+RUN pecl install mcrypt-1.0.7
+RUN pecl install redis
+
+# Enable Apache mods
 RUN a2enmod userdir rewrite ssl
 
-# Copy files to build app, initial web configs, coming soon page ...
+# Copy app files
 COPY ./app /opt/app
 COPY ./tests /opt/tests
 
@@ -83,28 +86,34 @@ RUN chmod -R 755 /opt/* \
 
 # Composer v2 installation
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
-RUN composer self-update --2 \
-    && composer global require "laravel/installer" \
-    && composer global require "vlucas/phpdotenv"
+
+# Set working directory to the app
+WORKDIR /opt/app
+
+# Install dependencies after copying app source
+RUN php -v \
+    && which php \
+    && composer self-update --2 \
+    && composer validate \
+    && composer update --no-interaction --prefer-dist
+
 
 # Install WP-CLI
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x wp-cli.phar \
     && mv wp-cli.phar /usr/local/bin/wp
 
-# Install wkhtmltox for HTML to PDF conversion
-RUN dpkg -i /opt/app/wkhtmltox_0.12.6.1-2.jammy_arm64.deb \
-    && apt-get install -f \
-    && wkhtmltopdf --version
+# Install wkhtmltox (adjust .deb path if needed for your architecture)
+RUN dpkg -i /opt/app/wkhtmltox_0.12.6.1-2.jammy_arm64.deb || apt-get install -f -y
 
-# Unit tests run via build_tests.sh
+# Extract unit test framework
 RUN tar xf /opt/tests/shunit2-2.1.7.tar.gz -C /opt/tests/
 
-# Volumes for persistent data
+# Volumes
 VOLUME ["/backup", "/data", "/etc/letsencrypt"]
 
-# Expose ports
+# Expose HTTP/HTTPS
 EXPOSE 80 443
 
-# Entrypoint command
+# Entrypoint
 CMD ["/opt/app/run.sh"]

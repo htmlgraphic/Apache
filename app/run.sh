@@ -40,6 +40,9 @@ mv /opt/app/*.php /data/www/public_html/
 
 if [ ! -d /data/apache2 ]; then
 
+	# pin the PHP version
+	mv /opt/app/php /etc/apt/preferences.d/php
+
 	# Create directories for logs and ssl certificates
 	mkdir -p /data/apache2/{logs,ssl,sites-enabled}
 
