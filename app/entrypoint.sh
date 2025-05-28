@@ -3,6 +3,10 @@
 # Logging function
 OutputLog() {
     echo "=> Adding environmental variables:"
+    echo "	NODE_ENVIRONMENT: ${NODE_ENVIRONMENT:-not set}"
+    echo "	BUILD_ENV: ${BUILD_ENV:-not set}"
+    echo "	LOG_TOKEN: ${LOG_TOKEN:-not set}"
+    echo "	MYSQL_USER: ${MYSQL_USER:-not set}"
     echo "	NODE_ENVIRONMENT: ${NODE_ENVIRONMENT}"
     if [[ -z "${LOG_TOKEN}" ]]; then
         echo "	env LOG_TOKEN is not set."
@@ -49,6 +53,9 @@ fi
 if [[ -n "${SMTP_HOST}" && -n "${SASL_USER}" && -n "${SASL_PASS}" ]]; then
     postconf -e "relayhost=[${SMTP_HOST}]:587" \
         "smtp_sasl_password_maps=static:${SASL_USER}:${SASL_PASS}"
+else
+    echo "SMTP configuration incomplete, skipping postfix setup"
+    exit 0
 fi
 cp /etc/resolv.conf /var/spool/postfix/etc/resolv.conf 2>/dev/null || true
 for n in hosts localtime nsswitch.conf resolv.conf services; do

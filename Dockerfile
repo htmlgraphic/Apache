@@ -1,4 +1,5 @@
-FROM php:8.3-apache
+# Specify platform explicitly
+FROM --platform=linux/arm64 php:8.3-apache
 
 # Define build argument for environment (dev or production)
 ARG BUILD_ENV=production

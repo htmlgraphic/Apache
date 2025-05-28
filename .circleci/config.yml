@@ -4,19 +4,27 @@ jobs:
   build_dev:
     working_directory: ~/logs
     docker:
-      - image: cimg/base:2022.09
+      - image: docker:20.10
+        platform: linux/arm64
+    resource_class: arm.medium
     environment:
-      DOCKER_VERSION: default
+      DOCKER_VERSION: 20.10
       BUILD_PATH: /tmp/container-build
-      CONTAINER_NAME: apache
+      CONTAINER_NAME: apache-web-1
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 20.10
       - run:
           name: Build DEV Apache Docker Image
           command: |
             cp .env.example .env
             echo "NODE_ENVIRONMENT=dev" >> .env
+            echo "BUILD_ENV=dev" >> .env
+            echo "SMTP_HOST=smtp.example.com" >> .env
+            echo "SASL_USER=your_smtp_user" >> .env
+            echo "SASL_PASS=your_smtp_pass" >> .env
+            echo "LOG_TOKEN=your_log_token" >> .env
             make build
       - run:
           name: Start DEV Container
@@ -40,7 +48,7 @@ jobs:
           command: |
             mkdir -p ${BUILD_PATH}
             docker logs ${CONTAINER_NAME} > ${BUILD_PATH}/log_output-DEV_Apache.txt
-            docker logs db > ${BUILD_PATH}/log_output-DEV_MySQL.txt
+            docker logs apache-db-1 > ${BUILD_PATH}/log_output-DEV_MySQL.txt
       - run:
           name: Kill DEV Containers
           command: |
@@ -52,19 +60,27 @@ jobs:
   build_production:
     working_directory: ~/logs
     docker:
-      - image: cimg/base:2022.09
+      - image: docker:20.10
+        platform: linux/arm64
+    resource_class: arm.medium
     environment:
-      DOCKER_VERSION: default
+      DOCKER_VERSION: 20.10
       BUILD_PATH: /tmp/container-build
-      CONTAINER_NAME: apache
+      CONTAINER_NAME: apache-web-1
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 20.10
       - run:
           name: Build Production Apache Docker Image
           command: |
             cp .env.example .env
             echo "NODE_ENVIRONMENT=production" >> .env
+            echo "BUILD_ENV=production" >> .env
+            echo "SMTP_HOST=smtp.example.com" >> .env
+            echo "SASL_USER=your_smtp_user" >> .env
+            echo "SASL_PASS=your_smtp_pass" >> .env
+            echo "LOG_TOKEN=your_log_token" >> .env
             make build
       - run:
           name: Start Production Container
@@ -78,17 +94,17 @@ jobs:
       - run:
           name: Global Environment Vars
           command: |
-            docker exec ${CONTAINER_NAME}-web-1 /bin/bash -c "export"
+            docker exec ${CONTAINER_NAME} /bin/bash -c "export"
       - run:
           name: Production Build Tests
           command: |
-            docker exec ${CONTAINER_NAME}-web-1 /bin/bash /opt/tests/build_tests.sh
+            docker exec ${CONTAINER_NAME} /bin/bash /opt/tests/build_tests.sh
       - run:
           name: Collect Production Container Logs
           command: |
             mkdir -p ${BUILD_PATH}
-            docker logs ${CONTAINER_NAME}-web-1 > ${BUILD_PATH}/log_output-LIVE_Apache.txt
-            docker logs ${CONTAINER_NAME}-db-1 > ${BUILD_PATH}/log_output-LIVE_MySQL.txt
+            docker logs ${CONTAINER_NAME} > ${BUILD_PATH}/log_output-LIVE_Apache.txt
+            docker logs apache-db-1 > ${BUILD_PATH}/log_output-LIVE_MySQL.txt
       - run:
           name: Kill Production Containers
           command: |
