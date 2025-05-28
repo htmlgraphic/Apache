@@ -9,7 +9,7 @@ jobs:
     environment:
       DOCKER_VERSION: 20.10
       BUILD_PATH: /tmp/container-build
-      CONTAINER_NAME: apache-web-1
+      CONTAINER_NAME: apache
     steps:
       - checkout
       - setup_remote_docker:
