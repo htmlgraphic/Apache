@@ -34,7 +34,7 @@ jobs:
             set -x
             pwd
             ls -la
-            ls -la ~/project/opt/tests
+            ls -la ~/project/tests
             make run
             docker ps -a
             sleep 10
@@ -45,7 +45,7 @@ jobs:
       - run:
           name: DEV Build Tests
           command: |
-            docker exec ${CONTAINER_NAME} /bin/bash ~/opt/tests/build_tests.sh
+            docker exec ${CONTAINER_NAME} /bin/bash ~/project/tests/build_tests.sh
       - run:
           name: Collect DEV Container Logs
           command: |
@@ -93,7 +93,7 @@ jobs:
             set -x
             pwd
             ls -la
-            ls -la opt/tests
+            ls -la ~/project/tests
             make run
             docker ps -a
             sleep 10
@@ -104,7 +104,7 @@ jobs:
       - run:
           name: Production Build Tests
           command: |
-            docker exec ${CONTAINER_NAME} /bin/bash ~/opt/tests/build_tests.sh
+            docker exec ${CONTAINER_NAME} /bin/bash ~/tests/build_tests.sh
       - run:
           name: Collect Production Container Logs
           command: |
