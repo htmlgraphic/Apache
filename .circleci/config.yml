@@ -2,13 +2,13 @@ version: 2.1
 
 jobs:
   build_dev:
-    working_directory: ~/
+    working_directory: ~/project
     docker:
       - image: docker:20.10
     resource_class: arm.medium
     environment:
       DOCKER_VERSION: 20.10
-      BUILD_PATH: /tmp/container-build
+      BUILD_PATH: ~/container-build
       CONTAINER_NAME: apache
     steps:
       - checkout
@@ -34,7 +34,7 @@ jobs:
             set -x
             pwd
             ls -la
-            ls -la ~/opt/tests
+            ls -la ~/project/opt/tests
             make run
             docker ps -a
             sleep 10
@@ -45,7 +45,7 @@ jobs:
       - run:
           name: DEV Build Tests
           command: |
-            docker exec ${CONTAINER_NAME} /bin/bash /opt/tests/build_tests.sh
+            docker exec ${CONTAINER_NAME} /bin/bash ~/opt/tests/build_tests.sh
       - run:
           name: Collect DEV Container Logs
           command: |
@@ -61,13 +61,13 @@ jobs:
           destination: build-logs-dev
 
   build_production:
-    working_directory: ~/
+    working_directory: ~/project
     docker:
       - image: docker:20.10
     resource_class: arm.medium
     environment:
       DOCKER_VERSION: 20.10
-      BUILD_PATH: /tmp/container-build
+      BUILD_PATH:  ~/project/container-build
       CONTAINER_NAME: apache
     steps:
       - checkout
@@ -93,7 +93,7 @@ jobs:
             set -x
             pwd
             ls -la
-            ls -la ~/opt/tests
+            ls -la opt/tests
             make run
             docker ps -a
             sleep 10
@@ -104,7 +104,7 @@ jobs:
       - run:
           name: Production Build Tests
           command: |
-            docker exec ${CONTAINER_NAME} /bin/bash /opt/tests/build_tests.sh
+            docker exec ${CONTAINER_NAME} /bin/bash ~/opt/tests/build_tests.sh
       - run:
           name: Collect Production Container Logs
           command: |
@@ -116,7 +116,7 @@ jobs:
           command: |
             make stop
       - store_artifacts:
-          path: /tmp/container-build
+          path: ~/project/container-build
           destination: build-logs-production
 
 workflows:

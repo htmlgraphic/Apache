@@ -57,6 +57,7 @@ RUN chmod +x /usr/local/bin/composer \
 # Copy app and scripts
 WORKDIR /var/www/html
 COPY ./app /opt/app
+COPY ./tests /opt/tests
 RUN chmod +x /opt/app/postfix.sh /opt/app/entrypoint.sh
 
 # Supervisor setup
