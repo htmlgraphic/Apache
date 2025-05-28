@@ -5,7 +5,6 @@ jobs:
     working_directory: ~/logs
     docker:
       - image: docker:20.10
-        platform: linux/arm64
     resource_class: arm.medium
     environment:
       DOCKER_VERSION: 20.10
@@ -61,7 +60,6 @@ jobs:
     working_directory: ~/logs
     docker:
       - image: docker:20.10
-        platform: linux/arm64
     resource_class: arm.medium
     environment:
       DOCKER_VERSION: 20.10
