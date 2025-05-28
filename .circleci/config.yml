@@ -37,7 +37,7 @@ jobs:
             ls -la ~/project/tests
             make run
             docker ps -a
-            sleep 10
+            sleep 2
       - run:
           name: Global Environment Vars
           command: |
@@ -45,7 +45,7 @@ jobs:
       - run:
           name: DEV Build Tests
           command: |
-            docker exec ${CONTAINER_NAME} /bin/bash ~/project/tests/build_tests.sh
+            docker exec ${CONTAINER_NAME} /bin/bash /opt/tests/build_tests.sh # Docker container file system
       - run:
           name: Collect DEV Container Logs
           command: |
@@ -96,7 +96,7 @@ jobs:
             ls -la ~/project/tests
             make run
             docker ps -a
-            sleep 10
+            sleep 2
       - run:
           name: Global Environment Vars
           command: |
@@ -104,7 +104,7 @@ jobs:
       - run:
           name: Production Build Tests
           command: |
-            docker exec ${CONTAINER_NAME} /bin/bash ~/tests/build_tests.sh
+            docker exec ${CONTAINER_NAME} /bin/bash /opt/tests/build_tests.sh # Docker container file system
       - run:
           name: Collect Production Container Logs
           command: |
