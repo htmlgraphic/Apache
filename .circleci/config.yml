@@ -15,6 +15,9 @@ jobs:
       - setup_remote_docker:
           version: 20.10
       - run:
+          name: Install Build Tools
+          command: apk add --no-cache make bash curl git
+      - run:
           name: Build DEV Apache Docker Image
           command: |
             cp .env.example .env
@@ -69,6 +72,9 @@ jobs:
       - checkout
       - setup_remote_docker:
           version: 20.10
+      - run:
+          name: Install Build Tools
+          command: apk add --no-cache make bash curl git
       - run:
           name: Build Production Apache Docker Image
           command: |
