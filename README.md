@@ -22,7 +22,7 @@ Apache
 │   ├── php_extensions.php   # → PHP extensions checklist
 │   ├── mac-permissions.sh   # → Run manually on container to match uid / gid permissions of local docker container to Mac OS X
 │   ├── postfix.sh           # → Used by *supervisord.conf* to start Postfix
-│   ├── run.sh               # → Setup apache, conf files, and start process on container
+│   ├── entrypoint.sh        # → Setup apache, conf files, and start process on container
 │   ├── sample.conf          # → Located within `/data/apache2/sites-enabled` duplicate / modify to add domains
 │   └── supervisord          # → Supervisor is a system which monitors and controls a number of processes
 ├── .env.example             # → Rename file to `.env` for local environment variables used within build

@@ -2,7 +2,7 @@ version: 2.1
 
 jobs:
   build_dev:
-    working_directory: ~/logs
+    working_directory: ~/
     docker:
       - image: docker:20.10
     resource_class: arm.medium
@@ -32,8 +32,9 @@ jobs:
           name: Start DEV Container
           command: |
             set -x
-            ls -la
             pwd
+            ls -la
+            ls -la ~/opt/tests
             make run
             docker ps -a
             sleep 10
@@ -60,14 +61,14 @@ jobs:
           destination: build-logs-dev
 
   build_production:
-    working_directory: ~/logs
+    working_directory: ~/
     docker:
       - image: docker:20.10
     resource_class: arm.medium
     environment:
       DOCKER_VERSION: 20.10
       BUILD_PATH: /tmp/container-build
-      CONTAINER_NAME: apache-web-1
+      CONTAINER_NAME: apache
     steps:
       - checkout
       - setup_remote_docker:
@@ -90,8 +91,9 @@ jobs:
           name: Start Production Container
           command: |
             set -x
-            ls -la
             pwd
+            ls -la
+            ls -la ~/opt/tests
             make run
             docker ps -a
             sleep 10
