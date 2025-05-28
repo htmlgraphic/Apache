@@ -31,18 +31,18 @@ if [ -d /data/apache2 ]; then
 fi
 
 # PHP environment tweaks
-if [ ! -f /etc/php/8.3/apache2/build ]; then
+if [ ! -f /usr/local/etc/php/build ]; then
     if [[ -n "${NODE_ENVIRONMENT}" ]]; then
         if [ "$NODE_ENVIRONMENT" = "dev" ]; then
-            sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=0 \nIS_DEV=1 \nNODE_ENVIRONMENT=dev \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php/8.3/apache2/php.ini
-            sed -i 's/error_reporting = .*$/error_reporting = E_ALL/' /etc/php/8.3/apache2/php.ini
-            sed -i 's|log_errors_max_len = 1024|log_errors_max_len = 0|g' /etc/php/8.3/apache2/php.ini
+            echo -e "\nIS_LIVE=0\nIS_DEV=1\nNODE_ENVIRONMENT=dev\n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld" >> /usr/local/etc/php/php.ini
+            sed -i 's/error_reporting = .*$/error_reporting = E_ALL/' /usr/local/etc/php/php.ini || echo "error_reporting = E_ALL" >> /usr/local/etc/php/php.ini
+            sed -i 's|log_errors_max_len = .*|log_errors_max_len = 0|' /usr/local/etc/php/php.ini || echo "log_errors_max_len = 0" >> /usr/local/etc/php/php.ini
         elif [ "$NODE_ENVIRONMENT" = "production" ]; then
-            sed -i 's|\[PHP\]|\[PHP\] \nIS_LIVE=1 \nIS_DEV=0 \nNODE_ENVIRONMENT=production \n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld|g' /etc/php/8.3/apache2/php.ini
-            sed -i 's/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/' /etc/php/8.3/apache2/php.ini
+            echo -e "\nIS_LIVE=1\nIS_DEV=0\nNODE_ENVIRONMENT=production\n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld" >> /usr/local/etc/php/php.ini
+            sed -i 's/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/' /usr/local/etc/php/php.ini || echo "error_reporting = E_ERROR | E_WARNING | E_PARSE" >> /usr/local/etc/php/php.ini
         fi
     fi
-    echo 1 > /etc/php/8.3/apache2/build
+    echo 1 > /usr/local/etc/php/build
 fi
 
 # Postfix runtime setup
@@ -62,5 +62,8 @@ OutputLog
 # Export environment variables
 env | grep NODE_ENVIRONMENT >> /etc/environment
 
-# Execute CMD
-exec "$@"
+# Start supervisord for other services
+/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf &
+
+# Start Apache in foreground
+exec /usr/sbin/apache2ctl -D FOREGROUND

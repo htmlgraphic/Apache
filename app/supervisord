@@ -1,31 +1,14 @@
 [supervisord]
 nodaemon=true
 
-[program:crond]
-command=cron -f -L 15
-process_name=%(program_name)s
-autostart=true
-autorestart=true
-user=root
-directory=/
-stdout_logfile=/var/log/supervisor/%(program_name)s-stdout.log
-stderr_logfile=/var/log/supervisor/%(program_name)s-stderr.log
-
-[program:apache2]
-command=/bin/bash -c "source /etc/apache2/envvars && exec /usr/sbin/apache2 -D FOREGROUND"
-
 [program:rsyslogd]
 command=/usr/sbin/rsyslogd -n
-process_name=%(program_name)s
-autostart=true
 autorestart=true
-user=root
-directory=/
-priority=912
-stdout_logfile=/var/log/supervisor/%(program_name)s-stdout.log
-stderr_logfile=/var/log/supervisor/%(program_name)s-stderr.log
+
+[program:crond]
+command=/usr/sbin/cron -f
+autorestart=true
 
 [program:postfix]
-command=/opt/app/postfix.sh
-autostart=true
+command=/usr/sbin/postfix start
 autorestart=true

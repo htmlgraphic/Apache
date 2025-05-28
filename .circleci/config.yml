@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  build:
+  build_dev:
     working_directory: ~/logs
     docker:
       - image: cimg/base:2022.09
@@ -13,13 +13,11 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
-          name: Build Apache Docker Image
+          name: Build DEV Apache Docker Image
           command: |
             cp .env.example .env
+            echo "NODE_ENVIRONMENT=dev" >> .env
             make build
-
-# DEV Build
-
       - run:
           name: Start DEV Container
           command: |
@@ -29,51 +27,78 @@ jobs:
             make run
             docker ps -a
             sleep 10
-
       - run:
           name: Global Environment Vars
           command: |
             docker exec ${CONTAINER_NAME} /bin/bash -c "export"
-
       - run:
           name: DEV Build Tests
           command: |
             docker exec ${CONTAINER_NAME} /bin/bash /opt/tests/build_tests.sh
-
       - run:
-          name: Container Logs
+          name: Collect DEV Container Logs
           command: |
             mkdir -p ${BUILD_PATH}
             docker logs ${CONTAINER_NAME} > ${BUILD_PATH}/log_output-DEV_Apache.txt
             docker logs db > ${BUILD_PATH}/log_output-DEV_MySQL.txt
-
       - run:
-          name: Kill running DEV Containers
+          name: Kill DEV Containers
           command: |
             make stop
+      - store_artifacts:
+          path: /tmp/container-build
+          destination: build-logs-dev
 
-# LIVE Build
-
-      - run: 
-          name: Start LIVE Container
+  build_production:
+    working_directory: ~/logs
+    docker:
+      - image: cimg/base:2022.09
+    environment:
+      DOCKER_VERSION: default
+      BUILD_PATH: /tmp/container-build
+      CONTAINER_NAME: apache
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build Production Apache Docker Image
           command: |
-            docker-compose --project-name apache up -d
+            cp .env.example .env
+            echo "NODE_ENVIRONMENT=production" >> .env
+            make build
+      - run:
+          name: Start Production Container
+          command: |
+            set -x
+            ls -la
+            pwd
+            make run
             docker ps -a
             sleep 10
-
       - run:
-          name: LIVE Build Tests
+          name: Global Environment Vars
+          command: |
+            docker exec ${CONTAINER_NAME}-web-1 /bin/bash -c "export"
+      - run:
+          name: Production Build Tests
           command: |
             docker exec ${CONTAINER_NAME}-web-1 /bin/bash /opt/tests/build_tests.sh
-
       - run:
-          name: Container Logs
+          name: Collect Production Container Logs
           command: |
             mkdir -p ${BUILD_PATH}
             docker logs ${CONTAINER_NAME}-web-1 > ${BUILD_PATH}/log_output-LIVE_Apache.txt
             docker logs ${CONTAINER_NAME}-db-1 > ${BUILD_PATH}/log_output-LIVE_MySQL.txt
-
       - run:
-          name: Kill running LIVE Containers
+          name: Kill Production Containers
           command: |
             make stop
+      - store_artifacts:
+          path: /tmp/container-build
+          destination: build-logs-production
+
+workflows:
+  build_and_test:
+    jobs:
+      - build_dev
+      - build_production

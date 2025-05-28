@@ -1,54 +1,57 @@
 services:
   web:
-    image: 'htmlgraphic/apache:1.9.0'
-    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_ENV: dev
+    platform: linux/arm64
+    image: htmlgraphic/apache:2.1.0
     container_name: apache
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENVIRONMENT=dev
     volumes:
       - '~/SITES/docker:/data' # Preferred local working dir
      #- '/c/Users/southpark/docker:/data'
-    links:
-      - 'db:mysql'
-    ports:
-      - '80:80'
-      - '443:443'
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD", "pidof", "apache2"]
+      interval: 30s
+      timeout: 3s
+    networks:
+      - app-network
+
+  db:
+    image: mariadb:10.6
+    platform: linux/arm64
+    container_name: db
+    restart: unless-stopped
     env_file:
       - .env
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "200k"
-        max-file: "10"
-  db:
-    image: 'mysql:8.3.0'
-    restart: unless-stopped
-    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: app_db
     volumes:
       - 'db-data:/var/lib/mysql'
     ports:
-      - '3306:3306'
-    env_file:
-      - .env
+      - "3306:3306"
     command: mysqld --sql_mode="ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
-  # phpmyadmin:
-  #   image: 'osixia/phpmyadmin:5.0.2'
-  #   container_name: apache_phpmyadmin
-  #   ports:
-  #     - '8080:443'
-  #   volumes:
-  #     - '/var/data/letsencrypt:/etc/letsencrypt'
-  #     - '/var/data/letsencrypt:/container/service/phpmyadmin/assets/apache2/certs'
-  #   links:
-  #     - 'db:mysql'
-  #   environment:
-  #     - PHPMYADMIN_DB_HOSTS=mysql
-  #     - PHPMYADMIN_HTTPS_CRT_FILENAME=cert.pem
-  #     - PHPMYADMIN_HTTPS_KEY_FILENAME=privkey.pem
-  #     - PHPMYADMIN_HTTPS_CA_CRT_FILENAME=fullchain.pem
-  # redis:
-  #   image: redis
-  #   container_name: redis
-  #   restart: unless-stopped
-  #   # ports:
-  #   #     - '6379:6379'
+    networks:
+      - app-network
+
 volumes:
   db-data:
+    name: db-data
+
+networks:
+  app-network:
+    driver: bridge
