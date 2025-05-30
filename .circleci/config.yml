@@ -1,126 +1,122 @@
 version: 2.1
 
 jobs:
-  build_dev:
+  build:
+    parameters:
+      env:
+        type: string
+      log_prefix:
+        type: string
     working_directory: ~/project
     docker:
       - image: docker:20.10
     resource_class: arm.medium
     environment:
       DOCKER_VERSION: 20.10
-      BUILD_PATH: ~/container-build
+      BUILD_PATH: ~/project
       CONTAINER_NAME: apache
     steps:
       - checkout
+      - run:
+          name: Create container-build Directory
+          command: |
+            rm -rf ~/project/container-build
+            mkdir -p ~/project/container-build
+      - run:
+          name: Install Dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y apache2 postfix wkhtmltopdf curl make bash git \
+              fontconfig libjpeg-turbo8 libssl1.1 xfonts-75dpi xfonts-base
+            sudo systemctl start apache2
+            sudo systemctl start postfix
+      - run:
+          name: Run Tests
+          command: |
+            echo "Skipping host-based tests; running in container only"
       - setup_remote_docker:
           version: 20.10
       - run:
-          name: Install Build Tools
-          command: apk add --no-cache make bash curl git
-      - run:
-          name: Build DEV Apache Docker Image
+          name: Build << parameters.env >> Apache Docker Image
           command: |
             cp .env.example .env
-            echo "NODE_ENVIRONMENT=dev" >> .env
-            echo "BUILD_ENV=dev" >> .env
+            echo "NODE_ENVIRONMENT=<< parameters.env >>" >> .env
+            echo "BUILD_ENV=<< parameters.env >>" >> .env
             echo "SMTP_HOST=smtp.example.com" >> .env
-            echo "SASL_USER=your_smtp_user" >> .env
-            echo "SASL_PASS=your_smtp_pass" >> .env
-            echo "LOG_TOKEN=your_log_token" >> .env
-            make build
+            echo "SASL_USER=$CIRCLE_SASL_USER" >> .env
+            echo "SASL_PASS=$CIRCLE_SASL_PASS" >> .env
+            echo "LOG_TOKEN=$CIRCLE_LOG_TOKEN" >> .env
+            make build || { echo "Build failed"; exit 1; }
       - run:
-          name: Start DEV Container
+          name: Start << parameters.env >> Container
           command: |
             set -x
             pwd
             ls -la
             ls -la ~/project/tests
-            make run
+            make run || { echo "Container start failed"; exit 1; }
             docker ps -a
-            sleep 2
+            # Wait for Apache
+            for i in {1..30}; do
+              if curl -s -o /dev/null http://127.0.0.1; then
+                echo "Apache is ready"
+                break
+              fi
+              echo "Waiting for Apache..."
+              sleep 2
+            done
+            if [ $i -eq 30 ]; then
+              echo "Apache failed to start within 60 seconds"
+              exit 1
+            fi
+            # Wait for MySQL
+            if docker ps -a | grep apache-db-1; then
+              for i in {1..30}; do
+                if docker exec apache-db-1 mysqladmin ping -h 127.0.0.1 --silent; then
+                  echo "MySQL is ready"
+                  break
+                fi
+                echo "Waiting for MySQL..."
+                sleep 2
+              done
+              if [ $i -eq 30 ]; then
+                echo "MySQL failed to start within 60 seconds"
+                exit 1
+              fi
+            fi
       - run:
           name: Global Environment Vars
           command: |
             docker exec ${CONTAINER_NAME} /bin/bash -c "export"
       - run:
-          name: DEV Build Tests
+          name: << parameters.env >> Build Tests
           command: |
-            docker exec ${CONTAINER_NAME} /bin/bash /opt/tests/build_tests.sh # Docker container file system
+            docker exec ${CONTAINER_NAME} /bin/bash /opt/tests/build_tests.sh
       - run:
-          name: Collect DEV Container Logs
+          name: Collect << parameters.env >> Container Logs
           command: |
-            mkdir -p ${BUILD_PATH}
-            docker logs ${CONTAINER_NAME} > ${BUILD_PATH}/log_output-DEV_Apache.txt
-            docker logs apache-db-1 > ${BUILD_PATH}/log_output-DEV_MySQL.txt
+            echo "Collecting logs for ${CONTAINER_NAME}"
+            docker logs ${CONTAINER_NAME} > ${BUILD_PATH}/log_output-<< parameters.log_prefix >>_Apache.txt 2>&1
+            if docker ps -a | grep apache-db-1; then
+              echo "Collecting logs for apache-db-1"
+              docker logs apache-db-1 > ${BUILD_PATH}/log_output-<< parameters.log_prefix >>_MySQL.txt 2>&1
+            else
+              echo "No apache-db-1 container found; skipping MySQL logs"
+            fi
       - run:
-          name: Kill DEV Containers
-          command: |
-            make stop
-      - store_artifacts:
-          path: /tmp/container-build
-          destination: build-logs-dev
-
-  build_production:
-    working_directory: ~/project
-    docker:
-      - image: docker:20.10
-    resource_class: arm.medium
-    environment:
-      DOCKER_VERSION: 20.10
-      BUILD_PATH:  ~/project/container-build
-      CONTAINER_NAME: apache
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 20.10
-      - run:
-          name: Install Build Tools
-          command: apk add --no-cache make bash curl git
-      - run:
-          name: Build Production Apache Docker Image
-          command: |
-            cp .env.example .env
-            echo "NODE_ENVIRONMENT=production" >> .env
-            echo "BUILD_ENV=production" >> .env
-            echo "SMTP_HOST=smtp.example.com" >> .env
-            echo "SASL_USER=your_smtp_user" >> .env
-            echo "SASL_PASS=your_smtp_pass" >> .env
-            echo "LOG_TOKEN=your_log_token" >> .env
-            make build
-      - run:
-          name: Start Production Container
-          command: |
-            set -x
-            pwd
-            ls -la
-            ls -la ~/project/tests
-            make run
-            docker ps -a
-            sleep 2
-      - run:
-          name: Global Environment Vars
-          command: |
-            docker exec ${CONTAINER_NAME} /bin/bash -c "export"
-      - run:
-          name: Production Build Tests
-          command: |
-            docker exec ${CONTAINER_NAME} /bin/bash /opt/tests/build_tests.sh # Docker container file system
-      - run:
-          name: Collect Production Container Logs
-          command: |
-            mkdir -p ${BUILD_PATH}
-            docker logs ${CONTAINER_NAME} > ${BUILD_PATH}/log_output-LIVE_Apache.txt
-            docker logs apache-db-1 > ${BUILD_PATH}/log_output-LIVE_MySQL.txt
-      - run:
-          name: Kill Production Containers
+          name: Kill << parameters.env >> Containers
           command: |
             make stop
       - store_artifacts:
-          path: ~/project/container-build
-          destination: build-logs-production
+          path: ~/project
+          destination: build-logs-<< parameters.env >>
 
 workflows:
   build_and_test:
     jobs:
-      - build_dev
-      - build_production
+      - build:
+          env: dev
+          log_prefix: DEV
+      - build:
+          env: production
+          log_prefix: LIVE

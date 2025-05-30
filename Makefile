@@ -7,7 +7,7 @@ TAG := 2.1.0
 REGISTRY := docker.io
 CONTAINER_NAME := apache
 ENV_FILE := .env
-PLATFORM := linux/arm64
+PLATFORM := linux/amd64
 COMPOSE_DEV := docker compose -f docker-compose.local.yml
 COMPOSE_PROD := docker compose -f docker-compose.yml
 NODE_ENV := $(shell grep -E '^NODE_ENVIRONMENT=' $(ENV_FILE) | cut -d '=' -f 2-)
