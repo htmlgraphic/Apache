@@ -35,18 +35,18 @@ if [ -d /data/apache2 ]; then
 fi
 
 # PHP environment tweaks
-if [ ! -f /usr/local/etc/php/build ]; then
+if [ ! -f /etc/php/8.3/build ]; then
     if [[ -n "${NODE_ENVIRONMENT}" ]]; then
         if [ "$NODE_ENVIRONMENT" = "dev" ]; then
-            echo -e "\nIS_LIVE=0\nIS_DEV=1\nNODE_ENVIRONMENT=dev\n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld" >> /usr/local/etc/php/php.ini
-            sed -i 's/error_reporting = .*$/error_reporting = E_ALL/' /usr/local/etc/php/php.ini || echo "error_reporting = E_ALL" >> /usr/local/etc/php/php.ini
-            sed -i 's|log_errors_max_len = .*|log_errors_max_len = 0|' /usr/local/etc/php/php.ini || echo "log_errors_max_len = 0" >> /usr/local/etc/php/php.ini
+            echo -e "\nIS_LIVE=0\nIS_DEV=1\nNODE_ENVIRONMENT=dev\n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld" >> /etc/php/8.3/apache2/php.ini
+            sed -i 's/error_reporting = .*$/error_reporting = E_ALL/' /etc/php/8.3/apache2/php.ini || echo "error_reporting = E_ALL" >> /etc/php/8.3/apache2/php.ini
+            sed -i 's|log_errors_max_len = .*|log_errors_max_len = 0|' /etc/php/8.3/apache2/php.ini || echo "log_errors_max_len = 0" >> /etc/php/8.3/apache2/php.ini
         elif [ "$NODE_ENVIRONMENT" = "production" ]; then
-            echo -e "\nIS_LIVE=1\nIS_DEV=0\nNODE_ENVIRONMENT=production\n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld" >> /usr/local/etc/php/php.ini
-            sed -i 's/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/' /usr/local/etc/php/php.ini || echo "error_reporting = E_ERROR | E_WARNING | E_PARSE" >> /usr/local/etc/php/php.ini
+            echo -e "\nIS_LIVE=1\nIS_DEV=0\nNODE_ENVIRONMENT=production\n;The IS_DEV is set for testing outside of DEV environments ie: test.domain.tld" >> /etc/php/8.3/apache2/php.ini
+            sed -i 's/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/' /etc/php/8.3/apache2/php.ini || echo "error_reporting = E_ERROR | E_WARNING | E_PARSE" >> /etc/php/8.3/apache2/php.ini
         fi
     fi
-    echo 1 > /usr/local/etc/php/build
+    echo 1 > /etc/php/8.3/build
 fi
 
 # Postfix runtime setup
