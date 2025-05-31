@@ -62,7 +62,9 @@ RUN apt-get update && apt-get install -y \
         rsyslog \
         vim \
         wget \
-        postfix && \
+        postfix \
+        netcat-openbsd \
+        dnsutils && \
     apt-get autoremove -y && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -115,12 +117,9 @@ RUN wget -O /tmp/wkhtmltox.deb https://github.com/wkhtmltopdf/packaging/releases
 # Copy Application Files
 COPY ./app /opt/app
 COPY ./tests /opt/tests
+COPY ./app/supervisord /etc/supervisor/conf.d/supervisord.conf
 RUN chmod -R 755 /opt/* && \
-    chmod +x /opt/app/entrypoint.sh
-
-# Supervisor Setup
-RUN mkdir -p /var/log/supervisor && \
-    cp /opt/app/supervisord /etc/supervisor/conf.d/supervisord.conf && \
+    chmod +x /opt/app/entrypoint.sh && \
     chmod 644 /etc/supervisor/conf.d/supervisord.conf
 
 # PHP Configuration

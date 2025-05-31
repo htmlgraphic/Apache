@@ -64,16 +64,16 @@ build:
 # Test the Docker image
 test:
 	@echo "Testing components in $(IMAGE_NAME):$(TAG)"
-	@docker run --rm $(IMAGE_NAME):$(TAG) composer --version
+	@docker run --rm --env-file $(ENV_FILE) $(IMAGE_NAME):$(TAG) composer --version
 	@if [ "$(NODE_ENVIRONMENT)" = "dev" ]; then \
-		docker run --rm $(IMAGE_NAME):$(TAG) git --version; \
-		docker run --rm $(IMAGE_NAME):$(TAG) vim --version; \
-		docker run --rm $(IMAGE_NAME):$(TAG) ping -V; \
-		docker run --rm $(IMAGE_NAME):$(TAG) wget --version; \
+		docker run --rm --env-file $(ENV_FILE) $(IMAGE_NAME):$(TAG) git --version; \
+		docker run --rm --env-file $(ENV_FILE) $(IMAGE_NAME):$(TAG) vim --version; \
+		docker run --rm --env-file $(ENV_FILE) $(IMAGE_NAME):$(TAG) ping -V; \
+		docker run --rm --env-file $(ENV_FILE) $(IMAGE_NAME):$(TAG) wget --version; \
 	fi
-	@docker run --rm $(IMAGE_NAME):$(TAG) mysql --version
-	@docker run --rm $(IMAGE_NAME):$(TAG) php -m | grep -E 'mcrypt|redis'
-	@docker run --rm $(IMAGE_NAME):$(TAG) dpkg -l | grep -E 'mailutils|locales'
+	@docker run --rm --env-file $(ENV_FILE) $(IMAGE_NAME):$(TAG) mysql --version
+	@docker run --rm --env-file $(ENV_FILE) $(IMAGE_NAME):$(TAG) php -m | grep -E 'mcrypt|redis'
+	@docker run --rm --env-file $(ENV_FILE) $(IMAGE_NAME):$(TAG) dpkg -l | grep -E 'mailutils|locales'
 
 # Run the containers
 run:

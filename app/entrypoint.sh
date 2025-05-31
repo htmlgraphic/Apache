@@ -29,10 +29,16 @@ if [ -d /data/www/public_html ]; then
     mv /opt/app/*.png /data/www/public_html/ 2>/dev/null || true
     mv /opt/app/*.php /data/www/public_html/ 2>/dev/null || true
 fi
-if [ -d /data/apache2 ]; then
-    mv /opt/app/*.conf /data/apache2/sites-enabled/ 2>/dev/null || true
-    mv -f /opt/app/ssl/* /data/apache2/ssl/ 2>/dev/null || true
+if [ ! -d /data/apache2/sites-enabled ]; then
+    echo "DEBUG: Creating /data/apache2/sites-enabled/"
+    mkdir -p /data/apache2/sites-enabled
 fi
+echo "DEBUG: Moving .conf files from /opt/app/ to /data/apache2/sites-enabled/"
+ls -la /opt/app/*.conf 2>/dev/null || echo "No .conf files found in /opt/app/"
+mv /opt/app/*.conf /data/apache2/sites-enabled/ 2>/dev/null || true
+echo "DEBUG: Contents of /data/apache2/sites-enabled/:"
+ls -la /data/apache2/sites-enabled/
+mv -f /opt/app/ssl/* /data/apache2/ssl/ 2>/dev/null || true
 
 # PHP environment tweaks
 if [ ! -f /etc/php/8.3/build ]; then
@@ -49,10 +55,21 @@ if [ ! -f /etc/php/8.3/build ]; then
     echo 1 > /etc/php/8.3/build
 fi
 
+# Debug SMTP variables
+echo "DEBUG: SMTP_HOST=${SMTP_HOST:-not set}"
+echo "DEBUG: SASL_USER=${SASL_USER:-not set}"
+echo "DEBUG: SASL_PASS=${SASL_PASS:-not set}"
+
 # Postfix runtime setup
 if [[ -n "${SMTP_HOST}" && -n "${SASL_USER}" && -n "${SASL_PASS}" ]]; then
+    echo "DEBUG: Configuring Postfix with SMTP_HOST=${SMTP_HOST}"
     postconf -e "relayhost=[${SMTP_HOST}]:587" \
-        "smtp_sasl_password_maps=static:${SASL_USER}:${SASL_PASS}"
+        "smtp_sasl_auth_enable=yes" \
+        "smtp_sasl_security_options=noanonymous" \
+        "smtp_sasl_password_maps=static:${SASL_USER}:${SASL_PASS}" \
+        "smtp_tls_security_level=encrypt" \
+        "smtp_tls_CAfile=/etc/ssl/certs/ca-certificates.crt"
+    echo "DEBUG: Postfix configuration completed"
 else
     echo "SMTP configuration incomplete, skipping postfix setup"
 fi
@@ -61,6 +78,11 @@ for n in hosts localtime nsswitch.conf resolv.conf services; do
     cp /etc/$n /var/spool/postfix/etc 2>/dev/null || true
 done
 chmod g+s /usr/sbin/post{drop,queue} 2>/dev/null || true
+
+# Set up Supervisor log directory
+mkdir -p /var/log/supervisor
+chown www-data:www-data /var/log/supervisor
+chmod 755 /var/log/supervisor
 
 # Log environment
 OutputLog
