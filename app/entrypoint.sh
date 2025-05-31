@@ -38,7 +38,21 @@ ls -la /opt/app/*.conf 2>/dev/null || echo "No .conf files found in /opt/app/"
 mv /opt/app/*.conf /data/apache2/sites-enabled/ 2>/dev/null || true
 echo "DEBUG: Contents of /data/apache2/sites-enabled/:"
 ls -la /data/apache2/sites-enabled/
+
+# Generate self-signed SSL certificate if none exists
+if [ ! -d /data/apache2/ssl ] || [ -z "$(ls -A /data/apache2/ssl)" ]; then
+    echo "DEBUG: Generating self-signed SSL certificate"
+    mkdir -p /data/apache2/ssl
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+        -keyout /data/apache2/ssl/ssl-cert-snakeoil.key \
+        -out /data/apache2/ssl/ssl-cert-snakeoil.pem \
+        -subj "/C=US/ST=CO/L=Boulder/O=HTMLgraphic/CN=localhost"
+    chown www-data:www-data /data/apache2/ssl/*
+    chmod 600 /data/apache2/ssl/*
+fi
 mv -f /opt/app/ssl/* /data/apache2/ssl/ 2>/dev/null || true
+echo "DEBUG: Contents of /data/apache2/ssl/:"
+ls -la /data/apache2/ssl/
 
 # PHP environment tweaks
 if [ ! -f /etc/php/8.3/build ]; then
@@ -83,6 +97,10 @@ chmod g+s /usr/sbin/post{drop,queue} 2>/dev/null || true
 mkdir -p /var/log/supervisor
 chown www-data:www-data /var/log/supervisor
 chmod 755 /var/log/supervisor
+
+# Configure rsyslog for mail logs
+echo "mail.* -/var/log/mail.log" > /etc/rsyslog.d/50-mail.conf
+chmod 644 /etc/rsyslog.d/50-mail.conf
 
 # Log environment
 OutputLog
