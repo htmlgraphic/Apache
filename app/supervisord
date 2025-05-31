@@ -8,20 +8,24 @@ logfile_backups=10
 [program:crond]
 command=/usr/sbin/cron -f
 autorestart=true
-startsecs=1
+startsecs=5
+startretries=10
 stdout_logfile=/var/log/supervisor/crond.log
 stderr_logfile=/var/log/supervisor/crond.err
 
 [program:rsyslog]
 command=/usr/sbin/rsyslogd -n
 autorestart=true
-startsecs=1
+startsecs=5
+startretries=10
 stdout_logfile=/var/log/supervisor/rsyslog.log
 stderr_logfile=/var/log/supervisor/rsyslog.err
 
 [program:postfix]
-command=/bin/bash -c "if [ -n \"$SMTP_HOST\" ]; then /usr/sbin/postfix start 2>&1 | tee /var/log/postfix.log; else echo 'Postfix disabled: SMTP_HOST not set'; sleep infinity; fi"
+command=/bin/bash -c "if [ -n \"$SMTP_HOST\" ]; then postfix start-fg 2>&1 | tee /var/log/postfix.log; else echo 'Postfix disabled: SMTP_HOST not set'; sleep infinity; fi"
+user=root
 autorestart=true
 startsecs=5
+startretries=10
 stdout_logfile=/var/log/supervisor/postfix.log
 stderr_logfile=/var/log/supervisor/postfix.err

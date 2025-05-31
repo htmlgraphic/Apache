@@ -33,6 +33,12 @@ if [ ! -d /data/apache2/sites-enabled ]; then
     echo "DEBUG: Creating /data/apache2/sites-enabled/"
     mkdir -p /data/apache2/sites-enabled
 fi
+if [ ! -d /data/apache2/logs ]; then
+    echo "DEBUG: Creating /data/apache2/logs/"
+    mkdir -p /data/apache2/logs
+    chown www-data:www-data /data/apache2/logs
+    chmod 755 /data/apache2/logs
+fi
 echo "DEBUG: Moving .conf files from /opt/app/ to /data/apache2/sites-enabled/"
 ls -la /opt/app/*.conf 2>/dev/null || echo "No .conf files found in /opt/app/"
 mv /opt/app/*.conf /data/apache2/sites-enabled/ 2>/dev/null || true
@@ -46,7 +52,7 @@ if [ ! -d /data/apache2/ssl ] || [ -z "$(ls -A /data/apache2/ssl)" ]; then
     openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
         -keyout /data/apache2/ssl/ssl-cert-snakeoil.key \
         -out /data/apache2/ssl/ssl-cert-snakeoil.pem \
-        -subj "/C=US/ST=CO/L=Boulder/O=HTMLgraphic/CN=localhost"
+        -subj "/C=US/ST=State/L=City/O=Organization/CN=localhost"
     chown www-data:www-data /data/apache2/ssl/*
     chmod 600 /data/apache2/ssl/*
 fi
