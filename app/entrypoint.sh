@@ -55,7 +55,6 @@ if [[ -n "${SMTP_HOST}" && -n "${SASL_USER}" && -n "${SASL_PASS}" ]]; then
         "smtp_sasl_password_maps=static:${SASL_USER}:${SASL_PASS}"
 else
     echo "SMTP configuration incomplete, skipping postfix setup"
-    exit 0
 fi
 cp /etc/resolv.conf /var/spool/postfix/etc/resolv.conf 2>/dev/null || true
 for n in hosts localtime nsswitch.conf resolv.conf services; do

@@ -120,7 +120,7 @@ RUN chmod -R 755 /opt/* && \
 
 # Supervisor Setup
 RUN mkdir -p /var/log/supervisor && \
-    cp /opt/app/supervisord.conf /etc/supervisor/conf.d/supervisord.conf && \
+    cp /opt/app/supervisord /etc/supervisor/conf.d/supervisord.conf && \
     chmod 644 /etc/supervisor/conf.d/supervisord.conf
 
 # PHP Configuration
