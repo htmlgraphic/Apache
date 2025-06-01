@@ -101,11 +101,11 @@ jobs:
       - run:
           name: Debug Test Script
           command: |
-            docker exec ${CONTAINER_NAME} /bin/bash -c "ls -la /opt/tests || echo 'Test directory not found'; cat /opt/tests/build_tests.sh || echo 'build_tests.sh not found'; chmod +x /opt/tests/build_tests.sh || echo 'Failed to set executable permissions'"
+            docker exec ${CONTAINER_NAME} /bin/bash -c "ls -la /opt/tests || echo 'Test directory not found'; cat /opt/tests/build_tests.sh || echo 'build_tests.sh not found'; chmod +x /opt/tests/build_tests.sh || echo 'Failed to set executable permissions'; env | grep -E 'NODE_ENVIRONMENT|SASL_USER|LOG_TOKEN'"
       - run:
           name: << parameters.env >> Build Tests
           command: |
-            docker exec ${CONTAINER_NAME} /bin/bash /opt/tests/build_tests.sh || { echo "Tests failed"; docker exec ${CONTAINER_NAME} supervisorctl status; exit 1; }
+            docker exec ${CONTAINER_NAME} /bin/bash /opt/tests/build_tests.sh || { echo "Tests failed"; docker exec ${CONTAINER_NAME} supervisorctl status; docker logs ${CONTAINER_NAME}; exit 1; }
       - run:
           name: Collect << parameters.env >> Container Logs
           command: |
@@ -129,8 +129,10 @@ workflows:
   build_and_test:
     jobs:
       - build:
+          name: build-dev
           env: dev
           log_prefix: DEV
       - build:
+          name: build-production
           env: production
           log_prefix: LIVE
