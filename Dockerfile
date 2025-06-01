@@ -15,14 +15,20 @@ ENV DEBIAN_FRONTEND=noninteractive \
     OS_LOCALE="en_US.UTF-8" \
     LANG=${OS_LOCALE} \
     LANGUAGE=${OS_LOCALE} \
-    LC_ALL=${OS_LOCALE}
+    LC_ALL=${OS_LOCALE} \
+    APACHE_RUN_USER=www-data \
+    APACHE_RUN_GROUP=www-data \
+    APACHE_LOG_DIR=/var/log/apache2 \
+    APACHE_PID_FILE=/var/run/apache2.pid \
+    APACHE_RUN_DIR=/var/run/apache2 \
+    APACHE_LOCK_DIR=/var/lock/apache2
 
-# Update and Install Locales
+# Install and Configure Locales
 RUN apt-get update && apt-get install -y locales && \
     locale-gen ${OS_LOCALE} && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install Required Packages
+# Install Dependencies
 RUN apt-get update && apt-get install -y \
         software-properties-common && \
     add-apt-repository -y ppa:ondrej/php && \
@@ -44,6 +50,7 @@ RUN apt-get update && apt-get install -y \
         php8.3-dev \
         php8.3-xml \
         php8.3-common \
+        php8.3-redis \
         libxml2-dev \
         libssl-dev \
         zlib1g-dev \
@@ -64,27 +71,35 @@ RUN apt-get update && apt-get install -y \
         wget \
         postfix \
         netcat-openbsd \
-        dnsutils && \
+        dnsutils \
+        python3 \
+        gyp \
+        wkhtmltopdf \
+        fontconfig \
+        libjpeg-turbo8 \
+        xfonts-75dpi \
+        xfonts-base && \
     apt-get autoremove -y && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install and Configure PECL Extensions
+# Install PECL Extensions
 RUN pecl channel-update pecl.php.net && \
     pecl install redis && \
     echo "extension=redis.so" > /etc/php/8.3/mods-available/redis.ini && \
     phpenmod redis
 
 # Enable Apache Modules
-RUN a2enmod userdir rewrite ssl
+RUN a2enmod userdir rewrite ssl pagespeed
 
 # Apache Configuration
 RUN a2ensite default-ssl && \
     echo "ServerName localhost" > /etc/apache2/conf-available/servername.conf && \
     a2enconf servername && \
-    rm -f /etc/apache2/sites-enabled/* && \
     mkdir -p /data/apache2/{logs,ssl,sites-enabled} && \
     sed -i 's|IncludeOptional sites-enabled/\*.conf|IncludeOptional /data/apache2/sites-enabled/*.conf|' /etc/apache2/apache2.conf && \
-    echo "<IfModule mpm_event_module>\nStartServers 2\nMinSpareThreads 25\nMaxSpareThreads 75\nThreadLimit 64\nThreadsPerChild 25\nMaxRequestWorkers 150\nMaxConnectionsPerChild 0\n</IfModule>" >> /etc/apache2/apache2.conf
+    echo "<IfModule mpm_event_module>\nStartServers 2\nMinSpareThreads 25\nMaxSpareThreads 75\nThreadLimit 64\nThreadsPerChild 25\nMaxRequestWorkers 150\nMaxConnectionsPerChild 0\n</IfModule>" >> /etc/apache2/apache2.conf && \
+    echo "<VirtualHost *:80>\nServerName localhost\nDocumentRoot /var/www/html\nErrorLog \${APACHE_LOG_DIR}/error.log\nCustomLog \${APACHE_LOG_DIR}/access.log combined\n</VirtualHost>" > /data/apache2/sites-enabled/000-default.conf && \
+    echo "<VirtualHost *:443>\nServerName localhost\nDocumentRoot /var/www/html\nErrorLog \${APACHE_LOG_DIR}/error.log\nCustomLog \${APACHE_LOG_DIR}/access.log combined\nSSLEngine on\nSSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem\nSSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key\n</VirtualHost>" > /data/apache2/sites-enabled/default-ssl.conf
 
 # Postfix Configuration
 RUN postconf -e "compatibility_level=2" \
@@ -116,9 +131,12 @@ RUN wget -O /tmp/wkhtmltox.deb https://github.com/wkhtmltopdf/packaging/releases
 COPY ./app /opt/app
 COPY ./tests /opt/tests
 COPY ./app/supervisord /etc/supervisor/conf.d/services.conf
+COPY ./tests/php_modules /opt/tests/php_modules
+COPY ./tests/cli_php_modules /opt/tests/cli_php_modules
 RUN chmod -R 755 /opt/* && \
     chmod +x /opt/app/entrypoint.sh && \
-    chmod 644 /etc/supervisor/conf.d/services.conf
+    chmod 644 /etc/supervisor/conf.d/services.conf && \
+    chmod 644 /opt/tests/php_modules /opt/tests/cli_php_modules
 
 # PHP Configuration
 RUN cp /etc/php/8.3/apache2/php.ini /etc/php/8.3/apache2/php.ini.bak && \
@@ -140,13 +158,24 @@ RUN wget -O /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh
     chmod +x /usr/local/bin/wp
 
 # Unit Tests
-RUN tar xf /opt/tests/shunit2-2.1.7.tar.gz -C /opt/tests/
+RUN tar xf /opt/tests/shunit2-2.1.7.tar.gz -C /opt/tests/ && \
+    chmod +x /opt/tests/build_tests.sh
 
 # Permissions
-RUN mkdir -p /data/www/public_html /data/pear && \
-    chown -R www-data:www-data /var/www/html && \
+RUN mkdir -p /data/www/public_html /data/pear /root/project/container-build && \
+    chown -R www-data:www-data /var/www/html /root/project/container-build && \
     find /var/www/html -type f -exec chmod 644 {} \; && \
     find /var/www/html -type d -exec chmod 755 {} \;
+
+# Ensure Supervisord Config
+RUN echo "[supervisord]\nnodaemon=true\nlogfile=/var/log/supervisor/supervisord.log\npidfile=/var/run/supervisord.pid\n" > /etc/supervisor/supervisord.conf
+
+# Environment Variables from .env
+COPY .env /opt/.env
+RUN echo "export SASL_USER=$(grep SASL_USER /opt/.env | cut -d '=' -f2)" >> /etc/environment && \
+    echo "export SASL_PASS=$(grep SASL_PASS /opt/.env | cut -d '=' -f2)" >> /etc/environment && \
+    echo "export LOG_TOKEN=$(grep LOG_TOKEN /opt/.env | cut -d '=' -f2)" >> /etc/environment && \
+    echo "export NODE_ENVIRONMENT=$(grep NODE_ENVIRONMENT /opt/.env | cut -d '=' -f2)" >> /etc/environment
 
 # Volumes, Ports, Healthcheck
 VOLUME ["/backup", "/data", "/etc/letsencrypt"]

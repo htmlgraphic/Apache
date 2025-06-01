@@ -54,7 +54,7 @@ jobs:
             make run || { echo "Container start failed"; docker ps -a; docker logs ${CONTAINER_NAME}; exit 1; }
             docker ps -a
             # Wait for supervisord
-            for i in {1..30}; do
+            for i in {1..90}; do
               if docker exec ${CONTAINER_NAME} supervisorctl status | grep -q "RUNNING"; then
                 echo "Supervisord services are running"
                 break
@@ -62,10 +62,12 @@ jobs:
               echo "Waiting for supervisord..."
               sleep 2
             done
-            if [ $i -eq 30 ]; then
-              echo "Supervisord failed to start within 60 seconds"
+            if [ $i -eq 90 ]; then
+              echo "Supervisord failed to start within 180 seconds"
               docker exec ${CONTAINER_NAME} cat /etc/supervisor/supervisord.conf || echo "Supervisord config not found"
               docker exec ${CONTAINER_NAME} ls -la /var/run /var/log/supervisor
+              docker exec ${CONTAINER_NAME} supervisorctl status
+              docker logs ${CONTAINER_NAME}
               exit 1
             fi
             # Wait for Apache
@@ -99,13 +101,17 @@ jobs:
               fi
             fi
       - run:
+          name: Setup Test Environment
+          command: |
+            docker exec ${CONTAINER_NAME} /bin/bash -c "mkdir -p /root/project/container-build && chown www-data:www-data /root/project/container-build"
+      - run:
           name: Debug Test Script
           command: |
-            docker exec ${CONTAINER_NAME} /bin/bash -c "ls -la /opt/tests || echo 'Test directory not found'; cat /opt/tests/build_tests.sh || echo 'build_tests.sh not found'; chmod +x /opt/tests/build_tests.sh || echo 'Failed to set executable permissions'; env | grep -E 'NODE_ENVIRONMENT|SASL_USER|LOG_TOKEN'"
+            docker exec ${CONTAINER_NAME} /bin/bash -c "ls -la /opt/tests || echo 'Test directory not found'; cat /opt/tests/build_tests.sh || echo 'build_tests.sh not found'; chmod +x /opt/tests/build_tests.sh || echo 'Failed to set executable permissions'; env | grep -E 'NODE_ENVIRONMENT|SASL_USER|SASL_PASS|LOG_TOKEN'; supervisorctl status || echo 'Supervisorctl failed'; ls -la /root/project/container-build || echo 'Test directory not found'; php -m || echo 'PHP modules failed'"
       - run:
           name: << parameters.env >> Build Tests
           command: |
-            docker exec ${CONTAINER_NAME} /bin/bash /opt/tests/build_tests.sh || { echo "Tests failed"; docker exec ${CONTAINER_NAME} supervisorctl status; docker logs ${CONTAINER_NAME}; exit 1; }
+            docker exec ${CONTAINER_NAME} /bin/bash -c "export SASL_USER=$CIRCLE_SASL_USER SASL_PASS=$CIRCLE_SASL_PASS LOG_TOKEN=$CIRCLE_LOG_TOKEN NODE_ENVIRONMENT=<< parameters.env >> && su -s /bin/bash www-data -c 'sed -E \"/systemctl|docker/ d\" /opt/tests/build_tests.sh | bash' || { echo 'Tests failed'; supervisorctl status; docker logs ${CONTAINER_NAME}; exit 1; }"
       - run:
           name: Collect << parameters.env >> Container Logs
           command: |

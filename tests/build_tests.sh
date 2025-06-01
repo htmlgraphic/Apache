@@ -4,12 +4,13 @@
 #### Extra breathing room
 echo -e '\n'
 
+
 setUp() {
     echo 'Running setup checks'
-    if ! systemctl is-active apache2 >/dev/null; then
+    if ! supervisorctl status apache2 | grep -q RUNNING; then
         fail 'Apache2 service is not running'
     fi
-    if ! systemctl is-active postfix >/dev/null; then
+    if ! supervisorctl status postfix | grep -q RUNNING; then
         fail 'Postfix service is not running'
     fi
 }
