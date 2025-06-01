@@ -15,6 +15,14 @@ serverurl=unix:///var/run/supervisor.sock
 [rpcinterface:supervisor]
 supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
 
+[program:apache2]
+command=/usr/sbin/apache2ctl -D FOREGROUND
+autostart=true
+autorestart=true
+user=root
+stderr_logfile=/var/log/supervisor/apache2.err.log
+stdout_logfile=/var/log/supervisor/apache2.out.log
+
 [program:cron]
 command=/usr/sbin/cron -f
 autostart=true

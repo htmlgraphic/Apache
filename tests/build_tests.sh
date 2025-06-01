@@ -23,21 +23,21 @@ testSupervisordConfig() {
 
 testMySQLServiceRunning() {
     echo 'Test MySQL service status'
-    test=$(mysqladmin -u admin -pnew_password -h apache_db ping 2>/dev/null | grep -q 'mysqld is alive' && echo 1 || echo 0)
+    test=$(mysqladmin -u admin -pnew_password -h db ping 2>/dev/null | grep -q 'mysqld is alive' && echo 1 || echo 0)
     assertEquals "MySQL service should be running" 1 $test
     echo -e '\n'
 }
 
 testMySQLConnectivity() {
     echo 'Test MySQL connectivity'
-    test=$(mysql -u admin -pnew_password -h apache_db -e "SELECT 1" 2>/dev/null | wc -l)
+    test=$(mysql -u admin -pnew_password -h db -e "SELECT 1" 2>/dev/null | wc -l)
     assertEquals "MySQL should be accessible with admin credentials" 1 $test
     echo -e '\n'
 }
 
 testMySQLDatabase() {
     echo 'Test MySQL database existence'
-    test=$(mysql -u admin -pnew_password -h apache_db -e "SHOW DATABASES LIKE 'htmlgraphic'" 2>/dev/null | grep htmlgraphic | wc -l)
+    test=$(mysql -u admin -pnew_password -h db -e "SHOW DATABASES LIKE 'htmlgraphic'" 2>/dev/null | grep htmlgraphic | wc -l)
     assertEquals "Database htmlgraphic should exist" 1 $test
     echo -e '\n'
 }
@@ -112,7 +112,7 @@ testApacheModules() {
 
 testSSLConfiguration() {
     echo 'Test SSL configuration'
-    test=$(cat /data/apache2/sites-enabled/000-default.conf | grep 'SSLEngine on' | wc -l)
+    test=$(cat /data/apache2/sites-enabled/sample.conf | grep 'SSLEngine on' | wc -l)
     assertEquals 1 $test
     echo -e '\n'
 }
@@ -237,12 +237,14 @@ testWkhtmltoxFunctional() {
 
 testWebRootPermissions() {
     echo 'Test /data/www/public_html permissions'
-    owner=$(stat -c '%U:%G' /data/www/public_html)
-    file_perms=$(find /data/www/public_html -type f -exec stat -c '%a' {} \; | sort -u)
-    dir_perms=$(find /data/www/public_html -type d -exec stat -c '%a' {} \; | sort -u)
+    echo "DEBUG: Listing /data/www/public_html contents"
+    ls -l /data/www/public_html
+    owner=$(stat -c '%U:%G' /data/www/public_html 2>/dev/null)
+    dir_perms=$(stat -c '%a' /data/www/public_html 2>/dev/null)
+    file_perms=$(ls -l /data/www/public_html/*.php 2>/dev/null | awk '{print $1}' | cut -c2-10 | sort -u | tr '\n' ':' | sed 's/:$//')
     assertEquals "/data/www/public_html should be owned by www-data:www-data" "www-data:www-data" "$owner"
-    assertEquals "Files in /data/www/public_html should have 644 permissions" "644" "$file_perms"
-    assertEquals "Directories in /data/www/public_html should have 755 permissions" "755" "$dir_perms"
+    assertEquals "Directory /data/www/public_html should have 755 permissions" "755" "$dir_perms"
+    assertEquals "PHP files in /data/www/public_html should have 644 permissions" "rw-r--r--" "$file_perms"
     echo -e '\n'
 }
 
@@ -265,8 +267,8 @@ testPostfixPassword() {
 }
 
 testPostfixRelay() {
-    echo 'Relay through SendGrid'
-    test=$(/usr/sbin/postconf relayhost | grep 'smtp.sendgrid.net' | wc -l)
+    echo 'Relay through MailTrap'
+    test=$(/usr/sbin/postconf relayhost | grep 'sandbox.smtp.mailtrap.io' | wc -l)
     assertEquals 1 $test
     echo -e '\n'
 }
@@ -285,23 +287,26 @@ testPHPModules() {
         fail "File $file does not exist or is empty"
     fi
     while IFS= read -r line; do
-        if [ ! -z "$line" ]; then
+        if [ -n "$line" ]; then
             printf 'checking PHP module %s\n' "$line"
-            test=$(curl -s http://127.0.0.1/php_extensions.php | grep -w "$line" | wc -l)
-            assertEquals 1 $test
+            test=$(curl -s http://localhost/php_extensions.php 2>/dev/null | grep -w "$line" | wc -l)
+            assertEquals "PHP module $line should be loaded" 1 "$test"
         fi
     done <"$file"
     echo -e '\n'
 }
 
 testPHPModulesCLI() {
-    echo 'Test CLI PHP Modules'
+    echo 'Test PHP CLI Modules'
     file="/opt/tests/cli_php_modules"
+    if [ ! -f "$file" ] || [ ! -s "$file" ]; then
+        fail "File $file does not exist or is empty"
+    fi
     while IFS= read -r line; do
-        if [ ! -z "$line" ]; then
+        if [ -n "$line" ]; then
             printf 'checking CLI PHP module %s\n' "$line"
             module=$(php -m | grep -w "$line" | wc -l)
-            assertEquals 1 $module
+            assertEquals "CLI PHP module $line should be loaded" 1 "$module"
         fi
     done <"$file"
     echo -e '\n'

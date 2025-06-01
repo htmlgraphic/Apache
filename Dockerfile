@@ -21,7 +21,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
     APACHE_LOG_DIR=/var/log/apache2 \
     APACHE_PID_FILE=/var/run/apache2.pid \
     APACHE_RUN_DIR=/var/run/apache2 \
-    APACHE_LOCK_DIR=/var/lock/apache2
+    APACHE_LOCK_DIR=/var/lock/apache2 \
+    CONTAINER_NAME=apache
 
 # Install libssl1.1 for ARM64 and initial dependencies
 RUN apt-get update && apt-get install -y \
@@ -97,7 +98,7 @@ RUN pecl install mcrypt && \
     ln -s /etc/php/8.3/mods-available/mcrypt.ini /etc/php/8.3/apache2/conf.d/20-mcrypt.ini && \
     ln -s /etc/php/8.3/mods-available/mcrypt.ini /etc/php/8.3/cli/conf.d/20-mcrypt.ini
 
-# Configure Redis Extension (avoid duplicate loading)
+# Configure Redis Extension
 RUN echo "extension=redis.so" > /etc/php/8.3/mods-available/redis.ini && \
     ln -sf /etc/php/8.3/mods-available/redis.ini /etc/php/8.3/apache2/conf.d/20-redis.ini && \
     ln -sf /etc/php/8.3/mods-available/redis.ini /etc/php/8.3/cli/conf.d/20-redis.ini && \
@@ -108,12 +109,7 @@ RUN a2enmod headers userdir rewrite ssl
 
 # Create Apache directories
 RUN mkdir -p /data/apache2/logs /data/apache2/ssl /data/apache2/sites-enabled && \
-    ls -ld /data/apache2 /data/apache2/logs /data/apache2/ssl /data/apache2/sites-enabled && \
     chown www-data:www-data /data/apache2/logs /data/apache2/ssl /data/apache2/sites-enabled
-
-# Copy Apache configuration
-COPY ./app/sample.conf /data/apache2/sites-enabled/000-default.conf
-RUN chmod 644 /data/apache2/sites-enabled/000-default.conf
 
 # Apache Configuration
 RUN a2ensite default-ssl && \
@@ -137,10 +133,7 @@ RUN postconf -e "compatibility_level=2" \
     "inet_protocols=ipv4" \
     "relayhost=[smtp.sendgrid.net]:587" \
     "smtp_sasl_password_maps=hash:/etc/postfix/sasl_passwd" && \
-    cp /etc/hostname /etc/mailname && \
-    echo "[smtp.sendgrid.net]:587 $SASL_USER:$SASL_PASS" > /etc/postfix/sasl_passwd && \
-    postmap /etc/postfix/sasl_passwd && \
-    chmod 600 /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db
+    cp /etc/hostname /etc/mailname
 
 # Install wkhtmltox
 RUN wget -qO /tmp/wkhtmltox.deb https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.noble_arm64.deb || \
@@ -190,11 +183,11 @@ RUN mkdir -p /data/www/public_html /data/pear /root/project/container-build && \
     chown -R www-data:www-data /var/www/html /data/www/public_html /root/project/container-build && \
     find /var/www/html -type f -exec chmod 644 {} \; && \
     find /var/www/html -type d -exec chmod 755 {} \; && \
-    find /data/www/public_html -type f -exec chmod 644 {} \; && \
-    find /data/www/public_html -type d -exec chmod 755 {} \;
+    find /data/www/public_html -maxdepth 1 -type f -exec chmod 644 {} \; && \
+    find /data/www/public_html -maxdepth 1 -type d -exec chmod 755 {} \;
 
 # Ensure Supervisord Config
-RUN echo "[supervisord]\nnodaemon=true\nlogfile=/var/log/supervisor/supervisord.log\npidfile=/var/run/supervisord.pid\n[supervisorctl]\nserverurl=unix:///var/run/supervisord.sock" > /etc/supervisor/supervisord.conf
+RUN echo "[supervisord]\nnodaemon=true\nlogfile=/var/log/supervisor/supervisord.log\npidfile=/var/run/supervisord.pid\n[supervisorctl]\nserverurl=unix:///var/run/supervisor.sock\n[unix_http_server]\nfile=/var/run/supervisor.sock\nchmod=0700\nchown=www-data:www-data\n[rpcinterface:supervisor]\nsupervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface" > /etc/supervisor/supervisord.conf
 
 # Environment Variables from .env
 COPY .env /opt/.env
@@ -203,10 +196,15 @@ RUN echo "export SASL_USER=$(grep SASL_USER /opt/.env | cut -d '=' -f2)" >> /etc
     echo "export LOG_TOKEN=$(grep LOG_TOKEN /opt/.env | cut -d '=' -f2)" >> /etc/environment && \
     echo "export NODE_ENVIRONMENT=$(grep NODE_ENVIRONMENT /opt/.env | cut -d '=' -f2)" >> /etc/environment
 
-# Create test PHP file
+# Create test files
 RUN echo "<?php phpinfo(); ?>" > /data/www/public_html/php_extensions.php && \
-    chown www-data:www-data /data/www/public_html/php_extensions.php && \
-    chmod 644 /data/www/public_html/php_extensions.php
+    echo "<?php echo 'Hello World'; ?>" > /data/www/public_html/index.php && \
+    chown www-data:www-data /data/www/public_html/*.php && \
+    chmod 644 /data/www/public_html/*.php
+
+# Copy Apache configuration after entrypoint modifications
+COPY ./app/sample.conf /data/apache2/sites-enabled/000-default.conf
+RUN chmod 644 /data/apache2/sites-enabled/000-default.conf
 
 # Volumes, Ports, Healthcheck
 VOLUME ["/backup", "/data", "/etc/letsencrypt"]
