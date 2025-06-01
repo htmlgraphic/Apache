@@ -102,10 +102,10 @@ RUN echo "extension=redis.so" > /etc/php/8.3/mods-available/redis.ini && \
 RUN a2enmod userdir rewrite ssl
 
 # Apache Configuration
-RUN a2ensite default-ssl && \
+RUN mkdir -p /data/apache2/{logs,ssl,sites-enabled} && \
+    a2ensite default-ssl && \
     echo "ServerName localhost" > /etc/apache2/conf-available/servername.conf && \
     a2enconf servername && \
-    mkdir -p /data/apache2/{logs,ssl,sites-enabled} && \
     sed -i 's|IncludeOptional sites-enabled/\*.conf|IncludeOptional /data/apache2/sites-enabled/*.conf|' /etc/apache2/apache2.conf && \
     echo "<IfModule mpm_event_module>\nStartServers 2\nMinSpareThreads 25\nMaxSpareThreads 75\nThreadLimit 64\nThreadsPerChild 25\nMaxRequestWorkers 150\nMaxConnectionsPerChild 0\n</IfModule>" >> /etc/apache2/apache2.conf && \
     echo "<VirtualHost *:80>\nServerName localhost\nDocumentRoot /var/www/html\nErrorLog \${APACHE_LOG_DIR}/error.log\nCustomLog \${APACHE_LOG_DIR}/access.log combined\n</VirtualHost>" > /data/apache2/sites-enabled/000-default.conf && \
