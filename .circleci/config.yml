@@ -99,9 +99,9 @@ jobs:
               fi
             fi
       - run:
-          name: Global Environment Vars
+          name: Debug Test Script
           command: |
-            docker exec ${CONTAINER_NAME} /bin/bash -c "export"
+            docker exec ${CONTAINER_NAME} /bin/bash -c "ls -la /opt/tests || echo 'Test directory not found'; cat /opt/tests/build_tests.sh || echo 'build_tests.sh not found'; chmod +x /opt/tests/build_tests.sh || echo 'Failed to set executable permissions'"
       - run:
           name: << parameters.env >> Build Tests
           command: |
