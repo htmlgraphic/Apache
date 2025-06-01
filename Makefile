@@ -7,7 +7,7 @@ TAG := 2.1.0
 REGISTRY := docker.io
 CONTAINER_NAME := apache
 ENV_FILE := .env
-PLATFORM := linux/amd64
+PLATFORM := linux/arm64
 COMPOSE_DEV := docker compose -f docker-compose.local.yml
 COMPOSE_PROD := docker compose -f docker-compose.yml
 NODE_ENV := $(shell grep -E '^NODE_ENVIRONMENT=' $(ENV_FILE) | cut -d '=' -f 2-)
@@ -24,7 +24,7 @@ NODE_ENVIRONMENT ?= dev
 .PHONY: all help env build test run start stop state logs push clean
 
 # Default target
-all: build test run
+all: env help
 
 # Help menu
 help:
@@ -32,15 +32,15 @@ help:
 	@echo "-- Help Menu for $(IMAGE_NAME):$(TAG)"
 	@echo ""
 	@echo "     make build        - Build Image"
-	@echo "     make test         - Test components in Image"
+	@echo "     make clean        - Remove images and prune system"
+	@echo "     make env          - Create and list .env variables"
+	@echo "     make logs         - View logs"
 	@echo "     make push         - Push $(IMAGE_NAME):$(TAG) to public Docker repo"
 	@echo "     make run          - Run docker-compose and create local environment"
 	@echo "     make start        - Start the EXISTING $(CONTAINER_NAME) container"
-	@echo "     make stop         - Stop running containers"
 	@echo "     make state        - View state of $(CONTAINER_NAME) container"
-	@echo "     make logs         - View logs"
-	@echo "     make env          - Create and list .env variables"
-	@echo "     make clean        - Remove images and prune system"
+	@echo "     make stop         - Stop running containers"
+	@echo "     make test         - Test components in existing $(CONTAINER_NAME) container"
 
 # Create .env if missing
 env:
@@ -51,29 +51,67 @@ env:
 
 # Build the Docker image
 build:
-	@make env
-	@echo "Building Docker image with NODE_ENVIRONMENT=$(NODE_ENVIRONMENT) for platform $(PLATFORM)"
-	docker build --no-cache \
-		--platform $(PLATFORM) \
-		--build-arg BUILD_ENV=$(NODE_ENVIRONMENT) \
-		--build-arg VCS_REF=`git rev-parse --short HEAD` \
-		--build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
-		-t $(IMAGE_NAME):$(TAG) \
-		-t $(IMAGE_NAME):latest .
-
-# Test the Docker image
-test:
-	@echo "Testing components in $(IMAGE_NAME):$(TAG)"
-	@docker run --rm --env-file $(ENV_FILE) $(IMAGE_NAME):$(TAG) composer --version
-	@if [ "$(NODE_ENVIRONMENT)" = "dev" ]; then \
-		docker run --rm --env-file $(ENV_FILE) $(IMAGE_NAME):$(TAG) git --version; \
-		docker run --rm --env-file $(ENV_FILE) $(IMAGE_NAME):$(TAG) vim --version; \
-		docker run --rm --env-file $(ENV_FILE) $(IMAGE_NAME):$(TAG) ping -V; \
-		docker run --rm --env-file $(ENV_FILE) $(IMAGE_NAME):$(TAG) wget --version; \
+	@echo "Building Docker image $(IMAGE_NAME):$(TAG)..."
+	@if [ -n "$$(docker images -q $(IMAGE_NAME):$(TAG))" ]; then \
+		echo "Image $(IMAGE_NAME):$(TAG) already exists."; \
+		printf "Do you want to rebuild the image? (y/N): "; \
+		read confirm; \
+		if [ "$$confirm" = "y" ] || [ "$$confirm" = "Y" ]; then \
+			echo "Rebuilding Docker image $(IMAGE_NAME):$(TAG)..."; \
+			docker build --no-cache --platform $(PLATFORM) -t $(IMAGE_NAME):$(TAG) .; \
+		else \
+			echo "Skipping build."; \
+		fi; \
+	else \
+		echo "Image does not exist, building..."; \
+		docker build --platform $(PLATFORM) -t $(IMAGE_NAME):$(TAG) .; \
 	fi
-	@docker run --rm --env-file $(ENV_FILE) $(IMAGE_NAME):$(TAG) mysql --version
-	@docker run --rm --env-file $(ENV_FILE) $(IMAGE_NAME):$(TAG) php -m | grep -E 'mcrypt|redis'
-	@docker run --rm --env-file $(ENV_FILE) $(IMAGE_NAME):$(TAG) dpkg -l | grep -E 'mailutils|locales'
+
+# Test the existing container
+test:
+    @echo "Testing components in existing $(CONTAINER_NAME) container"
+    @for i in $$(seq 1 30); do \
+        CONTAINER_STATUS=$$(docker inspect --format='{{.State.Status}}' $(CONTAINER_NAME) 2>/dev/null || echo "not_found"); \
+        if [ "$$CONTAINER_STATUS" = "running" ]; then \
+            if docker exec $(CONTAINER_NAME) sh -c "[ -f /etc/supervisor/conf.d/services.conf ]" 2>/dev/null; then \
+                if docker exec $(CONTAINER_NAME) sh -c "[ -S /var/run/supervisor.sock ]" 2>/dev/null; then \
+                    echo "Container and supervisor socket are ready"; \
+                    break; \
+                else \
+                    echo "Waiting for supervisor socket ($$i/30)"; \
+                    sleep 2; \
+                fi; \
+            else \
+                echo "Error: Supervisor configuration file /etc/supervisor/conf.d/services.conf not found"; \
+                exit 1; \
+            fi; \
+        elif [ "$$CONTAINER_STATUS" = "restarting" ]; then \
+            echo "Container is restarting, waiting ($$i/30)"; \
+            sleep 2; \
+        elif [ "$$CONTAINER_STATUS" = "not_found" ]; then \
+            echo "Error: Container $(CONTAINER_NAME) is not running. Run 'make run' or 'make start' first."; \
+            exit 1; \
+        else \
+            echo "Error: Container $(CONTAINER_NAME) is in unexpected state: $$CONTAINER_STATUS"; \
+            exit 1; \
+        fi; \
+        if [ $$i -eq 30 ]; then \
+            echo "Error: Container failed to stabilize or supervisor socket missing after 60 seconds"; \
+            exit 1; \
+        fi; \
+    done
+    @docker exec $(CONTAINER_NAME) apache2ctl configtest || { echo "apache2 config test failed"; exit 1; }
+    @docker exec $(CONTAINER_NAME) supervisorctl -c /etc/supervisor/conf.d/services.conf status | grep -E 'cron.*RUNNING|postfix.*RUNNING|rsyslog.*RUNNING' | wc -l | grep -q 3 || { echo "supervisorctl status test failed: not all processes are RUNNING"; docker exec $(CONTAINER_NAME) supervisorctl -c /etc/supervisor/conf.d/services.conf status; exit 1; }
+    @docker exec $(CONTAINER_NAME) composer --version || { echo "composer test failed"; exit 1; }
+    @if [ "$(NODE_ENVIRONMENT)" = "dev" ]; then \
+        docker exec $(CONTAINER_NAME) git --version || { echo "git test failed"; exit 1; }; \
+        docker exec $(CONTAINER_NAME) vim --version || { echo "vim test failed"; exit 1; }; \
+        docker exec $(CONTAINER_NAME) ping -V || { echo "ping test failed"; exit 1; }; \
+        docker exec $(CONTAINER_NAME) wget --version || { echo "wget test failed"; exit 1; }; \
+    fi
+    @docker exec $(CONTAINER_NAME) mysql --version || { echo "mysql test failed"; exit 1; }
+    @docker exec $(CONTAINER_NAME) php -m | grep redis || { echo "php redis module test failed"; exit 1; }
+    @docker exec $(CONTAINER_NAME) dpkg -l | grep -E 'mailutils|locales' || { echo "dpkg test failed"; exit 1; }
 
 # Run the containers
 run:

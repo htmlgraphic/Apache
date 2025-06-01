@@ -1,12 +1,7 @@
 services:
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        BUILD_ENV: production
-    platform: linux/arm64
     image: htmlgraphic/apache:2.1.0
+    platform: linux/arm64
     container_name: apache-web-1
     restart: unless-stopped
     ports:

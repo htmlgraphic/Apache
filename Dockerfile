@@ -70,11 +70,9 @@ RUN apt-get update && apt-get install -y \
 
 # Install and Configure PECL Extensions
 RUN pecl channel-update pecl.php.net && \
-    (pecl install mcrypt-1.0.7 || true) && \
     pecl install redis && \
-    echo "extension=mcrypt.so" > /etc/php/8.3/mods-available/mcrypt.ini && \
     echo "extension=redis.so" > /etc/php/8.3/mods-available/redis.ini && \
-    phpenmod mcrypt redis
+    phpenmod redis
 
 # Enable Apache Modules
 RUN a2enmod userdir rewrite ssl
@@ -117,10 +115,10 @@ RUN wget -O /tmp/wkhtmltox.deb https://github.com/wkhtmltopdf/packaging/releases
 # Copy Application Files
 COPY ./app /opt/app
 COPY ./tests /opt/tests
-COPY ./app/supervisord /etc/supervisor/conf.d/supervisord.conf
+COPY ./app/supervisord /etc/supervisor/conf.d/services.conf
 RUN chmod -R 755 /opt/* && \
     chmod +x /opt/app/entrypoint.sh && \
-    chmod 644 /etc/supervisor/conf.d/supervisord.conf
+    chmod 644 /etc/supervisor/conf.d/services.conf
 
 # PHP Configuration
 RUN cp /etc/php/8.3/apache2/php.ini /etc/php/8.3/apache2/php.ini.bak && \
@@ -157,4 +155,4 @@ HEALTHCHECK --interval=30s --timeout=3s CMD curl -f http://localhost/ || exit 1
 
 # Entrypoint
 ENTRYPOINT ["/opt/app/entrypoint.sh"]
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]

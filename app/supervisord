@@ -1,31 +1,43 @@
 [supervisord]
-nodaemon=true
-user=www-data
+nodaemon=false
 logfile=/var/log/supervisor/supervisord.log
-logfile_maxbytes=50MB
-logfile_backups=10
+pidfile=/var/run/supervisord.pid
+user=root
 
-[program:crond]
+[unix_http_server]
+file=/var/run/supervisor.sock
+chmod=0700
+chown=www-data:www-data
+
+[supervisorctl]
+serverurl=unix:///var/run/supervisor.sock
+
+[rpcinterface:supervisor]
+supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
+
+[program:cron]
 command=/usr/sbin/cron -f
+autostart=true
 autorestart=true
-startsecs=5
-startretries=10
-stdout_logfile=/var/log/supervisor/crond.log
 stderr_logfile=/var/log/supervisor/crond.err
+stdout_logfile=/var/log/supervisor/crond.log
+startsecs=10
+stopasgroup=true
 
 [program:rsyslog]
-command=/usr/sbin/rsyslogd -n
+command=rsyslogd -n
+autostart=true
 autorestart=true
-startsecs=5
-startretries=10
-stdout_logfile=/var/log/supervisor/rsyslog.log
 stderr_logfile=/var/log/supervisor/rsyslog.err
+stdout_logfile=/var/log/supervisor/rsyslog.log
+startsecs=10
+stopasgroup=true
 
 [program:postfix]
-command=/bin/bash -c "if [ -n \"$SMTP_HOST\" ]; then postfix start-fg 2>&1 | tee /var/log/postfix.log; else echo 'Postfix disabled: SMTP_HOST not set'; sleep infinity; fi"
-user=root
+command=/bin/sh -c "postfix check && /usr/lib/postfix/sbin/master"
+autostart=true
 autorestart=true
-startsecs=5
-startretries=10
-stdout_logfile=/var/log/supervisor/postfix.log
 stderr_logfile=/var/log/supervisor/postfix.err
+stdout_logfile=/var/log/supervisor/postfix.log
+startsecs=10
+stopasgroup=true

@@ -141,8 +141,8 @@ RUN chmod +x /opt/app/postfix.sh /opt/app/entrypoint.sh
 
 # Supervisor setup
 RUN mkdir -p /var/log/supervisor \
-    && cp /opt/app/supervisord /etc/supervisor/conf.d/supervisord.conf \
-    && chmod 644 /etc/supervisor/conf.d/supervisord.conf
+    && cp /opt/app/supervisord /etc/supervisor/conf.d/services.conf \
+    && chmod 644 /etc/supervisor/conf.d/services.conf
 
 # Create PHP configuration
 RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini \

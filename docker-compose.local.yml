@@ -1,6 +1,8 @@
 services:
   web:
     image: htmlgraphic/apache:2.1.0
+    cap_add:
+      - SYSLOG
     platform: linux/arm64
     container_name: apache
     restart: unless-stopped
