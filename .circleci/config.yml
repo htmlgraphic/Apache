@@ -22,40 +22,52 @@ jobs:
           command: |
             rm -rf ~/project/container-build
             mkdir -p ~/project/container-build
-      - run:
-          name: Install Dependencies
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y apache2 postfix wkhtmltopdf curl make bash git \
-              fontconfig libjpeg-turbo8 libssl1.1 xfonts-75dpi xfonts-base
-            sudo systemctl start apache2
-            sudo systemctl start postfix
-      - run:
-          name: Run Tests
-          command: |
-            echo "Skipping host-based tests; running in container only"
       - setup_remote_docker:
           version: 20.10
+      - run:
+          name: Install Docker Compose
+          command: |
+            apk add --no-cache docker-compose
       - run:
           name: Build << parameters.env >> Apache Docker Image
           command: |
             cp .env.example .env
             echo "NODE_ENVIRONMENT=<< parameters.env >>" >> .env
             echo "BUILD_ENV=<< parameters.env >>" >> .env
-            echo "SMTP_HOST=smtp.example.com" >> .env
+            echo "MYSQL_DATABASE=htmlgraphic" >> .env
+            echo "MYSQL_ROOT_PASSWORD=new_passwordac" >> .env
+            echo "MYSQL_USER=admin" >> .env
+            echo "MYSQL_PASSWORD=new_password" >> .env
             echo "SASL_USER=$CIRCLE_SASL_USER" >> .env
             echo "SASL_PASS=$CIRCLE_SASL_PASS" >> .env
+            echo "SMTP_HOST=sandbox.smtp.mailtrap.io" >> .env
             echo "LOG_TOKEN=$CIRCLE_LOG_TOKEN" >> .env
-            make build || { echo "Build failed"; exit 1; }
+            make build || { echo "Build failed"; docker images; exit 1; }
       - run:
           name: Start << parameters.env >> Container
           command: |
             set -x
             pwd
             ls -la
-            ls -la ~/project/tests
-            make run || { echo "Container start failed"; exit 1; }
+            ls -la ~/project/tests || echo "Tests directory not found"
+            cat .env
+            make run || { echo "Container start failed"; docker ps -a; docker logs ${CONTAINER_NAME}; exit 1; }
             docker ps -a
+            # Wait for supervisord
+            for i in {1..30}; do
+              if docker exec ${CONTAINER_NAME} supervisorctl status | grep -q "RUNNING"; then
+                echo "Supervisord services are running"
+                break
+              fi
+              echo "Waiting for supervisord..."
+              sleep 2
+            done
+            if [ $i -eq 30 ]; then
+              echo "Supervisord failed to start within 60 seconds"
+              docker exec ${CONTAINER_NAME} cat /etc/supervisor/supervisord.conf || echo "Supervisord config not found"
+              docker exec ${CONTAINER_NAME} ls -la /var/run /var/log/supervisor
+              exit 1
+            fi
             # Wait for Apache
             for i in {1..30}; do
               if curl -s -o /dev/null http://127.0.0.1; then
@@ -67,12 +79,13 @@ jobs:
             done
             if [ $i -eq 30 ]; then
               echo "Apache failed to start within 60 seconds"
+              docker logs ${CONTAINER_NAME}
               exit 1
             fi
             # Wait for MySQL
             if docker ps -a | grep apache-db-1; then
               for i in {1..30}; do
-                if docker exec apache-db-1 mysqladmin ping -h 127.0.0.1 --silent; then
+                if docker exec apache-db-1 mysqladmin ping -h 127.0.0.1 -u admin -pnew_password --silent; then
                   echo "MySQL is ready"
                   break
                 fi
@@ -81,6 +94,7 @@ jobs:
               done
               if [ $i -eq 30 ]; then
                 echo "MySQL failed to start within 60 seconds"
+                docker logs apache-db-1
                 exit 1
               fi
             fi
@@ -91,7 +105,7 @@ jobs:
       - run:
           name: << parameters.env >> Build Tests
           command: |
-            docker exec ${CONTAINER_NAME} /bin/bash /opt/tests/build_tests.sh
+            docker exec ${CONTAINER_NAME} /bin/bash /opt/tests/build_tests.sh || { echo "Tests failed"; docker exec ${CONTAINER_NAME} supervisorctl status; exit 1; }
       - run:
           name: Collect << parameters.env >> Container Logs
           command: |
