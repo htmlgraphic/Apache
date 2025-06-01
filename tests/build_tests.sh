@@ -43,32 +43,6 @@ testMySQLDatabase() {
     echo -e '\n'
 }
 
-testModPagespeed() {
-    echo 'Test mod_pagespeed installation'
-    test=$(a2query -m pagespeed | grep -w enabled | wc -l)
-    assertEquals "mod_pagespeed should be enabled" 1 $test
-    echo -e '\n'
-}
-
-testModPagespeedDependencies() {
-    echo 'Test mod_pagespeed dependencies'
-    for dep in gyp python3; do
-        printf 'Checking dependency %s\n' "$dep"
-        test=$(command -v $dep | wc -l)
-        assertEquals "Dependency $dep should be installed" 1 $test
-    done
-    echo -e '\n'
-}
-
-testModPagespeedPermissions() {
-    echo 'Test mod_pagespeed directory permissions'
-    cache_owner=$(stat -c '%U:%G' /var/cache/mod_pagespeed)
-    log_owner=$(stat -c '%U:%G' /var/log/pagespeed)
-    assertEquals "mod_pagespeed cache directory should be owned by nobody:www-data" "nobody:www-data" "$cache_owner"
-    assertEquals "mod_pagespeed log directory should be owned by nobody:www-data" "nobody:www-data" "$log_owner"
-    echo -e '\n'
-}
-
 testComposer() {
     echo 'Test Composer installation'
     test=$(composer --version | grep 'Composer version 2' | wc -l)
