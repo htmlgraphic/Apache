@@ -25,9 +25,9 @@ jobs:
       - setup_remote_docker:
           version: 20.10
       - run:
-          name: Install Docker Compose
+          name: Install Dependencies
           command: |
-            apk add --no-cache docker-compose
+            apk add --no-cache make docker-compose
       - run:
           name: Build << parameters.env >> Apache Docker Image
           command: |
