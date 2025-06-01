@@ -45,5 +45,3 @@ xmlwriter
 xsl
 zip
 zlib
-mod_deflate
-mod_filter

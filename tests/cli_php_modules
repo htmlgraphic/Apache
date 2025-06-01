@@ -26,6 +26,7 @@ phar
 posix
 redis
 readline
+reflection
 session
 shmop
 simplexml
@@ -40,8 +41,5 @@ xml
 xmlreader
 xmlwriter
 xsl
-opcache.enable
 zip
 zlib
-mod_deflate
-mod_filter

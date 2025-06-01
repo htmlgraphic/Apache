@@ -23,14 +23,14 @@ ENV DEBIAN_FRONTEND=noninteractive \
     APACHE_RUN_DIR=/var/run/apache2 \
     APACHE_LOCK_DIR=/var/lock/apache2
 
-# Install and Configure Locales
-RUN apt-get update && apt-get install -y locales && \
-    locale-gen ${OS_LOCALE} && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Install Dependencies
+# Install and Configure Locales, Dependencies, and PHP Extensions
 RUN apt-get update && apt-get install -y \
-        software-properties-common && \
+        locales \
+        software-properties-common \
+        libmcrypt-dev \
+        libssl1.1 && \
+    locale-gen ${OS_LOCALE} && \
+    echo "deb http://security.ubuntu.com/ubuntu jammy-security main" >> /etc/apt/sources.list && \
     add-apt-repository -y ppa:ondrej/php && \
     apt-get update && apt-get install -y \
         curl \
@@ -82,11 +82,18 @@ RUN apt-get update && apt-get install -y \
     apt-get autoremove -y && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install PECL Extensions
+# Install Mcrypt Extension
+RUN pecl install mcrypt && \
+    echo "extension=mcrypt.so" > /etc/php/8.3/mods-available/mcrypt.ini && \
+    ln -s /etc/php/8.3/mods-available/mcrypt.ini /etc/php/8.3/apache2/conf.d/20-mcrypt.ini && \
+    ln -s /etc/php/8.3/mods-available/mcrypt.ini /etc/php/8.3/cli/conf.d/20-mcrypt.ini
+
+# Install Redis Extension
 RUN pecl channel-update pecl.php.net && \
     pecl install redis && \
     echo "extension=redis.so" > /etc/php/8.3/mods-available/redis.ini && \
-    phpenmod redis
+    ln -s /etc/php/8.3/mods-available/redis.ini /etc/php/8.3/apache2/conf.d/20-redis.ini && \
+    ln -s /etc/php/8.3/mods-available/redis.ini /etc/php/8.3/cli/conf.d/20-redis.ini
 
 # Enable Apache Modules
 RUN a2enmod userdir rewrite ssl pagespeed
@@ -115,17 +122,18 @@ RUN postconf -e "compatibility_level=2" \
     cp /etc/hostname /etc/mailname
 
 # Install mod_pagespeed
-RUN wget -O /tmp/mod-pagespeed.deb https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb && \
+RUN wget -qO /tmp/mod-pagespeed.deb https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb && \
     dpkg -i /tmp/mod-pagespeed.deb || (apt-get update && apt-get install -f -y) && \
-    rm /tmp/mod-pagespeed.deb && \
+    rm -f /tmp/mod-pagespeed.deb && \
     mkdir -p /var/cache/mod_pagespeed /var/log/pagespeed && \
-    chown nobody:www-data /var/cache/mod_pagespeed /var/log/pagespeed && \
+    chown www-data:www-data /var/cache/mod_pagespeed /var/log/pagespeed && \
     chmod 755 /var/cache/mod_pagespeed /var/log/pagespeed
 
 # Install wkhtmltox
-RUN wget -O /tmp/wkhtmltox.deb https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.noble_amd64.deb && \
+RUN wget -qO /tmp/wkhtmltox.deb https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.noble_amd64.deb || \
+    wget -qO /tmp/wkhtmltox.deb https://downloads.wkhtmltopdf.org/0.12/0.12.6/wkhtmltox_0.12.6-1.ubuntu-noble_amd64.deb && \
     dpkg -i /tmp/wkhtmltox.deb || (apt-get update && apt-get install -f -y) && \
-    rm /tmp/wkhtmltox.deb
+    rm -f /tmp/wkhtmltox.deb
 
 # Copy Application Files
 COPY ./app /opt/app
@@ -154,7 +162,7 @@ RUN chmod +x /usr/local/bin/composer && \
     composer global require "laravel/installer" "vlucas/phpdotenv"
 
 # Install WP-CLI
-RUN wget -O /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
+RUN wget -qO /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
     chmod +x /usr/local/bin/wp
 
 # Unit Tests
