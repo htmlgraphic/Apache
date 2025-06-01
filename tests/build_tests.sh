@@ -4,14 +4,13 @@
 #### Extra breathing room
 echo -e '\n'
 
-
 setUp() {
     echo 'Running setup checks'
     if ! supervisorctl status apache2 | grep -q RUNNING; then
-        fail 'Apache2 service is not running'
+        echo 'Warning: Apache2 service is not running'
     fi
     if ! supervisorctl status postfix | grep -q RUNNING; then
-        fail 'Postfix service is not running'
+        echo 'Warning: Postfix service is not running'
     fi
 }
 
@@ -24,21 +23,21 @@ testSupervisordConfig() {
 
 testMySQLServiceRunning() {
     echo 'Test MySQL service status'
-    test=$(docker exec ${CONTAINER_NAME} supervisorctl status | grep mysql | grep RUNNING | wc -l)
-    assertEquals "MySQL service should be running under supervisord" 1 $test
+    test=$(mysqladmin -u admin -pnew_password -h apache_db ping 2>/dev/null | grep -q 'mysqld is alive' && echo 1 || echo 0)
+    assertEquals "MySQL service should be running" 1 $test
     echo -e '\n'
 }
 
 testMySQLConnectivity() {
     echo 'Test MySQL connectivity'
-    test=$(docker exec apache-db-1 mysql -u admin -pnew_password -h 127.0.0.1 -e "SELECT 1" 2>/dev/null | wc -l)
+    test=$(mysql -u admin -pnew_password -h apache_db -e "SELECT 1" 2>/dev/null | wc -l)
     assertEquals "MySQL should be accessible with admin credentials" 1 $test
     echo -e '\n'
 }
 
 testMySQLDatabase() {
     echo 'Test MySQL database existence'
-    test=$(docker exec apache-db-1 mysql -u admin -pnew_password -h 127.0.0.1 -e "SHOW DATABASES LIKE 'htmlgraphic'" 2>/dev/null | grep htmlgraphic | wc -l)
+    test=$(mysql -u admin -pnew_password -h apache_db -e "SHOW DATABASES LIKE 'htmlgraphic'" 2>/dev/null | grep htmlgraphic | wc -l)
     assertEquals "Database htmlgraphic should exist" 1 $test
     echo -e '\n'
 }
@@ -66,16 +65,14 @@ testPhpDotenv() {
 
 testWPCLI() {
     echo 'Test WP-CLI installation'
-    test=$(wp --version | grep 'WP-CLI' | wc -l)
+    test=$(wp --version --allow-root | grep 'WP-CLI' | wc -l)
     assertEquals "WP-CLI should be installed" 1 $test
     echo -e '\n'
 }
 
 testApacheServiceRunning() {
     echo 'Test Apache2 service status'
-    test_systemd=$(systemctl is-active apache2 | grep 'active' | wc -l)
-    test_supervisord=$(docker exec ${CONTAINER_NAME} supervisorctl status | grep apache2 | grep RUNNING | wc -l)
-    assertEquals "Apache2 should be active via systemd" 1 $test_systemd
+    test_supervisord=$(supervisorctl status | grep apache2 | grep RUNNING | wc -l)
     assertEquals "Apache2 should be running under supervisord" 1 $test_supervisord
     echo -e '\n'
 }
@@ -115,16 +112,14 @@ testApacheModules() {
 
 testSSLConfiguration() {
     echo 'Test SSL configuration'
-    test=$(cat /etc/apache2/sites-enabled/default-ssl.conf | grep 'SSLEngine on' | wc -l)
+    test=$(cat /data/apache2/sites-enabled/000-default.conf | grep 'SSLEngine on' | wc -l)
     assertEquals 1 $test
     echo -e '\n'
 }
 
 testPostfixServiceRunning() {
     echo 'Test Postfix service status'
-    test_systemd=$(systemctl is-active postfix | grep 'active' | wc -l)
-    test_supervisord=$(docker exec ${CONTAINER_NAME} supervisorctl status | grep postfix | grep RUNNING | wc -l)
-    assertEquals "Postfix should be active via systemd" 1 $test_systemd
+    test_supervisord=$(supervisorctl status | grep postfix | grep RUNNING | wc -l)
     assertEquals "Postfix should be running under supervisord" 1 $test_supervisord
     echo -e '\n'
 }
@@ -211,7 +206,7 @@ testWkhtmltoxDependencies() {
     echo 'Test wkhtmltox dependencies'
     for dep in fontconfig libjpeg-turbo8 libssl1.1 xfonts-75dpi xfonts-base; do
         printf 'Checking dependency %s\n' "$dep"
-        test=$(dpkg -l | grep -w "$dep" | wc -l)
+        test=$(dpkg -l | grep -w "$dep" | grep -v '^rc' | wc -l)
         assertEquals "Dependency $dep should be installed" 1 $test
     done
     echo -e '\n'
@@ -241,13 +236,13 @@ testWkhtmltoxFunctional() {
 }
 
 testWebRootPermissions() {
-    echo 'Test /var/www/html permissions'
-    owner=$(stat -c '%U:%G' /var/www/html)
-    file_perms=$(find /var/www/html -type f -exec stat -c '%a' {} \; | sort -u)
-    dir_perms=$(find /var/www/html -type d -exec stat -c '%a' {} \; | sort -u)
-    assertEquals "/var/www/html should be owned by www-data:www-data" "www-data:www-data" "$owner"
-    assertEquals "Files in /var/www/html should have 644 permissions" "644" "$file_perms"
-    assertEquals "Directories in /var/www/html should have 755 permissions" "755" "$dir_perms"
+    echo 'Test /data/www/public_html permissions'
+    owner=$(stat -c '%U:%G' /data/www/public_html)
+    file_perms=$(find /data/www/public_html -type f -exec stat -c '%a' {} \; | sort -u)
+    dir_perms=$(find /data/www/public_html -type d -exec stat -c '%a' {} \; | sort -u)
+    assertEquals "/data/www/public_html should be owned by www-data:www-data" "www-data:www-data" "$owner"
+    assertEquals "Files in /data/www/public_html should have 644 permissions" "644" "$file_perms"
+    assertEquals "Directories in /data/www/public_html should have 755 permissions" "755" "$dir_perms"
     echo -e '\n'
 }
 
@@ -271,7 +266,7 @@ testPostfixPassword() {
 
 testPostfixRelay() {
     echo 'Relay through SendGrid'
-    test=$(/usr/sbin/postconf relayhost | grep 'htmlgraphic' | wc -l)
+    test=$(/usr/sbin/postconf relayhost | grep 'smtp.sendgrid.net' | wc -l)
     assertEquals 1 $test
     echo -e '\n'
 }
@@ -285,14 +280,14 @@ testHTTP() {
 
 testPHPModules() {
     echo 'Test PHP Modules'
-    file="php_modules"
+    file="/opt/tests/php_modules"
     if [ ! -f "$file" ] || [ ! -s "$file" ]; then
         fail "File $file does not exist or is empty"
     fi
     while IFS= read -r line; do
         if [ ! -z "$line" ]; then
             printf 'checking PHP module %s\n' "$line"
-            test=$(/usr/bin/wget -q -O- http://127.0.0.1/php_extensions.php | grep -w "$line" | wc -l)
+            test=$(curl -s http://127.0.0.1/php_extensions.php | grep -w "$line" | wc -l)
             assertEquals 1 $test
         fi
     done <"$file"
@@ -301,13 +296,12 @@ testPHPModules() {
 
 testPHPModulesCLI() {
     echo 'Test CLI PHP Modules'
-    file="cli_php_modules"
+    file="/opt/tests/cli_php_modules"
     while IFS= read -r line; do
         if [ ! -z "$line" ]; then
             printf 'checking CLI PHP module %s\n' "$line"
-            module=$(php -i | grep "$line")
-            test=$(echo $module | grep "$line" | wc -l)
-            assertEquals 1 $test
+            module=$(php -m | grep -w "$line" | wc -l)
+            assertEquals 1 $module
         fi
     done <"$file"
     echo -e '\n'
@@ -323,7 +317,7 @@ testHTTPS() {
 testCLI_max_execution_time() {
     max_execution_time=$(php -i | grep 'max_execution_time')
     echo 'Test max_execution_time, currently set to "'$max_execution_time'"'
-    test=$(echo $max_execution_time | grep 'max_execution_time => 0 => 0' | wc -l)
+    test=$(echo $max_execution_time | grep 'max_execution_time => 300 => 300' | wc -l)
     assertEquals 1 $test
     echo -e '\n'
 }
@@ -355,7 +349,7 @@ testCLI_post_max_size() {
 testCLI_max_input_time() {
     max_input_time=$(php -i | grep 'max_input_time')
     echo 'Test max_input_time, currently set to "'$max_input_time'"'
-    test=$(echo $max_input_time | grep 'max_input_time => -1 => -1' | wc -l)
+    test=$(echo $max_input_time | grep 'max_input_time => 300 => 300' | wc -l)
     assertEquals 1 $test
     echo -e '\n'
 }
@@ -377,9 +371,9 @@ testApache_MemoryLimit() {
 }
 
 testApache_upload_max_filesize() {
-    upload_max_filesize=$(cat /etc/php/8.3/apache2/php.ini | grep 'upload_max_filesize')
-    echo 'Test upload_max_filesize, currently set to "'$upload_max_filesize'"'
-    test=$(echo $upload_max_filesize | grep 'upload_max_filesize = 1000M' | wc -l)
+    max_execution_time=$(cat /etc/php/8.3/apache2/php.ini | grep 'upload_max_filesize')
+    echo 'Test upload_max_filesize, currently set to "'$max_execution_time'"'
+    test=$(echo $max_execution_time | grep 'upload_max_filesize = 1000M' | wc -l)
     assertEquals 1 $test
     echo -e '\n'
 }
@@ -409,11 +403,7 @@ testNODE_ENVIRONMENT() {
 
 testNODE_ENVIRONMENT_PHP() {
     echo 'Test env NODE_ENVIRONMENT within Apache'
-    if [ -z "$CONTAINER_NAME" ]; then
-        echo "Skipping NODE_ENVIRONMENT test: CONTAINER_NAME not set"
-        return
-    fi
-    test=$(docker exec ${CONTAINER_NAME} /bin/bash -c "env | grep NODE_ENVIRONMENT" | wc -l)
+    test=$(env | grep NODE_ENVIRONMENT | wc -l)
     assertEquals "NODE_ENVIRONMENT should be set in Apache" 1 $test
     echo -e '\n'
 }

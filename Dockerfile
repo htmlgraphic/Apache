@@ -57,6 +57,10 @@ RUN add-apt-repository -y ppa:ondrej/php && \
         php8.3-xml \
         php8.3-common \
         php8.3-redis \
+        php8.3-mysql \
+        php8.3-gd \
+        php8.3-zip \
+        php8.3-xsl \
         libxml2-dev \
         libssl-dev \
         zlib1g-dev \
@@ -93,23 +97,32 @@ RUN pecl install mcrypt && \
     ln -s /etc/php/8.3/mods-available/mcrypt.ini /etc/php/8.3/apache2/conf.d/20-mcrypt.ini && \
     ln -s /etc/php/8.3/mods-available/mcrypt.ini /etc/php/8.3/cli/conf.d/20-mcrypt.ini
 
-# Configure Redis Extension (already installed via php8.3-redis)
+# Configure Redis Extension (avoid duplicate loading)
 RUN echo "extension=redis.so" > /etc/php/8.3/mods-available/redis.ini && \
-    ln -s /etc/php/8.3/mods-available/redis.ini /etc/php/8.3/apache2/conf.d/20-redis.ini && \
-    ln -s /etc/php/8.3/mods-available/redis.ini /etc/php/8.3/cli/conf.d/20-redis.ini
+    ln -sf /etc/php/8.3/mods-available/redis.ini /etc/php/8.3/apache2/conf.d/20-redis.ini && \
+    ln -sf /etc/php/8.3/mods-available/redis.ini /etc/php/8.3/cli/conf.d/20-redis.ini && \
+    rm -f /etc/php/8.3/apache2/conf.d/10-redis.ini /etc/php/8.3/cli/conf.d/10-redis.ini
 
 # Enable Apache Modules
-RUN a2enmod userdir rewrite ssl
+RUN a2enmod headers userdir rewrite ssl
+
+# Create Apache directories
+RUN mkdir -p /data/apache2/logs /data/apache2/ssl /data/apache2/sites-enabled && \
+    ls -ld /data/apache2 /data/apache2/logs /data/apache2/ssl /data/apache2/sites-enabled && \
+    chown www-data:www-data /data/apache2/logs /data/apache2/ssl /data/apache2/sites-enabled
+
+# Copy Apache configuration
+COPY ./app/sample.conf /data/apache2/sites-enabled/000-default.conf
+RUN chmod 644 /data/apache2/sites-enabled/000-default.conf
 
 # Apache Configuration
-RUN mkdir -p /data/apache2/{logs,ssl,sites-enabled} && \
-    a2ensite default-ssl && \
+RUN a2ensite default-ssl && \
     echo "ServerName localhost" > /etc/apache2/conf-available/servername.conf && \
     a2enconf servername && \
     sed -i 's|IncludeOptional sites-enabled/\*.conf|IncludeOptional /data/apache2/sites-enabled/*.conf|' /etc/apache2/apache2.conf && \
     echo "<IfModule mpm_event_module>\nStartServers 2\nMinSpareThreads 25\nMaxSpareThreads 75\nThreadLimit 64\nThreadsPerChild 25\nMaxRequestWorkers 150\nMaxConnectionsPerChild 0\n</IfModule>" >> /etc/apache2/apache2.conf && \
-    echo "<VirtualHost *:80>\nServerName localhost\nDocumentRoot /var/www/html\nErrorLog \${APACHE_LOG_DIR}/error.log\nCustomLog \${APACHE_LOG_DIR}/access.log combined\n</VirtualHost>" > /data/apache2/sites-enabled/000-default.conf && \
-    echo "<VirtualHost *:443>\nServerName localhost\nDocumentRoot /var/www/html\nErrorLog \${APACHE_LOG_DIR}/error.log\nCustomLog \${APACHE_LOG_DIR}/access.log combined\nSSLEngine on\nSSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem\nSSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key\n</VirtualHost>" > /data/apache2/sites-enabled/default-ssl.conf
+    echo "Header set X-Frame-Options DENY\nHeader set X-Content-Type-Options nosniff" > /etc/apache2/conf-available/security-headers.conf && \
+    a2enconf security-headers
 
 # Postfix Configuration
 RUN postconf -e "compatibility_level=2" \
@@ -121,8 +134,13 @@ RUN postconf -e "compatibility_level=2" \
     "smtp_sasl_tls_security_options=noanonymous" \
     "smtp_tls_security_level=may" \
     "header_size_limit=4096000" \
-    "inet_protocols=ipv4" && \
-    cp /etc/hostname /etc/mailname
+    "inet_protocols=ipv4" \
+    "relayhost=[smtp.sendgrid.net]:587" \
+    "smtp_sasl_password_maps=hash:/etc/postfix/sasl_passwd" && \
+    cp /etc/hostname /etc/mailname && \
+    echo "[smtp.sendgrid.net]:587 $SASL_USER:$SASL_PASS" > /etc/postfix/sasl_passwd && \
+    postmap /etc/postfix/sasl_passwd && \
+    chmod 600 /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db
 
 # Install wkhtmltox
 RUN wget -qO /tmp/wkhtmltox.deb https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.noble_arm64.deb || \
@@ -151,7 +169,8 @@ RUN cp /etc/php/8.3/apache2/php.ini /etc/php/8.3/apache2/php.ini.bak && \
     sed -i 's|memory_limit = 128M|memory_limit = -1|' /etc/php/8.3/apache2/php.ini && \
     sed -i 's|upload_max_filesize = 2M|upload_max_filesize = 1000M|' /etc/php/8.3/apache2/php.ini && \
     sed -i 's|post_max_size = 8M|post_max_size = 1000M|' /etc/php/8.3/apache2/php.ini && \
-    sed -i 's|max_input_time = 60|max_input_time = 300|' /etc/php/8.3/apache2/php.ini
+    sed -i 's|max_input_time = 60|max_input_time = 300|' /etc/php/8.3/apache2/php.ini && \
+    cp /etc/php/8.3/apache2/php.ini /etc/php/8.3/cli/php.ini
 
 # Composer Installation
 COPY --from=composer:2.8 /usr/bin/composer /usr/local/bin/composer
@@ -168,12 +187,14 @@ RUN tar xf /opt/tests/shunit2-2.1.7.tar.gz -C /opt/tests/ && \
 
 # Permissions
 RUN mkdir -p /data/www/public_html /data/pear /root/project/container-build && \
-    chown -R www-data:www-data /var/www/html /root/project/container-build && \
+    chown -R www-data:www-data /var/www/html /data/www/public_html /root/project/container-build && \
     find /var/www/html -type f -exec chmod 644 {} \; && \
-    find /var/www/html -type d -exec chmod 755 {} \;
+    find /var/www/html -type d -exec chmod 755 {} \; && \
+    find /data/www/public_html -type f -exec chmod 644 {} \; && \
+    find /data/www/public_html -type d -exec chmod 755 {} \;
 
 # Ensure Supervisord Config
-RUN echo "[supervisord]\nnodaemon=true\nlogfile=/var/log/supervisor/supervisord.log\npidfile=/var/run/supervisord.pid\n" > /etc/supervisor/supervisord.conf
+RUN echo "[supervisord]\nnodaemon=true\nlogfile=/var/log/supervisor/supervisord.log\npidfile=/var/run/supervisord.pid\n[supervisorctl]\nserverurl=unix:///var/run/supervisord.sock" > /etc/supervisor/supervisord.conf
 
 # Environment Variables from .env
 COPY .env /opt/.env
@@ -181,6 +202,11 @@ RUN echo "export SASL_USER=$(grep SASL_USER /opt/.env | cut -d '=' -f2)" >> /etc
     echo "export SASL_PASS=$(grep SASL_PASS /opt/.env | cut -d '=' -f2)" >> /etc/environment && \
     echo "export LOG_TOKEN=$(grep LOG_TOKEN /opt/.env | cut -d '=' -f2)" >> /etc/environment && \
     echo "export NODE_ENVIRONMENT=$(grep NODE_ENVIRONMENT /opt/.env | cut -d '=' -f2)" >> /etc/environment
+
+# Create test PHP file
+RUN echo "<?php phpinfo(); ?>" > /data/www/public_html/php_extensions.php && \
+    chown www-data:www-data /data/www/public_html/php_extensions.php && \
+    chmod 644 /data/www/public_html/php_extensions.php
 
 # Volumes, Ports, Healthcheck
 VOLUME ["/backup", "/data", "/etc/letsencrypt"]
