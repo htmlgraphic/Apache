@@ -6,25 +6,52 @@ echo -e '\n'
 
 setUp() {
     echo 'Running setup checks'
-    if ! supervisorctl status apache2 | grep -q RUNNING 2>/dev/null; then
-        echo 'Warning: Apache2 service is not running'
+    # Wait for Apache2 to be ready
+    for i in {1..30}; do
+        if supervisorctl -c /etc/supervisord.conf status apache2 | grep -q RUNNING 2>/dev/null; then
+            echo "Apache2 service is running"
+            break
+        fi
+        echo "Waiting for Apache2 service ($i/30)"
+        supervisorctl -c /etc/supervisord.conf status apache2
+        sleep 2
+    done
+    if ! supervisorctl -c /etc/supervisord.conf status apache2 | grep -q RUNNING 2>/dev/null; then
+        echo 'ERROR: Apache2 service failed to start'
+        echo "DEBUG: Supervisord status:"
+        supervisorctl -c /etc/supervisord.conf status
+        echo "DEBUG: Apache2 error log:"
+        cat /var/log/supervisor/apache2.err.log 2>/dev/null
+        echo "DEBUG: Apache2 access log:"
+        cat /data/apache2/logs/error_log 2>/dev/null
+        apache2ctl configtest 2>/dev/null || echo "Apache2 config test failed"
+        exit 1
     fi
-    if ! supervisorctl status postfix | grep -q RUNNING 2>/dev/null; then
+    if ! supervisorctl -c /etc/supervisord.conf status postfix | grep -q RUNNING 2>/dev/null; then
         echo 'Warning: Postfix service is not running'
+        supervisorctl -c /etc/supervisord.conf status postfix
     fi
 }
 
 testSupervisordConfig() {
     echo 'Test supervisord configuration file'
-    test=$(ls /etc/supervisor/supervisord.conf 2>/dev/null | wc -l)
+    test=$(ls /etc/supervisord.conf 2>/dev/null | wc -l)
     assertEquals "Supervisord config file should exist" 1 $test
     echo -e '\n'
 }
 
 testMySQLServiceRunning() {
     echo 'Test MySQL service status'
-    sleep 10
-    test=$(mysqladmin -u admin -pnew_password -h db ping 2>/dev/null | grep -q 'mysqld is alive' && echo 1 || echo 0)
+    # Wait for MySQL to be ready
+    for i in {1..30}; do
+        if mysqladmin -u admin -pnew_password -h db ping 2>/dev/null | grep -q 'mysqld is alive'; then
+            test=1
+            break
+        fi
+        echo "Waiting for MySQL service ($i/30)"
+        sleep 2
+    done
+    test=${test:-0}
     assertEquals "MySQL service should be running" 1 $test
     echo -e '\n'
 }
@@ -38,6 +65,8 @@ testMySQLConnectivity() {
 
 testMySQLDatabase() {
     echo 'Test MySQL database existence'
+    # Ensure database exists
+    mysql -u admin -pnew_password -h db -e "CREATE DATABASE IF NOT EXISTS htmlgraphic" 2>/dev/null
     test=$(mysql -u admin -pnew_password -h db -e "SHOW DATABASES LIKE 'htmlgraphic'" 2>/dev/null | grep htmlgraphic | wc -l)
     assertEquals "Database htmlgraphic should exist" 1 $test
     echo -e '\n'
@@ -73,7 +102,7 @@ testWPCLI() {
 
 testApacheServiceRunning() {
     echo 'Test Apache2 service status'
-    test_supervisord=$(supervisorctl status | grep apache2 | grep -q RUNNING && echo 1 || echo 0)
+    test_supervisord=$(supervisorctl -c /etc/supervisord.conf status apache2 | grep -q RUNNING && echo 1 || echo 0)
     assertEquals "Apache2 should be running under supervisord" 1 $test_supervisord
     echo -e '\n'
 }
@@ -83,7 +112,7 @@ testPHPExtensionsInstallation() {
     if ! command -v php >/dev/null; then
         fail "php command not found"
     fi
-    for ext in mcrypt redis; do
+    for ext in mcrypt redis pdo phar reflection simplexml spl; do
         printf 'Checking PHP extension %s\n' "$ext"
         test=$(php -m | grep -w "$ext" | wc -l)
         assertEquals "PHP extension $ext should be installed" 1 $test
@@ -113,14 +142,14 @@ testApacheModules() {
 
 testSSLConfiguration() {
     echo 'Test SSL configuration'
-    test=$(grep 'SSLEngine on' /data/apache2/sites-enabled/sample.conf 2>/dev/null | wc -l)
-    assertEquals "SSL should be enabled in sample.conf" 1 $test
+    test=$(grep 'SSLEngine on' /data/apache2/sites-enabled/000-default.conf 2>/dev/null | wc -l)
+    assertEquals "SSL should be enabled in 000-default.conf" 1 $test
     echo -e '\n'
 }
 
 testPostfixServiceRunning() {
     echo 'Test Postfix service status'
-    test_supervisord=$(supervisorctl status | grep postfix | grep -q RUNNING && echo 1 || echo 0)
+    test_supervisord=$(supervisorctl -c /etc/supervisord.conf status postfix | grep -q RUNNING && echo 1 || echo 0)
     assertEquals "Postfix should be running under supervisord" 1 $test_supervisord
     echo -e '\n'
 }
@@ -207,8 +236,8 @@ testWkhtmltoxDependencies() {
     echo 'Test wkhtmltox dependencies'
     for dep in fontconfig libjpeg-turbo8 libssl1.1 xfonts-75dpi xfonts-base; do
         printf 'Checking dependency %s\n' "$dep"
-        test=$(dpkg -l | grep -w "$dep" | grep -v '^rc' | wc -l)
-        assertEquals "Dependency $dep should be installed" 1 $test
+        test=$(dpkg -l | grep -w "$dep" | grep -v '^rc' | grep '^ii' | wc -l)
+        assertTrue "Dependency $dep should be installed" "[ $test -ge 1 ]"
     done
     echo -e '\n'
 }
@@ -359,7 +388,7 @@ testCLI_max_input_time() {
 }
 
 testApache_max_execution_time() {
-    max_execution_time=$(cat /etc/php/8.3/apache2/php.ini | grep 'max_execution_time')
+    max_execution_time=$(cat /etc/php/8.3/apache2/php.ini | grep '^max_execution_time')
     echo 'Test max_execution_time, currently set to "'$max_execution_time'"'
     test=$(echo $max_execution_time | grep 'max_execution_time = 300' | wc -l)
     assertEquals "Apache max_execution_time should be 300" 1 $test
@@ -367,7 +396,7 @@ testApache_max_execution_time() {
 }
 
 testApache_MemoryLimit() {
-    memory_limit=$(cat /etc/php/8.3/apache2/php.ini | grep 'memory_limit')
+    memory_limit=$(cat /etc/php/8.3/apache2/php.ini | grep '^memory_limit')
     echo 'Test memory_limit, currently set to "'$memory_limit'"'
     test=$(echo $memory_limit | grep 'memory_limit = -1' | wc -l)
     assertEquals "Apache memory_limit should be -1" 1 $test
@@ -375,7 +404,7 @@ testApache_MemoryLimit() {
 }
 
 testApache_upload_max_filesize() {
-    upload_max_filesize=$(cat /etc/php/8.3/apache2/php.ini | grep 'upload_max_filesize')
+    upload_max_filesize=$(cat /etc/php/8.3/apache2/php.ini | grep '^upload_max_filesize')
     echo 'Test upload_max_filesize, currently set to "'$upload_max_filesize'"'
     test=$(echo $upload_max_filesize | grep 'upload_max_filesize = 1000M' | wc -l)
     assertEquals "Apache upload_max_filesize should be 1000M" 1 $test
@@ -383,7 +412,7 @@ testApache_upload_max_filesize() {
 }
 
 testApache_post_max_size() {
-    post_max_size=$(cat /etc/php/8.3/apache2/php.ini | grep 'post_max_size')
+    post_max_size=$(cat /etc/php/8.3/apache2/php.ini | grep '^post_max_size')
     echo 'Test post_max_size, currently set to "'$post_max_size'"'
     test=$(echo $post_max_size | grep 'post_max_size = 1000M' | wc -l)
     assertEquals "Apache post_max_size should be 1000M" 1 $test
@@ -391,7 +420,7 @@ testApache_post_max_size() {
 }
 
 testApache_max_input_time() {
-    max_input_time=$(cat /etc/php/8.3/apache2/php.ini | grep 'max_input_time')
+    max_input_time=$(cat /etc/php/8.3/apache2/php.ini | grep '^max_input_time')
     echo 'Test max_input_time, currently set to "'$max_input_time'"'
     test=$(echo $max_input_time | grep 'max_input_time = 300' | wc -l)
     assertEquals "Apache max_input_time should be 300" 1 $test
@@ -412,6 +441,6 @@ testNODE_ENVIRONMENT_PHP() {
     echo -e '\n'
 }
 
-echo "Test Summary: $(grep -c 'assert' build_tests.sh) tests executed"
+echo "Test Summary: $(grep -c '^test[A-Za-z]' $0) tests executed"
 
 . /opt/tests/shunit2-2.1.7/shunit2

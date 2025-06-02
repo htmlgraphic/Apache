@@ -25,7 +25,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
     CONTAINER_NAME=apache
 
 # Install prerequisites with minimal disk usage
-RUN apt-get update --allow-insecure-repositories && \
+RUN APT_CACHE_DIR=/tmp/apt-cache && \
+    apt-get update --allow-insecure-repositories && \
     apt-get install -y --no-install-recommends --allow-unauthenticated gnupg ca-certificates ubuntu-keyring && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
     apt-get update && \
@@ -33,7 +34,8 @@ RUN apt-get update --allow-insecure-repositories && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 # Install libssl1.1 for ARM64 and initial dependencies
-RUN apt-get update && apt-get install -y \
+RUN APT_CACHE_DIR=/tmp/apt-cache && \
+    apt-get update && apt-get install -y \
         curl \
         wget && \
     wget -qO /tmp/libssl1.1.deb http://ports.ubuntu.com/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_arm64.deb && \
