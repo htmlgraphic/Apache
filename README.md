@@ -17,7 +17,6 @@ Using containers offer a huge advantage when developing locally or in prodcution
 ```shell
 Apache
 ├── app/                     # → App conf to manage application on container
-│   ├── apache-config.conf   # → Apache config
 │   ├── index.php            # → Default web page, enter the IP `docker-machine ls` to load this page.
 │   ├── php_extensions.php   # → PHP extensions checklist
 │   ├── mac-permissions.sh   # → Run manually on container to match uid / gid permissions of local docker container to Mac OS X

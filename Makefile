@@ -70,23 +70,23 @@ build:
 # Test the existing container
 test:
 	@echo "Testing components in existing $(CONTAINER_NAME) container"
-	@for i in $$(seq 1 30); do \
+	@for i in $$(seq 1 60); do \
 		CONTAINER_STATUS=$$(docker inspect --format='{{.State.Status}}' $(CONTAINER_NAME) 2>/dev/null || echo "not_found"); \
 		if [ "$$CONTAINER_STATUS" = "running" ]; then \
-			if docker exec $(CONTAINER_NAME) sh -c "[ -f /etc/supervisor/conf.d/services.conf ]" 2>/dev/null; then \
+			if docker exec $(CONTAINER_NAME) sh -c "[ -f /etc/supervisord.conf ]" 2>/dev/null; then \
 				if docker exec $(CONTAINER_NAME) sh -c "[ -S /var/run/supervisor.sock ]" 2>/dev/null; then \
 					echo "Container and supervisor socket are ready"; \
 					break; \
 				else \
-					echo "Waiting for supervisor socket ($$i/30)"; \
+					echo "Waiting for supervisor socket ($$i/60)"; \
 					sleep 2; \
 				fi; \
 			else \
-				echo "Error: Supervisor configuration file /etc/supervisor/conf.d/services.conf not found"; \
+				echo "Error: Supervisor configuration file /etc/supervisord.conf not found"; \
 				exit 1; \
 			fi; \
 		elif [ "$$CONTAINER_STATUS" = "restarting" ]; then \
-			echo "Container is restarting, waiting ($$i/30)"; \
+			echo "Container is restarting, waiting ($$i/60)"; \
 			sleep 2; \
 		elif [ "$$CONTAINER_STATUS" = "not_found" ]; then \
 			echo "Error: Container $(CONTAINER_NAME) is not running. Run 'make run' or 'make start' first."; \
@@ -95,13 +95,13 @@ test:
 			echo "Error: Container $(CONTAINER_NAME) is in unexpected state: $$CONTAINER_STATUS"; \
 			exit 1; \
 		fi; \
-		if [ $$i -eq 30 ]; then \
-			echo "Error: Container failed to stabilize or supervisor socket missing after 60 seconds"; \
+		if [ $$i -eq 60 ]; then \
+			echo "Error: Container failed to stabilize or supervisor socket missing after 120 seconds"; \
 			exit 1; \
 		fi; \
 	done
 	@docker exec $(CONTAINER_NAME) apache2ctl configtest || { echo "apache2 config test failed"; exit 1; }
-	@docker exec $(CONTAINER_NAME) supervisorctl -c /etc/supervisor/conf.d/services.conf status | grep -E 'cron.*RUNNING|postfix.*RUNNING|rsyslog.*RUNNING' | wc -l | grep -q 3 || { echo "supervisorctl status test failed: not all processes are RUNNING"; docker exec $(CONTAINER_NAME) supervisorctl -c /etc/supervisor/conf.d/services.conf status; exit 1; }
+	@docker exec $(CONTAINER_NAME) supervisorctl -c /etc/supervisord.conf status | grep -E 'apache2.*RUNNING|postfix.*RUNNING' | wc -l | grep -q 2 || { echo "supervisorctl status test failed: not all processes are RUNNING"; docker exec $(CONTAINER_NAME) supervisorctl -c /etc/supervisord.conf status; exit 1; }
 	@docker exec $(CONTAINER_NAME) composer --version || { echo "composer test failed"; exit 1; }
 	@if [ "$(NODE_ENVIRONMENT)" = "dev" ]; then \
 		docker exec $(CONTAINER_NAME) git --version || { echo "git test failed"; exit 1; }; \

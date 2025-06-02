@@ -24,6 +24,14 @@ ENV DEBIAN_FRONTEND=noninteractive \
     APACHE_LOCK_DIR=/var/lock/apache2 \
     CONTAINER_NAME=apache
 
+# Install prerequisites with minimal disk usage
+RUN apt-get update --allow-insecure-repositories && \
+    apt-get install -y --no-install-recommends --allow-unauthenticated gnupg ca-certificates ubuntu-keyring && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
+    apt-get update && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 871920D1991BC93C && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+
 # Install libssl1.1 for ARM64 and initial dependencies
 RUN apt-get update && apt-get install -y \
         curl \
@@ -35,7 +43,8 @@ RUN apt-get update && apt-get install -y \
         locales \
         software-properties-common \
         libmcrypt-dev && \
-    locale-gen ${OS_LOCALE}
+    locale-gen ${OS_LOCALE} && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Add PHP PPA and install additional dependencies
 RUN add-apt-repository -y ppa:ondrej/php && \
@@ -62,6 +71,10 @@ RUN add-apt-repository -y ppa:ondrej/php && \
         php8.3-gd \
         php8.3-zip \
         php8.3-xsl \
+        php8.3-bcmath \
+        php8.3-mysql \
+        php8.3-phar \
+        php8.3-simplexml \
         libxml2-dev \
         libssl-dev \
         zlib1g-dev \
@@ -102,7 +115,7 @@ RUN pecl install mcrypt && \
 RUN echo "extension=redis.so" > /etc/php/8.3/mods-available/redis.ini && \
     ln -sf /etc/php/8.3/mods-available/redis.ini /etc/php/8.3/apache2/conf.d/20-redis.ini && \
     ln -sf /etc/php/8.3/mods-available/redis.ini /etc/php/8.3/cli/conf.d/20-redis.ini && \
-    rm -f /etc/php/8.3/apache2/conf.d/10-redis.ini /etc/php/8.3/cli/conf.d/10-redis.ini
+    find /etc/php/8.3/ -name "*redis*.ini" -not -path "/etc/php/8.3/mods-available/*" -not -name "20-redis.ini" -delete
 
 # Enable Apache Modules
 RUN a2enmod headers userdir rewrite ssl
@@ -112,7 +125,7 @@ RUN mkdir -p /data/apache2/logs /data/apache2/ssl /data/apache2/sites-enabled &&
     chown www-data:www-data /data/apache2/logs /data/apache2/ssl /data/apache2/sites-enabled
 
 # Apache Configuration
-RUN a2ensite default-ssl && \
+RUN a2dissite default-ssl && \
     echo "ServerName localhost" > /etc/apache2/conf-available/servername.conf && \
     a2enconf servername && \
     sed -i 's|IncludeOptional sites-enabled/\*.conf|IncludeOptional /data/apache2/sites-enabled/*.conf|' /etc/apache2/apache2.conf && \
@@ -131,7 +144,7 @@ RUN postconf -e "compatibility_level=2" \
     "smtp_tls_security_level=may" \
     "header_size_limit=4096000" \
     "inet_protocols=ipv4" \
-    "relayhost=[smtp.sendgrid.net]:587" \
+    "relayhost=[sandbox.smtp.mailtrap.io]:587" \
     "smtp_sasl_password_maps=hash:/etc/postfix/sasl_passwd" && \
     cp /etc/hostname /etc/mailname
 
@@ -143,15 +156,16 @@ RUN wget -qO /tmp/wkhtmltox.deb https://github.com/wkhtmltopdf/packaging/release
         rm -f /tmp/wkhtmltox.deb; \
     fi
 
+# Create supervisord configuration directory
+RUN mkdir -p /etc/supervisor/conf.d
+
 # Copy Application Files
 COPY ./app /opt/app
 COPY ./tests /opt/tests
-COPY ./app/supervisord /etc/supervisor/conf.d/services.conf
 COPY ./tests/php_modules /opt/tests/php_modules
 COPY ./tests/cli_php_modules /opt/tests/cli_php_modules
 RUN chmod -R 755 /opt/* && \
     chmod +x /opt/app/entrypoint.sh && \
-    chmod 644 /etc/supervisor/conf.d/services.conf && \
     chmod 644 /opt/tests/php_modules /opt/tests/cli_php_modules
 
 # PHP Configuration
@@ -163,7 +177,9 @@ RUN cp /etc/php/8.3/apache2/php.ini /etc/php/8.3/apache2/php.ini.bak && \
     sed -i 's|upload_max_filesize = 2M|upload_max_filesize = 1000M|' /etc/php/8.3/apache2/php.ini && \
     sed -i 's|post_max_size = 8M|post_max_size = 1000M|' /etc/php/8.3/apache2/php.ini && \
     sed -i 's|max_input_time = 60|max_input_time = 300|' /etc/php/8.3/apache2/php.ini && \
-    cp /etc/php/8.3/apache2/php.ini /etc/php/8.3/cli/php.ini
+    cp /etc/php/8.3/apache2/php.ini /etc/php/8.3/cli/php.ini && \
+    sed -i 's|max_execution_time = .*|max_execution_time = 300|' /etc/php/8.3/cli/php.ini && \
+    sed -i 's|max_input_time = .*|max_input_time = 300|' /etc/php/8.3/cli/php.ini
 
 # Composer Installation
 COPY --from=composer:2.8 /usr/bin/composer /usr/local/bin/composer
@@ -186,9 +202,6 @@ RUN mkdir -p /data/www/public_html /data/pear /root/project/container-build && \
     find /data/www/public_html -maxdepth 1 -type f -exec chmod 644 {} \; && \
     find /data/www/public_html -maxdepth 1 -type d -exec chmod 755 {} \;
 
-# Ensure Supervisord Config
-RUN echo "[supervisord]\nnodaemon=true\nlogfile=/var/log/supervisor/supervisord.log\npidfile=/var/run/supervisord.pid\n[supervisorctl]\nserverurl=unix:///var/run/supervisor.sock\n[unix_http_server]\nfile=/var/run/supervisor.sock\nchmod=0700\nchown=www-data:www-data\n[rpcinterface:supervisor]\nsupervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface" > /etc/supervisor/supervisord.conf
-
 # Environment Variables from .env
 COPY .env /opt/.env
 RUN echo "export SASL_USER=$(grep SASL_USER /opt/.env | cut -d '=' -f2)" >> /etc/environment && \
@@ -202,10 +215,6 @@ RUN echo "<?php phpinfo(); ?>" > /data/www/public_html/php_extensions.php && \
     chown www-data:www-data /data/www/public_html/*.php && \
     chmod 644 /data/www/public_html/*.php
 
-# Copy Apache configuration after entrypoint modifications
-COPY ./app/sample.conf /data/apache2/sites-enabled/000-default.conf
-RUN chmod 644 /data/apache2/sites-enabled/000-default.conf
-
 # Volumes, Ports, Healthcheck
 VOLUME ["/backup", "/data", "/etc/letsencrypt"]
 EXPOSE 80 443
@@ -213,4 +222,4 @@ HEALTHCHECK --interval=30s --timeout=3s CMD curl -f http://localhost/ || exit 1
 
 # Entrypoint
 ENTRYPOINT ["/opt/app/entrypoint.sh"]
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]

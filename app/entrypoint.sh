@@ -16,13 +16,11 @@ OutputLog() {
     echo "	Postfix Outgoing SMTP (${SMTP_HOST}): ${SASL_USER}:${SASL_PASS}"
 }
 
-# # Logging setup
-# if [[ -n "${LOG_TOKEN}" ]]; then
-#     cat <<EOF > /etc/rsyslog.d/logentries.conf
-# \$template Logentries,"${LOG_TOKEN} %HOSTNAME% %syslogtag%%msg%\n"
-# *.* @@api.logentries.com:10000;Logentries
-# EOF
-# fi
+# Clean up stale PIDs and processes
+echo "DEBUG: Cleaning up stale PIDs and processes"
+rm -f /var/run/apache2/apache2.pid /var/run/supervisord.pid /var/run/supervisor.sock
+pkill -9 apache2 2>/dev/null || true
+pkill -9 supervisord 2>/dev/null || true
 
 # Create runtime directories
 for dir in /run /var/log /var/log/supervisor /data/apache2/logs /data/apache2/sites-enabled /data/apache2/ssl /data/www/public_html /var/run/supervisor; do
@@ -43,9 +41,9 @@ chmod 664 /var/log/supervisor/* /var/log/postfix.log /var/log/mail.log /var/log/
 
 # Configure rsyslog
 cat <<EOF > /etc/rsyslog.conf
-\$ModLoad imuxsock
-\$ModLoad imklog
-\$IncludeConfig /etc/rsyslog.d/*.conf
+$ModLoad imuxsock
+$ModLoad imklog
+$IncludeConfig /etc/rsyslog.d/*.conf
 EOF
 echo "*.* /var/log/messages" > /etc/rsyslog.d/00-fallback.conf
 echo "kern.* /var/log/kern.log" > /etc/rsyslog.d/50-kern.conf
@@ -57,23 +55,25 @@ if [ -d /data/www/public_html ]; then
     mv /opt/app/*.png /data/www/public_html/ 2>/dev/null || true
     mv /opt/app/*.php /data/www/public_html/ 2>/dev/null || true
 fi
-echo "DEBUG: Moving .conf files from /opt/app/ to /data/apache2/sites-enabled/"
-ls -la /opt/app/*.conf 2>/dev/null || echo "No .conf files found in /opt/app/"
-mv /opt/app/*.conf /data/apache2/sites-enabled/ 2>/dev/null || true
+echo "DEBUG: Moving sample.conf from /opt/app/ to /data/apache2/sites-enabled/"
+ls -la /opt/app/sample.conf 2>/dev/null || echo "No sample.conf found in /opt/app/"
+mv /opt/app/sample.conf /data/apache2/sites-enabled/ 2>/dev/null || true
+# Clean up .DS_Store files
+rm -f /data/apache2/sites-enabled/.DS_Store
 echo "DEBUG: Contents of /data/apache2/sites-enabled/:"
 ls -la /data/apache2/sites-enabled/
 
-# Generate self-signed SSL certificate if none exists
-if [ -z "$(ls -A /data/apache2/ssl)" ]; then
-    echo "DEBUG: Generating self-signed SSL certificate"
-    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-        -keyout /data/apache2/ssl/ssl-cert-snakeoil.key \
-        -out /data/apache2/ssl/ssl-cert-snakeoil.pem \
-        -subj "/C=US/ST=State/L=City/O=Organization/CN=localhost"
-    chown www-data:www-data /data/apache2/ssl/*
-    chmod 600 /data/apache2/ssl/*
-fi
-mv -f /opt/app/ssl/* /data/apache2/ssl/ 2>/dev/null || true
+# Generate self-signed SSL certificate
+echo "DEBUG: Generating self-signed SSL certificate for domain.com"
+rm -f /data/apache2/ssl/ssl-cert-snakeoil.*
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout /data/apache2/ssl/ssl-cert-snakeoil.key \
+    -out /data/apache2/ssl/ssl-cert-snakeoil.pem \
+    -subj "/C=US/ST=State/L=City/O=Organization/CN=domain.com" \
+    -addext "subjectAltName=DNS:domain.com,DNS:www.domain.com" \
+    -addext "basicConstraints=CA:FALSE"
+chown www-data:www-data /data/apache2/ssl/*
+chmod 600 /data/apache2/ssl/*
 echo "DEBUG: Contents of /data/apache2/ssl/:"
 ls -la /data/apache2/ssl/
 
@@ -91,6 +91,20 @@ if [ ! -f /etc/php/8.3/build ]; then
     fi
     echo 1 > /etc/php/8.3/build
 fi
+
+# Verify and fix PHP CLI settings
+echo "DEBUG: Verifying PHP CLI settings"
+grep -E 'max_execution_time|max_input_time' /etc/php/8.3/cli/php.ini
+if ! grep -q 'max_execution_time = 300' /etc/php/8.3/cli/php.ini; then
+    echo "DEBUG: Fixing max_execution_time in CLI php.ini"
+    sed -i 's/max_execution_time = .*/max_execution_time = 300/' /etc/php/8.3/cli/php.ini || echo "max_execution_time = 300" >> /etc/php/8.3/cli/php.ini
+fi
+if ! grep -q 'max_input_time = 300' /etc/php/8.3/cli/php.ini; then
+    echo "DEBUG: Fixing max_input_time in CLI php.ini"
+    sed -i 's/max_input_time = .*/max_input_time = 300/' /etc/php/8.3/cli/php.ini || echo "max_input_time = 300" >> /etc/php/8.3/cli/php.ini
+fi
+echo "DEBUG: Post-fix PHP CLI settings"
+grep -E 'max_execution_time|max_input_time' /etc/php/8.3/cli/php.ini
 
 # Debug SMTP variables
 echo "DEBUG: SMTP_HOST=${SMTP_HOST:-not set}"
@@ -127,61 +141,84 @@ OutputLog
 # Export environment variables
 env | grep NODE_ENVIRONMENT >> /etc/environment
 
-# Check for supervisord config file
-SUPERVISORD_CONF="/etc/supervisor/conf.d/services.conf"
-if [ ! -f "$SUPERVISORD_CONF" ]; then
-    echo "DEBUG: /etc/supervisor/conf.d/services.conf not found, checking /app/supervisord"
-    if [ -f "/app/supervisord" ]; then
-        echo "DEBUG: Copying /app/supervisord to /etc/supervisor/conf.d/services.conf"
-        cp /app/supervisord /etc/supervisor/conf.d/services.conf
-    elif [ -f "/app/supervisord.conf" ]; then
-        echo "DEBUG: Copying /app/supervisord.conf to /etc/supervisor/conf.d/services.conf"
-        cp /app/supervisord.conf /etc/supervisor/conf.d/services.conf
-    else
-        echo "ERROR: Supervisord config file not found at /etc/supervisor/conf.d/services.conf, /app/supervisord, or /app/supervisord.conf"
-        exit 1
-    fi
-fi
-echo "DEBUG: Using supervisord config at $SUPERVISORD_CONF"
-ls -l "$SUPERVISORD_CONF"
-
 # Ensure supervisord socket directory exists
 mkdir -p /var/run/supervisor
 chown www-data:www-data /var/run/supervisor
 chmod 755 /var/run/supervisor
 
-# Start supervisord
-echo "DEBUG: Starting supervisord..."
-/usr/bin/supervisord -c "$SUPERVISORD_CONF" &
-SUPERVISORD_PID=$!
-sleep 15
-if ! ps -p $SUPERVISORD_PID > /dev/null; then
-    echo "ERROR: supervisord failed to start, but continuing"
-    cat /var/log/supervisor/supervisord.log
-    # tail -f /dev/null
-fi
-echo "DEBUG: supervisord started with PID $SUPERVISORD_PID"
+# Create supervisord configuration
+echo "DEBUG: Creating supervisord configuration"
+cat <<EOF > /etc/supervisord.conf
+[supervisord]
+nodaemon=true
+logfile=/var/log/supervisor/supervisord.log
+pidfile=/var/run/supervisord.pid
+childlogdir=/var/log/supervisor
+loglevel=debug
 
-# Check for supervisord socket
-if [ ! -S /var/run/supervisor.sock ]; then
-    echo "ERROR: Supervisord socket /var/run/supervisor.sock missing, but continuing"
-    cat /var/log/supervisor/supervisord.log
-    # tail -f /dev/null
-fi
-echo "DEBUG: Supervisord socket /var/run/supervisor.sock created"
+[unix_http_server]
+file=/var/run/supervisor.sock
+chmod=0700
+chown=www-data:www-data
 
-# Check supervisord status
-echo "DEBUG: Checking supervisord status..."
-/usr/bin/supervisorctl -c "$SUPERVISORD_CONF" status || {
-    echo "ERROR: Failed to run supervisorctl status, but continuing"
-    cat /var/log/supervisor/supervisord.log
-    # tail -f /dev/null
+[supervisorctl]
+serverurl=unix:///var/run/supervisor.sock
+
+[rpcinterface:supervisor]
+supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
+
+[program:apache2]
+command=/usr/sbin/apache2ctl -D FOREGROUND
+autostart=true
+autorestart=true
+user=root
+startsecs=10
+startretries=3
+stopwaitsecs=10
+stopasgroup=true
+killasgroup=true
+stderr_logfile=/var/log/supervisor/apache2.err.log
+stdout_logfile=/var/log/supervisor/apache2.out.log
+
+[program:postfix]
+command=/usr/sbin/postfix start-fg
+autostart=true
+autorestart=true
+user=root
+startsecs=10
+startretries=3
+stopwaitsecs=10
+stopasgroup=true
+killasgroup=true
+stderr_logfile=/var/log/supervisor/postfix.err.log
+stdout_logfile=/var/log/supervisor/postfix.out.log
+EOF
+chmod 644 /etc/supervisord.conf
+
+# Verify supervisord config
+SUPERVISORD_CONF="/etc/supervisord.conf"
+echo "DEBUG: Verifying supervisord config at $SUPERVISORD_CONF"
+if [ -f "$SUPERVISORD_CONF" ]; then
+    ls -l "$SUPERVISORD_CONF"
+    cat "$SUPERVISORD_CONF"
+else
+    echo "ERROR: Supervisord config $SUPERVISORD_CONF not found"
+    exit 1
+fi
+
+# Test Apache configuration
+echo "DEBUG: Testing Apache configuration"
+/usr/sbin/apache2ctl configtest || {
+    echo "ERROR: Apache configuration test failed"
+    cat /var/log/apache2/error.log
+    exit 1
 }
 
-# Start Apache in foreground
-echo "DEBUG: Starting Apache..."
-/usr/sbin/apache2ctl -D FOREGROUND || {
-    echo "ERROR: Apache failed to start"
-    apache2ctl configtest
-    tail -f /dev/null
+# Start supervisord with error trapping
+echo "DEBUG: Starting supervisord..."
+set -e
+exec /usr/bin/supervisord -c "$SUPERVISORD_CONF" || {
+    echo "ERROR: Supervisord failed to start"
+    cat /var/log/supervisor/supervisord.log
+    exit 1
 }

@@ -5,7 +5,7 @@ services:
       - SYSLOG
     platform: linux/arm64
     container_name: apache
-    restart: unless-stopped
+    restart: no
     ports:
       - "80:80"
       - "443:443"
