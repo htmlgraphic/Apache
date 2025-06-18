@@ -24,7 +24,7 @@ services:
       - app-network
 
   db:
-    image: mysql:8.3.0
+    image: mariadb:10.6.18
     platform: linux/arm64
     container_name: apache-db-1
     restart: unless-stopped
