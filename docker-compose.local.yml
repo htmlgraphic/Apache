@@ -40,7 +40,7 @@ services:
     volumes:
       - 'db-data:/var/lib/mysql'
     ports:
-      - "3306:3306"
+      - "127.0.0.1:3307:3306"
     command: mysqld --sql_mode="ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
     networks:
       - app-network
