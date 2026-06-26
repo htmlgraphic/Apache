@@ -13,7 +13,7 @@ jobs:
     resource_class: arm.medium
     environment:
       DOCKER_VERSION: 20.10
-      BUILD_PATH: ~/project
+      BUILD_PATH: /home/circleci/project
       CONTAINER_NAME: apache
     steps:
       - run:
@@ -128,6 +128,7 @@ jobs:
           name: Collect << parameters.env >> Container Logs
           command: |
             echo "Collecting logs for ${CONTAINER_NAME}"
+            mkdir -p "${BUILD_PATH}"
             docker logs ${CONTAINER_NAME} > ${BUILD_PATH}/log_output-<< parameters.log_prefix >>_Apache.txt 2>&1
             if docker ps -a | grep ' db$'; then
               echo "Collecting logs for db"
