@@ -74,15 +74,15 @@ make build INSTALL_DEV_TOOLS=false
 ### Windows
 
 ```bash
-~ git clone https://github.com/htmlgraphic/Apache.git ~/Docker/Apache; cd ~/Docker/Apache
-~ copy .env.example .env
-~ docker-compose -f docker-compose.local.yml up -d
+> git clone git@github.com:htmlgraphic/Apache.git ~/Docker/Apache; cd ~/Docker/Apache
+> copy .env.example .env
+> docker-compose -f docker-compose.local.yml up -d
 ```
 
 > If Windows firewall rules block local testing, prefer adding explicit Docker/Desktop firewall rules instead of disabling the firewall globally.
 
 ```bash
-~ netsh advfirewall show currentprofile
+> netsh advfirewall show currentprofile
 ```
 
 ---

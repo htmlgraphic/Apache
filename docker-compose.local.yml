@@ -14,7 +14,7 @@ services:
     environment:
       - NODE_ENVIRONMENT=dev
     volumes:
-      - '~/SITES/docker:/data' # Preferred local working dir
+      - '~/SITES/docker:/data' # <- Change to preferred local working dir
      #- '/c/Users/southpark/docker:/data'
     depends_on:
       - db
