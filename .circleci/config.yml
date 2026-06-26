@@ -16,19 +16,24 @@ jobs:
       BUILD_PATH: ~/project
       CONTAINER_NAME: apache
     steps:
-      - checkout
+      - run:
+          name: Install Dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y git make
+            docker version
+            docker compose version
+      - run:
+          name: Checkout code
+          command: |
+            git clone --depth 1 --branch "${CIRCLE_BRANCH:-develop}" https://github.com/htmlgraphic/Apache.git .
+            git fetch --depth 1 origin "${CIRCLE_SHA1}"
+            git checkout --force "${CIRCLE_SHA1}"
       - run:
           name: Create container-build Directory
           command: |
             rm -rf ~/project/container-build
             mkdir -p ~/project/container-build
-      - run:
-          name: Install Dependencies
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y make
-            docker version
-            docker compose version
       - run:
           name: Build << parameters.env >> Apache Docker Image
           command: |
