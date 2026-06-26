@@ -8,8 +8,8 @@ jobs:
       log_prefix:
         type: string
     working_directory: ~/project
-    docker:
-      - image: cimg/base:stable
+    machine:
+      image: ubuntu-2204:current
     resource_class: arm.medium
     environment:
       DOCKER_VERSION: 20.10
@@ -22,8 +22,6 @@ jobs:
           command: |
             rm -rf ~/project/container-build
             mkdir -p ~/project/container-build
-      - setup_remote_docker:
-          version: 20.10
       - run:
           name: Install Dependencies
           command: |
