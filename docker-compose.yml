@@ -34,11 +34,9 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_DATABASE: app_db
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-app_db}
     volumes:
       - 'db-data:/var/lib/mysql'
-    ports:
-      - "3306:3306"
     command: mysqld --sql_mode="ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
     networks:
       - app-network

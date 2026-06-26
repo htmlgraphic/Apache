@@ -3,9 +3,9 @@
 
 ![Circle CI](https://circleci.com/gh/htmlgraphic/Apache/tree/develop.svg?style=svg)
 
-This repo will give you a turn key Docker container build for use in **production** OR **dev**. The setup includes Apache/2.4.29 build, PHP 7.4+, PHP Composer, [MySQL 8.3.0](https://hub.docker.com/_/mysql) instance and a data container volume.
+This repo provides a Dockerized Apache/PHP environment for **production** or **dev**. The current stack is based on Ubuntu 24.04, Apache 2.4, PHP 8.3, Composer 2, MariaDB 10.6, Postfix relay support, and a persistent data volume.
 
-Using containers offer a huge advantage when developing locally or in prodcution. Use this containers for development and deployment. Changing `NODE_ENVIRONMENT` within to `.env` to `dev` or `production` will offer a dynamic environment.
+Using containers offers a consistent development and deployment target. Set `NODE_ENVIRONMENT` in `.env` to `dev` or `production` to adjust runtime behavior.
 
 [Ask a question!](https://github.com/htmlgraphic/Apache/issues/new)
 
@@ -24,7 +24,7 @@ Apache
 │   ├── entrypoint.sh        # → Setup apache, conf files, and start process on container
 │   ├── sample.conf          # → Located within `/data/apache2/sites-enabled` duplicate / modify to add domains
 │   └── supervisord          # → Supervisor is a system which monitors and controls a number of processes
-├── .env.example             # → Rename file to `.env` for local environment variables used within build
+├── .env.example             # → Copy to `.env` for local runtime environment variables
 ├── .circleci/
 │   └── config.yml           # → CircleCI 2.0 Config
 ├── docker-compose.local.yml # → Dev build 
@@ -46,13 +46,13 @@ Apache
 
 ## Quick Start
 
-Launch the **Apache** instance locally and setup a local MySQL database container for persistant database data, the goal is to create a easy to use development environment. 
+Launch the **Apache** instance locally and set up a local MariaDB database container with persistent database data.
 
-The **Apache** container the directory `/data` is shared to your local system via **Line 7** within `docker-compose.local.yml` file
+The **Apache** container shares `/data` with your local system through the bind mount in `docker-compose.local.yml`.
 
 Docker Compose File Reference [more info](https://docs.docker.com/compose/compose-file/) 
 
-Open `docker-compose.local.yml` and review [this line](https://github.com/htmlgraphic/Apache/blob/master/docker-compose.local.yml#L8). This path will link files from your local dev env to the Docker Instance with the `/data` directory. Upon the intial `make run` execution, the same path needs to be listed for proper permissions within the Docker Instance to write files to the linked OS.
+Open `docker-compose.local.yml` and review the `web.volumes` path. This path links files from your local development environment into the container at `/data`.
 
 
 ### Mac OS X / Linux
@@ -65,6 +65,12 @@ Open `docker-compose.local.yml` and review [this line](https://github.com/htmlgr
 ~ make run 
 ```
 
+Build a smaller production-oriented image without local dev tools:
+
+```bash
+make build INSTALL_DEV_TOOLS=false
+```
+
 ### Windows
 
 ```bash
@@ -73,12 +79,21 @@ Open `docker-compose.local.yml` and review [this line](https://github.com/htmlgr
 ~ docker-compose -f docker-compose.local.yml up -d
 ```
 
->	Optional, are you having problems on Windows? Disable Firewall
+> If Windows firewall rules block local testing, prefer adding explicit Docker/Desktop firewall rules instead of disabling the firewall globally.
 
 ```bash
 ~ netsh advfirewall show currentprofile
-~ netsh advfirewall set allprofiles state off
 ```
+
+---
+
+## Security Notes
+
+- `.env` is a runtime file and is intentionally excluded from Git and Docker build contexts.
+- Do not put real credentials in `.env.example`; keep it limited to placeholders.
+- Production MariaDB is only exposed on the Docker network by default. Apache can connect to the database as `db:3306`, but host port `3306` is not published.
+- SMTP relay credentials are configured at container startup from environment variables and are not baked into the image.
+- `LOG_TOKEN`, `SASL_PASS`, and database passwords should not be printed in CI or container logs.
 
 
 ---
@@ -129,7 +144,7 @@ crontab -e
 
 ## phpMyAdmin
 
-Review MySQL access instructions upon `make run` command execution. Login using the following creditials stored within the .env file: 
+Review database access instructions upon `make run` command execution. Login using the credentials stored within the `.env` file:
 
 |User  | Pass  |
 |:--|--|
@@ -137,10 +152,10 @@ Review MySQL access instructions upon `make run` command execution. Login using 
 |`$MYSQL_USER`  |`$MYSQL_PASSWORD`  |
 
 
-Setup phpMyAdmin directly via command line, access using port `8080`
+Set up phpMyAdmin directly via command line and access it using port `8080`:
 
 ```bash
-> docker run --name myadmin -d --link db:mysql --net apache_default -p 8080:443 osixia/phpmyadmin:4.9.2
+> docker run --name myadmin -d --link db:mysql --net apache_app-network -p 8080:443 osixia/phpmyadmin:4.9.2
 ```
 
 

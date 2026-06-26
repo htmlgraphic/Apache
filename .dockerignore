@@ -1,0 +1,12 @@
+.git
+.gitignore
+.DS_Store
+**/.DS_Store
+.env
+.env.*
+!.env.example
+.secret/*
+!.secret/.gitkeep
+example/
+docker-compose*.yml
+README.md

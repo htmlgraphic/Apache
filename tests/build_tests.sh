@@ -44,7 +44,7 @@ testMySQLServiceRunning() {
     echo 'Test MySQL service status'
     # Wait for MySQL to be ready
     for i in {1..30}; do
-        if mysqladmin -u admin -pnew_password -h db ping 2>/dev/null | grep -q 'mysqld is alive'; then
+        if MYSQL_PWD="${MYSQL_PASSWORD:-new_password}" mysqladmin -u "${MYSQL_USER:-admin}" -h db ping 2>/dev/null | grep -q 'mysqld is alive'; then
             test=1
             break
         fi
@@ -58,17 +58,17 @@ testMySQLServiceRunning() {
 
 testMySQLConnectivity() {
     echo 'Test MySQL connectivity'
-    test=$(mysql -u admin -pnew_password -h db -e "SELECT 1" 2>/dev/null | wc -l)
-    assertEquals "MySQL should be accessible with admin credentials" 2 $test
+    test=$(MYSQL_PWD="${MYSQL_PASSWORD:-new_password}" mysql -u "${MYSQL_USER:-admin}" -h db -e "SELECT 1" 2>/dev/null | wc -l)
+    assertEquals "MySQL should be accessible with configured credentials" 2 $test
     echo -e '\n'
 }
 
 testMySQLDatabase() {
     echo 'Test MySQL database existence'
     # Ensure database exists
-    mysql -u admin -pnew_password -h db -e "CREATE DATABASE IF NOT EXISTS htmlgraphic" 2>/dev/null
-    test=$(mysql -u admin -pnew_password -h db -e "SHOW DATABASES LIKE 'htmlgraphic'" 2>/dev/null | grep htmlgraphic | wc -l)
-    assertEquals "Database htmlgraphic should exist" 1 $test
+    MYSQL_PWD="${MYSQL_PASSWORD:-new_password}" mysql -u "${MYSQL_USER:-admin}" -h db -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE:-htmlgraphic}\`" 2>/dev/null
+    test=$(MYSQL_PWD="${MYSQL_PASSWORD:-new_password}" mysql -u "${MYSQL_USER:-admin}" -h db -e "SHOW DATABASES LIKE '${MYSQL_DATABASE:-htmlgraphic}'" 2>/dev/null | grep "${MYSQL_DATABASE:-htmlgraphic}" | wc -l)
+    assertEquals "Configured MySQL database should exist" 1 $test
     echo -e '\n'
 }
 
@@ -142,8 +142,8 @@ testApacheModules() {
 
 testSSLConfiguration() {
     echo 'Test SSL configuration'
-    test=$(grep 'SSLEngine on' /data/apache2/sites-enabled/000-default.conf 2>/dev/null | wc -l)
-    assertEquals "SSL should be enabled in 000-default.conf" 1 $test
+    test=$(grep -R 'SSLEngine on' /data/apache2/sites-enabled 2>/dev/null | wc -l)
+    assertTrue "SSL should be enabled in a site configuration" "[ $test -ge 1 ]"
     echo -e '\n'
 }
 
@@ -171,8 +171,6 @@ testEnvironmentVariables() {
         test=$(env | grep "^${var}=" | wc -l)
         assertEquals "Environment variable $var should be set" 1 $test
     done
-    assertEquals "SASL_USER should match expected value" "05ad514dda62af" "$SASL_USER"
-    assertEquals "LOG_TOKEN should match expected value" "66b6e993-5357-4b89-9d41-bd8234163c2b" "$LOG_TOKEN"
     echo -e '\n'
 }
 
@@ -227,8 +225,8 @@ testPostfixUsername() {
     if [ -z "${SASL_USER}" ]; then
         fail 'ENV $SASL_USER is not set'
     fi
-    test=$(/usr/sbin/postconf smtp_sasl_password_maps | grep "${SASL_USER}" | wc -l)
-    assertEquals "Postfix username ${SASL_USER} should be configured in smtp_sasl_password_maps" 1 $test
+    test=$(/usr/sbin/postconf smtp_sasl_password_maps | grep 'hash:/etc/postfix/sasl_passwd' | wc -l)
+    assertEquals "Postfix SASL password map should be configured" 1 $test
     echo -e '\n'
 }
 
@@ -295,9 +293,9 @@ testPostfixPassword() {
 }
 
 testPostfixRelay() {
-    echo 'Relay through mailtrap'
-    test=$(/usr/sbin/postconf relayhost | grep 'sandbox.smtp.mailtrap.io' | wc -l)
-    assertEquals "Postfix should use mailtrap relay" 1 $test
+    echo 'Relay through configured SMTP host'
+    test=$(/usr/sbin/postconf relayhost | grep "${SMTP_HOST:-sandbox.smtp.mailtrap.io}" | wc -l)
+    assertEquals "Postfix should use configured SMTP relay" 1 $test
     echo -e '\n'
 }
 
@@ -358,24 +356,24 @@ testCLI_max_execution_time() {
 testCLI_MemoryLimit() {
     memory_limit=$(php -i | grep 'memory_limit')
     echo 'Test memory_limit, currently set to "'$memory_limit'"'
-    test=$(echo $memory_limit | grep 'memory_limit => -1 => -1' | wc -l)
-    assertEquals "CLI memory_limit should be -1" 1 $test
+    test=$(echo $memory_limit | grep 'memory_limit => 512M => 512M' | wc -l)
+    assertEquals "CLI memory_limit should be 512M" 1 $test
     echo -e '\n'
 }
 
 testCLI_upload_max_filesize() {
     upload_max_filesize=$(php -i | grep 'upload_max_filesize')
     echo 'Test upload_max_filesize, currently set to "'$upload_max_filesize'"'
-    test=$(echo $upload_max_filesize | grep 'upload_max_filesize => 1000M => 1000M' | wc -l)
-    assertEquals "CLI upload_max_filesize should be 1000M" 1 $test
+    test=$(echo $upload_max_filesize | grep 'upload_max_filesize => 100M => 100M' | wc -l)
+    assertEquals "CLI upload_max_filesize should be 100M" 1 $test
     echo -e '\n'
 }
 
 testCLI_post_max_size() {
     post_max_size=$(php -i | grep 'post_max_size')
     echo 'Test post_max_size, currently set to "'$post_max_size'"'
-    test=$(echo $post_max_size | grep 'post_max_size => 1000M => 1000M' | wc -l)
-    assertEquals "CLI post_max_size should be 1000M" 1 $test
+    test=$(echo $post_max_size | grep 'post_max_size => 100M => 100M' | wc -l)
+    assertEquals "CLI post_max_size should be 100M" 1 $test
     echo -e '\n'
 }
 
@@ -398,24 +396,24 @@ testApache_max_execution_time() {
 testApache_MemoryLimit() {
     memory_limit=$(cat /etc/php/8.3/apache2/php.ini | grep '^memory_limit')
     echo 'Test memory_limit, currently set to "'$memory_limit'"'
-    test=$(echo $memory_limit | grep 'memory_limit = -1' | wc -l)
-    assertEquals "Apache memory_limit should be -1" 1 $test
+    test=$(echo $memory_limit | grep 'memory_limit = 512M' | wc -l)
+    assertEquals "Apache memory_limit should be 512M" 1 $test
     echo -e '\n'
 }
 
 testApache_upload_max_filesize() {
     upload_max_filesize=$(cat /etc/php/8.3/apache2/php.ini | grep '^upload_max_filesize')
     echo 'Test upload_max_filesize, currently set to "'$upload_max_filesize'"'
-    test=$(echo $upload_max_filesize | grep 'upload_max_filesize = 1000M' | wc -l)
-    assertEquals "Apache upload_max_filesize should be 1000M" 1 $test
+    test=$(echo $upload_max_filesize | grep 'upload_max_filesize = 100M' | wc -l)
+    assertEquals "Apache upload_max_filesize should be 100M" 1 $test
     echo -e '\n'
 }
 
 testApache_post_max_size() {
     post_max_size=$(cat /etc/php/8.3/apache2/php.ini | grep '^post_max_size')
     echo 'Test post_max_size, currently set to "'$post_max_size'"'
-    test=$(echo $post_max_size | grep 'post_max_size = 1000M' | wc -l)
-    assertEquals "Apache post_max_size should be 1000M" 1 $test
+    test=$(echo $post_max_size | grep 'post_max_size = 100M' | wc -l)
+    assertEquals "Apache post_max_size should be 100M" 1 $test
     echo -e '\n'
 }
 

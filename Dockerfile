@@ -13,9 +13,6 @@ LABEL org.label-schema.name="Apache Docker" \
 ENV DEBIAN_FRONTEND=noninteractive \
     TERM=xterm \
     OS_LOCALE="en_US.UTF-8" \
-    LANG=${OS_LOCALE} \
-    LANGUAGE=${OS_LOCALE} \
-    LC_ALL=${OS_LOCALE} \
     APACHE_RUN_USER=www-data \
     APACHE_RUN_GROUP=www-data \
     APACHE_LOG_DIR=/var/log/apache2 \
@@ -24,13 +21,11 @@ ENV DEBIAN_FRONTEND=noninteractive \
     APACHE_LOCK_DIR=/var/lock/apache2 \
     CONTAINER_NAME=apache
 
+ARG INSTALL_DEV_TOOLS=true
+
 # Install prerequisites with minimal disk usage
-RUN APT_CACHE_DIR=/tmp/apt-cache && \
-    apt-get update --allow-insecure-repositories && \
-    apt-get install -y --no-install-recommends --allow-unauthenticated gnupg ca-certificates ubuntu-keyring && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
-    apt-get update && \
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 871920D1991BC93C && \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gnupg ca-certificates ubuntu-keyring && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 # Install libssl1.1 for ARM64 and initial dependencies
@@ -38,7 +33,7 @@ RUN APT_CACHE_DIR=/tmp/apt-cache && \
     apt-get update && apt-get install -y \
         curl \
         wget && \
-    wget -qO /tmp/libssl1.1.deb http://ports.ubuntu.com/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_arm64.deb && \
+    wget -qO /tmp/libssl1.1.deb https://ports.ubuntu.com/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_arm64.deb && \
     dpkg -i /tmp/libssl1.1.deb && \
     rm -f /tmp/libssl1.1.deb && \
     apt-get install -y \
@@ -47,6 +42,10 @@ RUN APT_CACHE_DIR=/tmp/apt-cache && \
         libmcrypt-dev && \
     locale-gen ${OS_LOCALE} && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
+
+ENV LANG="en_US.UTF-8" \
+    LANGUAGE="en_US.UTF-8" \
+    LC_ALL="en_US.UTF-8"
 
 # Add PHP PPA and install additional dependencies
 RUN add-apt-repository -y ppa:ondrej/php && \
@@ -80,11 +79,9 @@ RUN add-apt-repository -y ppa:ondrej/php && \
         libxml2-dev \
         libssl-dev \
         zlib1g-dev \
-        git \
         cron \
         ghostscript \
         mailutils \
-        iputils-ping \
         mysql-client \
         libgs-dev \
         imagemagick \
@@ -93,10 +90,8 @@ RUN add-apt-repository -y ppa:ondrej/php && \
         language-pack-en \
         supervisor \
         rsyslog \
-        vim \
         postfix \
         netcat-openbsd \
-        dnsutils \
         python3 \
         gyp \
         wkhtmltopdf \
@@ -104,6 +99,9 @@ RUN add-apt-repository -y ppa:ondrej/php && \
         libjpeg-turbo8 \
         xfonts-75dpi \
         xfonts-base && \
+    if [ "$INSTALL_DEV_TOOLS" = "true" ]; then \
+        apt-get install -y --no-install-recommends git iputils-ping vim dnsutils; \
+    fi && \
     apt-get autoremove -y && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -151,10 +149,11 @@ RUN postconf -e "compatibility_level=2" \
     cp /etc/hostname /etc/mailname
 
 # Install wkhtmltox
-RUN wget -qO /tmp/wkhtmltox.deb https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.noble_arm64.deb || \
-    echo "wkhtmltox not available for ARM64, skipping" && \
-    if [ -f /tmp/wkhtmltox.deb ]; then \
+RUN if wget -qO /tmp/wkhtmltox.deb https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.noble_arm64.deb && [ -s /tmp/wkhtmltox.deb ]; then \
         dpkg -i /tmp/wkhtmltox.deb || (apt-get update && apt-get install -f -y); \
+        rm -f /tmp/wkhtmltox.deb; \
+    else \
+        echo "wkhtmltox package not available for ARM64, using distro wkhtmltopdf package"; \
         rm -f /tmp/wkhtmltox.deb; \
     fi
 
@@ -173,11 +172,11 @@ RUN chmod -R 755 /opt/* && \
 # PHP Configuration
 RUN cp /etc/php/8.3/apache2/php.ini /etc/php/8.3/apache2/php.ini.bak && \
     sed -i 's|;include_path = ".:/usr/share/php"|include_path = ".:/usr/share/php:/data/pear"|' /etc/php/8.3/apache2/php.ini && \
-    sed -i 's|short_open_tag = Off|short_open_tag = On|' /etc/php/8.3/apache2/php.ini && \
+    sed -i 's|short_open_tag = On|short_open_tag = Off|' /etc/php/8.3/apache2/php.ini && \
     sed -i 's|max_execution_time = 30|max_execution_time = 300|' /etc/php/8.3/apache2/php.ini && \
-    sed -i 's|memory_limit = 128M|memory_limit = -1|' /etc/php/8.3/apache2/php.ini && \
-    sed -i 's|upload_max_filesize = 2M|upload_max_filesize = 1000M|' /etc/php/8.3/apache2/php.ini && \
-    sed -i 's|post_max_size = 8M|post_max_size = 1000M|' /etc/php/8.3/apache2/php.ini && \
+    sed -i 's|memory_limit = 128M|memory_limit = 512M|' /etc/php/8.3/apache2/php.ini && \
+    sed -i 's|upload_max_filesize = 2M|upload_max_filesize = 100M|' /etc/php/8.3/apache2/php.ini && \
+    sed -i 's|post_max_size = 8M|post_max_size = 100M|' /etc/php/8.3/apache2/php.ini && \
     sed -i 's|max_input_time = 60|max_input_time = 300|' /etc/php/8.3/apache2/php.ini && \
     cp /etc/php/8.3/apache2/php.ini /etc/php/8.3/cli/php.ini && \
     sed -i 's|max_execution_time = .*|max_execution_time = 300|' /etc/php/8.3/cli/php.ini && \
@@ -203,13 +202,6 @@ RUN mkdir -p /data/www/public_html /data/pear /root/project/container-build && \
     find /var/www/html -type d -exec chmod 755 {} \; && \
     find /data/www/public_html -maxdepth 1 -type f -exec chmod 644 {} \; && \
     find /data/www/public_html -maxdepth 1 -type d -exec chmod 755 {} \;
-
-# Environment Variables from .env
-COPY .env /opt/.env
-RUN echo "export SASL_USER=$(grep SASL_USER /opt/.env | cut -d '=' -f2)" >> /etc/environment && \
-    echo "export SASL_PASS=$(grep SASL_PASS /opt/.env | cut -d '=' -f2)" >> /etc/environment && \
-    echo "export LOG_TOKEN=$(grep LOG_TOKEN /opt/.env | cut -d '=' -f2)" >> /etc/environment && \
-    echo "export NODE_ENVIRONMENT=$(grep NODE_ENVIRONMENT /opt/.env | cut -d '=' -f2)" >> /etc/environment
 
 # Create test files
 RUN echo "<?php phpinfo(); ?>" > /data/www/public_html/php_extensions.php && \

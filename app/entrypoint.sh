@@ -5,14 +5,14 @@ OutputLog() {
     echo "=> Adding environmental variables:"
     echo "	NODE_ENVIRONMENT: ${NODE_ENVIRONMENT:-not set}"
     echo "	BUILD_ENV: ${BUILD_ENV:-not set}"
-    echo "	LOG_TOKEN: ${LOG_TOKEN:-not set}"
+    echo "	LOG_TOKEN: $([ -n "${LOG_TOKEN}" ] && echo "set" || echo "not set")"
     echo "	MYSQL_USER: ${MYSQL_USER:-not set}"
     if [[ -z "${LOG_TOKEN}" ]]; then
-        echo "	env LOG_TOKEN is not set."
+	echo "	env LOG_TOKEN is not set."
     else
-        echo "	Log Key: ${LOG_TOKEN}"
+	echo "	Log Key: set"
     fi
-    echo "	Postfix Outgoing SMTP (${SMTP_HOST}): ${SASL_USER}:${SASL_PASS}"
+    echo "	Postfix Outgoing SMTP (${SMTP_HOST:-not set}): $([ -n "${SASL_USER}" ] && echo "configured" || echo "not configured")"
 }
 
 # Clean up stale PIDs and sockets
@@ -115,13 +115,17 @@ fi
 # Postfix runtime setup
 if [[ -n "${SMTP_HOST}" && -n "${SASL_USER}" && -n "${SASL_PASS}" ]]; then
     echo "DEBUG: Configuring Postfix with SMTP_HOST=${SMTP_HOST}"
+    printf '[%s]:587 %s:%s\n' "${SMTP_HOST}" "${SASL_USER}" "${SASL_PASS}" > /etc/postfix/sasl_passwd
+    chmod 600 /etc/postfix/sasl_passwd
+    postmap /etc/postfix/sasl_passwd
+    chmod 600 /etc/postfix/sasl_passwd.db
     postconf -e "relayhost=[${SMTP_HOST}]:587" \
-        "smtp_sasl_auth_enable=yes" \
-        "smtp_sasl_security_options=noanonymous" \
-        "smtp_sasl_password_maps=static:${SASL_USER}:${SASL_PASS}" \
-        "smtp_tls_security_level=encrypt" \
-        "smtp_tls_CAfile=/etc/ssl/certs/ca-certificates.crt" \
-        "compatibility_level=3.6"
+	"smtp_sasl_auth_enable=yes" \
+	"smtp_sasl_security_options=noanonymous" \
+	"smtp_sasl_password_maps=hash:/etc/postfix/sasl_passwd" \
+	"smtp_tls_security_level=encrypt" \
+	"smtp_tls_CAfile=/etc/ssl/certs/ca-certificates.crt" \
+	"compatibility_level=3.6"
     cp /etc/resolv.conf /var/spool/postfix/etc/resolv.conf 2>/dev/null || true
     for n in hosts localtime nsswitch.conf resolv.conf services; do
         cp /etc/$n /var/spool/postfix/etc 2>/dev/null || true

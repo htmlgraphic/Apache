@@ -8,6 +8,8 @@ REGISTRY := docker.io
 CONTAINER_NAME := apache
 ENV_FILE := .env
 PLATFORM := linux/arm64
+INSTALL_DEV_TOOLS ?= true
+BUILD_ARGS := --build-arg INSTALL_DEV_TOOLS=$(INSTALL_DEV_TOOLS)
 COMPOSE_DEV := docker compose -f docker-compose.local.yml
 COMPOSE_PROD := docker compose -f docker-compose.yml
 NODE_ENV := $(shell grep -E '^NODE_ENVIRONMENT=' $(ENV_FILE) | cut -d '=' -f 2-)
@@ -34,6 +36,7 @@ help:
 	@echo "     make build        - Build Image"
 	@echo "     make clean        - Remove images and prune system"
 	@echo "     make env          - Create and list .env variables"
+	@echo "     make build INSTALL_DEV_TOOLS=false - Build production image without dev utilities"
 	@echo "     make logs         - View logs"
 	@echo "     make push         - Push $(IMAGE_NAME):$(TAG) to public Docker repo"
 	@echo "     make run          - Run docker-compose and create local environment"
@@ -58,13 +61,13 @@ build:
 		read confirm; \
 		if [ "$$confirm" = "y" ] || [ "$$confirm" = "Y" ]; then \
 			echo "Rebuilding Docker image $(IMAGE_NAME):$(TAG)..."; \
-			docker build --no-cache --platform $(PLATFORM) -t $(IMAGE_NAME):$(TAG) .; \
+				docker build --no-cache --platform $(PLATFORM) $(BUILD_ARGS) -t $(IMAGE_NAME):$(TAG) .; \
 		else \
 			echo "Skipping build."; \
 		fi; \
 	else \
 		echo "Image does not exist, building..."; \
-		docker build --platform $(PLATFORM) -t $(IMAGE_NAME):$(TAG) .; \
+			docker build --platform $(PLATFORM) $(BUILD_ARGS) -t $(IMAGE_NAME):$(TAG) .; \
 	fi
 
 # Test the existing container
@@ -119,15 +122,15 @@ run:
 	@echo "Setting environment variables...\n"
 	@echo "Checking initial directory structure\n"
 	@if [ "$(NODE_ENVIRONMENT)" = "dev" ]; then \
-		if [ ! -d "~/SITES/docker" ]; then \
-			echo "	Creating project folders\n" && mkdir -p ~/SITES/docker && chmod 777 ~/SITES/docker; \
-		fi \
-	fi
+			if [ ! -d "$(HOME)/SITES/docker" ]; then \
+				echo "	Creating project folders\n" && mkdir -p "$(HOME)/SITES/docker" && chmod 777 "$(HOME)/SITES/docker"; \
+			fi \
+		fi
 	@echo "\033[1mRun the following on the MySQL container to setup a GLOBAL admin:\033[00m\n"
-	@echo "	THE PASSWORD FOR \033[1m$(MYSQL_USER)\033[00m IS \033[1m$(MYSQL_PASSWORD)\033[00m;"
+	@echo "	The password for \033[1m$(MYSQL_USER)\033[00m is loaded from $(ENV_FILE)."
 	@echo ''
-	@echo "	docker exec -it $(CONTAINER_NAME)_db /bin/bash\n \
-		mysql -p '$(MYSQL_ROOT_PASSWORD)'\n \
+	@echo "	docker exec -it db /bin/bash\n \
+		mysql -p\n \
 		GRANT ALL PRIVILEGES ON *.* TO '$(MYSQL_USER)'@'%' WITH GRANT OPTION;\n"
 	$(COMPOSE_DEV) up -d --remove-orphans
 

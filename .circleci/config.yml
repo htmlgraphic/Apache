@@ -9,7 +9,7 @@ jobs:
         type: string
     working_directory: ~/project
     docker:
-      - image: ubuntu-2204:2023.04.2
+      - image: cimg/base:stable
     resource_class: arm.medium
     environment:
       DOCKER_VERSION: 20.10
@@ -27,7 +27,10 @@ jobs:
       - run:
           name: Install Dependencies
           command: |
-            apk add --no-cache make docker-compose
+            sudo apt-get update
+            sudo apt-get install -y make
+            docker version
+            docker compose version
       - run:
           name: Build << parameters.env >> Apache Docker Image
           command: |
@@ -50,7 +53,7 @@ jobs:
             pwd
             ls -la
             ls -la ~/project/tests || echo "Tests directory not found"
-            cat .env
+            sed 's/=.*/=<redacted>/' .env
             make run || { echo "Container start failed"; docker ps -a; docker logs ${CONTAINER_NAME}; exit 1; }
             docker ps -a
             # Wait for supervisord
@@ -85,9 +88,9 @@ jobs:
               exit 1
             fi
             # Wait for MySQL
-            if docker ps -a | grep apache-db-1; then
+            if docker ps -a | grep ' db$'; then
               for i in {1..30}; do
-                if docker exec apache-db-1 mysqladmin ping -h 127.0.0.1 -u admin -pnew_password --silent; then
+                if docker exec -e MYSQL_PWD=new_password db mysqladmin ping -h 127.0.0.1 -u admin --silent; then
                   echo "MySQL is ready"
                   break
                 fi
@@ -96,7 +99,7 @@ jobs:
               done
               if [ $i -eq 30 ]; then
                 echo "MySQL failed to start within 60 seconds"
-                docker logs apache-db-1
+                docker logs db
                 exit 1
               fi
             fi
@@ -107,21 +110,27 @@ jobs:
       - run:
           name: Debug Test Script
           command: |
-            docker exec ${CONTAINER_NAME} /bin/bash -c "ls -la /opt/tests || echo 'Test directory not found'; cat /opt/tests/build_tests.sh || echo 'build_tests.sh not found'; chmod +x /opt/tests/build_tests.sh || echo 'Failed to set executable permissions'; env | grep -E 'NODE_ENVIRONMENT|SASL_USER|SASL_PASS|LOG_TOKEN'; supervisorctl status || echo 'Supervisorctl failed'; ls -la /root/project/container-build || echo 'Test directory not found'; php -m | grep -E 'mcrypt|redis' || echo 'PHP extensions mcrypt/redis not found'; ls -la /etc/php/8.3/*/conf.d/*mcrypt* /etc/php/8.3/*/conf.d/*redis* || echo 'PHP extension configs not found'; cat /etc/environment || echo 'Environment file not found'"
+            docker exec ${CONTAINER_NAME} /bin/bash -c "ls -la /opt/tests || echo 'Test directory not found'; chmod +x /opt/tests/build_tests.sh || echo 'Failed to set executable permissions'; env | grep -E 'NODE_ENVIRONMENT=' || true; supervisorctl status || echo 'Supervisorctl failed'; ls -la /root/project/container-build || echo 'Test directory not found'; php -m | grep -E 'mcrypt|redis' || echo 'PHP extensions mcrypt/redis not found'; ls -la /etc/php/8.3/*/conf.d/*mcrypt* /etc/php/8.3/*/conf.d/*redis* || echo 'PHP extension configs not found'"
       - run:
           name: << parameters.env >> Build Tests
           command: |
-            docker exec ${CONTAINER_NAME} /bin/bash -c "export SASL_USER=$CIRCLE_SASL_USER SASL_PASS=$CIRCLE_SASL_PASS LOG_TOKEN=$CIRCLE_LOG_TOKEN NODE_ENVIRONMENT=<< parameters.env >> && su -s /bin/bash www-data -c 'sed -E \"/systemctl|docker/ d\" /opt/tests/build_tests.sh | bash' || { echo 'Tests failed'; supervisorctl status; docker logs ${CONTAINER_NAME}; cat /var/log/supervisor/supervisord.log; exit 1; }"
+            if ! docker exec ${CONTAINER_NAME} /bin/bash -c "export SASL_USER=$CIRCLE_SASL_USER SASL_PASS=$CIRCLE_SASL_PASS LOG_TOKEN=$CIRCLE_LOG_TOKEN NODE_ENVIRONMENT=<< parameters.env >> && su -s /bin/bash www-data -c 'sed -E \"/systemctl|docker/ d\" /opt/tests/build_tests.sh | bash'"; then
+              echo "Tests failed"
+              docker exec ${CONTAINER_NAME} supervisorctl status || true
+              docker logs ${CONTAINER_NAME} || true
+              docker exec ${CONTAINER_NAME} cat /var/log/supervisor/supervisord.log || true
+              exit 1
+            fi
       - run:
           name: Collect << parameters.env >> Container Logs
           command: |
             echo "Collecting logs for ${CONTAINER_NAME}"
             docker logs ${CONTAINER_NAME} > ${BUILD_PATH}/log_output-<< parameters.log_prefix >>_Apache.txt 2>&1
-            if docker ps -a | grep apache-db-1; then
-              echo "Collecting logs for apache-db-1"
-              docker logs apache-db-1 > ${BUILD_PATH}/log_output-<< parameters.log_prefix >>_MySQL.txt 2>&1
+            if docker ps -a | grep ' db$'; then
+              echo "Collecting logs for db"
+              docker logs db > ${BUILD_PATH}/log_output-<< parameters.log_prefix >>_MySQL.txt 2>&1
             else
-              echo "No apache-db-1 container found; skipping MySQL logs"
+              echo "No db container found; skipping MySQL logs"
             fi
       - run:
           name: Kill << parameters.env >> Containers
